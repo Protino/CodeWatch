@@ -1,3 +1,7 @@
 <resources>
     <string name="app_name">CodeWatch</string>
+
+    <!-- Related to login-->
+    <string name="LOGIN_HOST">callback</string>
+    <string name="LOGIN_SCHEME">codewatch</string>
 </resources>
