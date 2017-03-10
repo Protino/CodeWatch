@@ -28,14 +28,14 @@ import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
 
+import static io.github.protino.codewatch.remote.Constants.ACCESS_CODE_PREF_KEY;
+import static io.github.protino.codewatch.remote.Constants.ACCESS_TOKEN_PREF_KEY;
+import static io.github.protino.codewatch.remote.Constants.REDIRECT_URI;
+import static io.github.protino.codewatch.remote.Constants.SCHEME;
+import static io.github.protino.codewatch.remote.Constants.STATE_PREF_KEY;
+
 public class LoginActivity extends AppCompatActivity {
 
-    public static final String REDIRECT_URI = "codewatch://callback";
-    public static final String ACCESS_CODE_PREF_KEY = "ACCESS_CODE_PREF_KEY";
-    public static final String STATE_PREF_KEY = "STATE_PREF_KEY";
-    public static final String ACCESS_TOKEN_PREF_KEY = "ACCESS_TOKEN_PREF_KEY";
-
-    private static final String SCHEME = "codewatch";
     private static final String LOG_TAG = LoginActivity.class.getSimpleName();
     private SharedPreferences sharedPreferences;
     private String originalHashState;
