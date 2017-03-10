@@ -5,8 +5,8 @@ import android.support.annotation.StringDef;
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 
-import io.github.codewatchtestbase.remote.model.AccessToken;
-import io.github.codewatchtestbase.remote.model.Stats;
+import io.github.protino.codewatch.remote.model.AccessToken;
+import io.github.protino.codewatch.remote.model.Stats;
 import retrofit2.Call;
 import retrofit2.http.Field;
 import retrofit2.http.FormUrlEncoded;
