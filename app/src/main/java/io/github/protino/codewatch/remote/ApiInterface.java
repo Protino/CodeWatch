@@ -6,13 +6,24 @@ import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 
 import io.github.protino.codewatch.remote.model.AccessToken;
-import io.github.protino.codewatch.remote.model.Stats;
+import io.github.protino.codewatch.remote.model.leaders.LeadersResponse;
+import io.github.protino.codewatch.remote.model.project.ProjectsResponse;
+import io.github.protino.codewatch.remote.model.project.summary.SummaryResponse;
+import io.github.protino.codewatch.remote.model.statistics.StatsResponse;
+import io.github.protino.codewatch.remote.model.user.UserResponse;
 import retrofit2.Call;
 import retrofit2.http.Field;
 import retrofit2.http.FormUrlEncoded;
 import retrofit2.http.GET;
 import retrofit2.http.POST;
 import retrofit2.http.Path;
+import retrofit2.http.Query;
+
+import static io.github.protino.codewatch.remote.Constants.API_SUFFIX;
+import static io.github.protino.codewatch.remote.Constants._30_DAYS;
+import static io.github.protino.codewatch.remote.Constants._6_MONTHS;
+import static io.github.protino.codewatch.remote.Constants._7_DAYS;
+import static io.github.protino.codewatch.remote.Constants._YEAR;
 
 /**
  * Created by Gurupad Mamadapur on 20-Feb-17.
@@ -20,18 +31,8 @@ import retrofit2.http.Path;
 
 public interface ApiInterface {
 
-    String _7_DAYS = "last_7_days";
-    String _30_DAYS = "last_30_days";
-    String _6_MONTHS = "last_6_months";
-    String _YEAR = "last_year";
-
     /**
-     * @param clientId
-     * @param clientSecret
-     * @param redirectUri
-     * @param grantType
-     * @param code
-     * @return
+     * Gets access token from Wakatime
      */
     @FormUrlEncoded
     @POST("oauth/token")
@@ -41,8 +42,45 @@ public interface ApiInterface {
                                      @Field("grant_type") String grantType,
                                      @Field("code") String code);
 
-    @GET("api/v1/users/current/stats/{range}?timeout=10")
-    Call<Stats> getStats(@Path("range") @Range String range);
+
+    /**
+     * @param range has to be one of these - {_7_DAYS, _30_DAYS, _6_MONTHS, _YEAR}
+     * @return {@link StatsResponse}
+     */
+    @GET(API_SUFFIX + "stats/{range}")
+    Call<StatsResponse> getStats(@Path("range") @Range String range);
+
+    /**
+     * List of all the projects of the user
+     *
+     * @return {@link ProjectsResponse}
+     */
+    @GET(API_SUFFIX + "projects")
+    Call<ProjectsResponse> getProjects();
+
+    /**
+     * @param project Project id or name whose summary is needed
+     * @return {@link SummaryResponse}
+     */
+    @GET(API_SUFFIX + "summaries")
+    Call<SummaryResponse> getProjectSummary(@Query("project") String project,
+                                            @Query("start") String start,
+                                            @Query("end") String end);
+
+    /**
+     * Returns profile information of the logged in user and not any user
+     *
+     * @return {@link UserResponse}
+     */
+    @GET(API_SUFFIX)
+    Call<UserResponse> getUserProfileData();
+
+    /**
+     * Returns leaderboard data based on coding average
+     * @return {@link LeadersResponse}
+     */
+    @GET("api/v1/leaders")
+    Call<LeadersResponse> getLeaders();
 
     @Retention(RetentionPolicy.SOURCE)
     @StringDef({_7_DAYS, _30_DAYS, _6_MONTHS, _YEAR})

@@ -14,7 +14,7 @@ public class ServiceGenerator {
     public static final String BASE_URL = "https://wakatime.com/";
 
     private static HttpLoggingInterceptor loggingInterceptor =
-            new HttpLoggingInterceptor().setLevel(HttpLoggingInterceptor.Level.BODY);
+            new HttpLoggingInterceptor().setLevel(HttpLoggingInterceptor.Level.NONE);
 
     private static OkHttpClient.Builder httpClient = new OkHttpClient.Builder().addInterceptor(loggingInterceptor);
     private static Retrofit.Builder builder =
@@ -30,6 +30,9 @@ public class ServiceGenerator {
     }
 
     public static <S> S createService(Class<S> serviceClass, String authToken) {
+        if (authToken == null) {
+            return null;
+        }
         AuthenticationInterceptor interceptor = new AuthenticationInterceptor(authToken);
         if (!httpClient.interceptors().contains(interceptor)) {
             httpClient.addInterceptor(interceptor);

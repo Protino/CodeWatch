@@ -20,7 +20,7 @@ android {
         }
     }
 }
-ext{
+ext {
     supportLibraryVersion = "25.0.1"
 }
 
@@ -30,7 +30,6 @@ dependencies {
         exclude group: 'com.android.support', module: 'support-annotations'
     })
     compile "com.android.support:appcompat-v7:${supportLibraryVersion}"
-    testCompile 'junit:junit:4.12'
 
     //Retrofit
     compile 'com.squareup.retrofit2:retrofit:2.1.0'
@@ -39,5 +38,9 @@ dependencies {
 
     //EventBus
     compile 'org.greenrobot:eventbus:3.0.0'
+    compile 'com.android.support.constraint:constraint-layout:1.0.0-alpha9'
 
+    //Timber
+    compile 'com.jakewharton.timber:timber:4.5.1'
+    testCompile 'junit:junit:4.12'
 }

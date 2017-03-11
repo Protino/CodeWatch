@@ -1,10 +1,10 @@
 
-package io.github.protino.codewatch.remote.model;
+package io.github.protino.codewatch.remote.model.statistics;
 
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
 
-public class OperatingSystem {
+public class Editor {
 
     @SerializedName("total_seconds")
     @Expose
