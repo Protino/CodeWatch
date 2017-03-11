@@ -68,6 +68,14 @@ public interface ApiInterface {
                                             @Query("end") String end);
 
     /**
+     * @param start start date
+     * @param end   end date
+     * @return {@link SummaryResponse}
+     */
+    @GET(API_SUFFIX + "summaries")
+    Call<SummaryResponse> getSummary(@Query("start") String start, @Query("end") String end);
+
+    /**
      * Returns profile information of the logged in user and not any user
      *
      * @return {@link UserResponse}
@@ -77,6 +85,7 @@ public interface ApiInterface {
 
     /**
      * Returns leaderboard data based on coding average
+     *
      * @return {@link LeadersResponse}
      */
     @GET("api/v1/leaders")

@@ -3,7 +3,7 @@ package io.github.protino.codewatch.remote;
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.preference.PreferenceManager;
-import android.util.Log;
+import android.util.Pair;
 
 import com.google.gson.Gson;
 
@@ -17,6 +17,7 @@ import io.github.protino.codewatch.remote.model.WakatimeData;
 import io.github.protino.codewatch.remote.model.leaders.LeadersResponse;
 import io.github.protino.codewatch.remote.model.project.ProjectsData;
 import io.github.protino.codewatch.remote.model.project.ProjectsResponse;
+import io.github.protino.codewatch.remote.model.project.summary.SummaryData;
 import io.github.protino.codewatch.remote.model.project.summary.SummaryResponse;
 import io.github.protino.codewatch.remote.model.statistics.StatsResponse;
 import io.github.protino.codewatch.remote.model.user.UserResponse;
@@ -35,6 +36,7 @@ public class FetchWakatimeData {
     private PublicApiInterface publicApiInterface;
     private String startDate;
     private String endDate;
+    private String yesterday;
 
     private FetchWakatimeData() {
     }
@@ -46,16 +48,17 @@ public class FetchWakatimeData {
         String accessToken = gson.fromJson(accessTokenJson, AccessToken.class).getAccessToken();
         apiInterface = ServiceGenerator.createService(ApiInterface.class, accessToken);
         publicApiInterface = ServiceGenerator.createService(PublicApiInterface.class);
-        setStartAndEndDate();
+        setDates();
     }
 
-    private void setStartAndEndDate() {
+    private void setDates() {
         Calendar calendar = Calendar.getInstance();
         SimpleDateFormat simpleDateFormat = new SimpleDateFormat(dateFormat);
         endDate = simpleDateFormat.format(calendar.getTime());
         calendar.add(Calendar.DATE, -7);
         startDate = simpleDateFormat.format(calendar.getTime());
-        Log.d(LOG_TAG, "setStartAndEndDate: " + startDate + " " + endDate);
+        calendar.add(Calendar.DATE, 6);
+        yesterday = simpleDateFormat.format(calendar.getTime());
     }
 
     /**
@@ -84,9 +87,6 @@ public class FetchWakatimeData {
         }
         wakatimeData.setSummaryResponse(summaryResponseMap);
 
-        LeadersResponse leadersResponse = publicApiInterface.getLeaders().execute().body();
-        wakatimeData.setLeadersResponse(leadersResponse);
-
         UserResponse userResponse = apiInterface.getUserProfileData().execute().body();
         wakatimeData.setUserResponse(userResponse);
 
@@ -99,5 +99,23 @@ public class FetchWakatimeData {
 
     public LeadersResponse fetchLeaders() throws IOException {
         return apiInterface.getLeaders().execute().body();
+    }
+
+    public StatsResponse fetchStats() throws IOException {
+        return apiInterface.getStats(Constants._7_DAYS).execute().body();
+    }
+
+    public ProjectsResponse fetchProjects() throws IOException {
+        return apiInterface.getProjects().execute().body();
+    }
+
+    public Pair<Integer, Integer> fetchTwoDaysTotalTime() throws IOException {
+        SummaryResponse summaryResponse = apiInterface.getSummary(yesterday, endDate).execute().body();
+
+        SummaryData yesterdaysData = summaryResponse.getData().get(0);
+        SummaryData todaysData = summaryResponse.getData().get(1);
+
+        return new Pair<>(yesterdaysData.getGrandTotal().getTotalSeconds(),
+                todaysData.getGrandTotal().getTotalSeconds());
     }
 }
