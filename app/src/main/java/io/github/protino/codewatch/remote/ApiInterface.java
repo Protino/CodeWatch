@@ -59,7 +59,7 @@ public interface ApiInterface {
     Call<ProjectsResponse> getProjects();
 
     /**
-     * @param project Project id or name whose summary is needed
+     * @param project Project whose summary is needed
      * @return {@link SummaryResponse}
      */
     @GET(API_SUFFIX + "summaries")

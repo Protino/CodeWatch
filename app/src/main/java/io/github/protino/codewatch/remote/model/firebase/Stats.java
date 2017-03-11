@@ -8,19 +8,45 @@ import java.util.List;
 
 public class Stats {
 
+
+    private Boolean isUpToDate;
+    private String startDate;
+    private String endDate;
     private String bestDayDate;
     private Integer bestDaySeconds;
     private Integer dailyAverageSeconds;
     private Integer totalSeconds;
     private Integer todaysTotalSeconds;
     private Integer changeInTotalSeconds;
-
     private List<CustomPair> projectPairList;
     private List<CustomPair> languagePairList;
     private List<CustomPair> osPairList;
     private List<CustomPair> editorPairList;
-
     public Stats() {
+    }
+
+    public Boolean getUpToDate() {
+        return isUpToDate;
+    }
+
+    public void setUpToDate(Boolean upToDate) {
+        isUpToDate = upToDate;
+    }
+
+    public String getStartDate() {
+        return startDate;
+    }
+
+    public void setStartDate(String startDate) {
+        this.startDate = startDate;
+    }
+
+    public String getEndDate() {
+        return endDate;
+    }
+
+    public void setEndDate(String endDate) {
+        this.endDate = endDate;
     }
 
     public String getBestDayDate() {

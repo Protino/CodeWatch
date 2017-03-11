@@ -1,4 +1,3 @@
-
 package io.github.protino.codewatch.remote.model.project.summary;
 
 import com.google.gson.annotations.Expose;
@@ -20,7 +19,7 @@ public class Branch {
     private String name;
     @SerializedName("percent")
     @Expose
-    private Integer percent;
+    private Double percent;
     @SerializedName("seconds")
     @Expose
     private Integer seconds;
@@ -63,11 +62,11 @@ public class Branch {
         this.name = name;
     }
 
-    public Integer getPercent() {
+    public Double getPercent() {
         return percent;
     }
 
-    public void setPercent(Integer percent) {
+    public void setPercent(Double percent) {
         this.percent = percent;
     }
 

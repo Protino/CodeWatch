@@ -8,30 +8,47 @@ import java.util.List;
 
 public class Project {
 
+    private String id;
     private String name;
     private String publicUrl;
     private List<Integer> timeSpent;
     private List<CustomPair> languageList;
     private List<CustomPair> osPairList;
     private List<CustomPair> editorPaiList;
-
     /* CodeWatch data */
     private Integer deadline;       // time since epoch in seconds!
     private Integer dailyHourGoal;  // in seconds
 
-    private Project() {
+    public Project() {
 
     }
 
-    public Project(List<Integer> timeSpent, List<CustomPair> languageList,
+    public Project(String id, List<Integer> timeSpent, List<CustomPair> languageList,
                    List<CustomPair> osPairList, List<CustomPair> editorPaiList,
                    Integer deadline, Integer dailyHourGoal) {
+        this.id = id;
         this.timeSpent = timeSpent;
         this.languageList = languageList;
         this.osPairList = osPairList;
         this.editorPaiList = editorPaiList;
         this.deadline = deadline;
         this.dailyHourGoal = dailyHourGoal;
+    }
+
+    public String getName() {
+        return name;
+    }
+
+    public void setName(String name) {
+        this.name = name;
+    }
+
+    public String getPublicUrl() {
+        return publicUrl;
+    }
+
+    public void setPublicUrl(String publicUrl) {
+        this.publicUrl = publicUrl;
     }
 
     public List<Integer> getTimeSpent() {
@@ -80,5 +97,13 @@ public class Project {
 
     public void setDeadline(Integer deadline) {
         this.deadline = deadline;
+    }
+
+    public String getId() {
+        return id;
+    }
+
+    public void setId(String id) {
+        this.id = id;
     }
 }

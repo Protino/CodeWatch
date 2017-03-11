@@ -23,9 +23,6 @@ public class User {
     private Boolean hasPremiumFeatures;
 
     /* Statistics */
-    private Boolean isUpTodate;
-    private String startDate;
-    private String endDate;
     private Stats stats;
 
     /* Projects */
@@ -111,30 +108,6 @@ public class User {
 
     public void setHasPremiumFeatures(Boolean hasPremiumFeatures) {
         this.hasPremiumFeatures = hasPremiumFeatures;
-    }
-
-    public Boolean getUpTodate() {
-        return isUpTodate;
-    }
-
-    public void setUpTodate(Boolean upTodate) {
-        isUpTodate = upTodate;
-    }
-
-    public String getStartDate() {
-        return startDate;
-    }
-
-    public void setStartDate(String startDate) {
-        this.startDate = startDate;
-    }
-
-    public String getEndDate() {
-        return endDate;
-    }
-
-    public void setEndDate(String endDate) {
-        this.endDate = endDate;
     }
 
     public Stats getStats() {
