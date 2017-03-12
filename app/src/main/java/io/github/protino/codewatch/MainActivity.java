@@ -6,9 +6,20 @@ import android.content.SharedPreferences;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
+import android.support.annotation.NonNull;
 import android.support.v7.app.AppCompatActivity;
 import android.view.View;
 
+import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.Task;
+import com.google.firebase.auth.AuthResult;
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.database.ChildEventListener;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
 import com.google.gson.Gson;
 
 import java.io.IOException;
@@ -37,14 +48,129 @@ import static io.github.protino.codewatch.remote.Constants.WAKATIME_DATA;
 
 public class MainActivity extends AppCompatActivity {
 
+    private static final String ANONYMOUS = "ANONYMOUS";
+    private FirebaseDatabase firebaseDatabase;
+    private DatabaseReference userDatabaseReference;
+    private ChildEventListener childEventListener;
+    private FirebaseAuth firebaseAuth;
+    private FirebaseAuth.AuthStateListener authStateListener;
+    private String firebaseUserId;
+    private User user;
 
     //Lifecycle start
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+
+        firebaseDatabase = FirebaseDatabase.getInstance();
+        firebaseDatabase.setPersistenceEnabled(true);
+        userDatabaseReference = firebaseDatabase.getReference().child("users");
+
+        firebaseAuth = FirebaseAuth.getInstance();
+        user = readData(new View(this));
+
+        authStateListener = new FirebaseAuth.AuthStateListener() {
+            @Override
+            public void onAuthStateChanged(@NonNull FirebaseAuth firebaseAuth) {
+                FirebaseUser firebaseUser = firebaseAuth.getCurrentUser();
+                if (firebaseUser != null) {
+                    onSignedInInitialize(firebaseUser.getUid());
+                } else {
+                    onSignedOutCleanup();
+                    signWithMailAndPassword(user.getEmail(), user.getUserId());
+                }
+            }
+        };
+
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        firebaseAuth.addAuthStateListener(authStateListener);
+    }
+
+    @Override
+    protected void onPause() {
+        super.onPause();
+        if (authStateListener != null) {
+            firebaseAuth.removeAuthStateListener(authStateListener);
+        }
+        detachDatabaseReadListener();
     }
 //Lifecycle end
+
+    private void signWithMailAndPassword(final String email, final String userId) {
+        firebaseAuth.signInWithEmailAndPassword(email, userId)
+                .addOnCompleteListener(this, new OnCompleteListener<AuthResult>() {
+                    @Override
+                    public void onComplete(@NonNull Task<AuthResult> task) {
+                        if (!task.isSuccessful()) {
+                            createUser(email, userId);
+                        }
+                    }
+                });
+    }
+
+    private void createUser(String email, String userId) {
+        firebaseAuth.createUserWithEmailAndPassword(email, userId)
+                .addOnCompleteListener(this, new OnCompleteListener<AuthResult>() {
+                    @Override
+                    public void onComplete(@NonNull Task<AuthResult> task) {
+                        if (!task.isSuccessful()) {
+                            Timber.e(task.getException(), "Could not create user : ");
+                        }
+                    }
+                });
+    }
+
+    private void onSignedInInitialize(String uid) {
+        firebaseUserId = uid;
+        attachDatabaseListener();
+    }
+
+    private void onSignedOutCleanup() {
+        firebaseUserId = ANONYMOUS;
+        detachDatabaseReadListener();
+    }
+
+    private void detachDatabaseReadListener() {
+        if (childEventListener != null) {
+            userDatabaseReference.removeEventListener(childEventListener);
+            childEventListener = null;
+        }
+    }
+
+    private void attachDatabaseListener() {
+        if (childEventListener == null) {
+            childEventListener = new ChildEventListener() {
+                @Override
+                public void onChildAdded(DataSnapshot dataSnapshot, String s) {
+                    //User addedUser = dataSnapshot.getValue(User.class);
+                    //Timber.d("Child added : Name " + addedUser.getFullName());
+                }
+
+                @Override
+                public void onChildChanged(DataSnapshot dataSnapshot, String s) {
+                    Timber.d("Changed " + s);
+                }
+
+                @Override
+                public void onChildRemoved(DataSnapshot dataSnapshot) {
+                }
+
+                @Override
+                public void onChildMoved(DataSnapshot dataSnapshot, String s) {
+                }
+
+                @Override
+                public void onCancelled(DatabaseError databaseError) {
+                }
+            };
+            userDatabaseReference.child(firebaseUserId).addChildEventListener(childEventListener);
+        }
+    }
 
     public void fetchData(View view) {
         SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(this);
@@ -164,14 +290,27 @@ public class MainActivity extends AppCompatActivity {
         editor.apply();
     }
 
-    public void readData(View view) {
+    public User readData(View view) {
         SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(this);
         String jsonString = sharedPreferences.getString(Constants.FIREBASE_USER_DATA_PREF_KEY, null);
-        Timber.i(jsonString);
-        User user = new Gson().fromJson(jsonString, User.class);
-        Timber.i(user.getFullName());
+        return new Gson().fromJson(jsonString, User.class);
+        //Timber.i(user.getFullName());
     }
 
+    public void sendData(View view) {
+        if (userDatabaseReference != null) {
+            userDatabaseReference.child(firebaseUserId).setValue(user);
+        }
+    }
+
+    public void updateData(View view) {
+        userDatabaseReference.child(firebaseUserId).child("timeZone").setValue("10  ");
+    }
+
+    public void logout(View view) {
+        firebaseAuth.signOut();
+        onSignedOutCleanup();
+    }
 
     private class FetchWakatimeDataTask extends AsyncTask<Void, Void, Void> {
 
