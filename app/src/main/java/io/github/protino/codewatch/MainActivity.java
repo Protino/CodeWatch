@@ -24,19 +24,14 @@ import com.google.gson.Gson;
 
 import java.io.IOException;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 import io.github.protino.codewatch.remote.Constants;
 import io.github.protino.codewatch.remote.FetchWakatimeData;
 import io.github.protino.codewatch.remote.model.WakatimeData;
 import io.github.protino.codewatch.remote.model.firebase.CustomPair;
-import io.github.protino.codewatch.remote.model.firebase.Project;
 import io.github.protino.codewatch.remote.model.firebase.Stats;
 import io.github.protino.codewatch.remote.model.firebase.User;
-import io.github.protino.codewatch.remote.model.project.ProjectsData;
-import io.github.protino.codewatch.remote.model.project.summary.SummaryData;
 import io.github.protino.codewatch.remote.model.statistics.Editor;
 import io.github.protino.codewatch.remote.model.statistics.Language;
 import io.github.protino.codewatch.remote.model.statistics.OperatingSystem;
@@ -149,6 +144,7 @@ public class MainActivity extends AppCompatActivity {
                 public void onChildAdded(DataSnapshot dataSnapshot, String s) {
                     //User addedUser = dataSnapshot.getValue(User.class);
                     //Timber.d("Child added : Name " + addedUser.getFullName());
+                    Timber.d("Key " + dataSnapshot.getKey() + "  s: " + s);
                 }
 
                 @Override
@@ -208,6 +204,7 @@ public class MainActivity extends AppCompatActivity {
         stats.setTotalSeconds(statsData.getTotalSeconds());
         stats.setChangeInTotalSeconds(0);
 
+        // TODO: 12-03-2017 separate call to fetch projects data
         stats.setProjectPairList(null);
 
         List<CustomPair> languagePairsList = new ArrayList<>();
@@ -229,6 +226,8 @@ public class MainActivity extends AppCompatActivity {
 
         user.setStats(stats);
 
+        // TODO: 12-03-2017 Fetch, transform and update dynamically
+        /*
         long start = System.currentTimeMillis();
         Map<String, Project> projectMap = new HashMap<>();
         for (ProjectsData projectsData : wakatimeData.getProjectsResponse().getProjectsList()) {
@@ -282,6 +281,7 @@ public class MainActivity extends AppCompatActivity {
         }
         Timber.i("Projects data calculated - " + (System.currentTimeMillis() - start) + " ms");
         user.setProjects(projectMap);
+        */
 
         Gson gson = new Gson();
         String userDataString = gson.toJson(user);
@@ -310,6 +310,10 @@ public class MainActivity extends AppCompatActivity {
     public void logout(View view) {
         firebaseAuth.signOut();
         onSignedOutCleanup();
+    }
+
+    public void launchLeadersActivity(View view) {
+
     }
 
     private class FetchWakatimeDataTask extends AsyncTask<Void, Void, Void> {

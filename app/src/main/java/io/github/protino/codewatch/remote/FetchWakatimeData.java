@@ -21,7 +21,6 @@ import io.github.protino.codewatch.remote.model.project.summary.SummaryData;
 import io.github.protino.codewatch.remote.model.project.summary.SummaryResponse;
 import io.github.protino.codewatch.remote.model.statistics.StatsResponse;
 import io.github.protino.codewatch.remote.model.user.UserResponse;
-import timber.log.Timber;
 
 import static io.github.protino.codewatch.remote.Constants.ACCESS_TOKEN_PREF_KEY;
 
@@ -79,7 +78,7 @@ public class FetchWakatimeData {
         ProjectsResponse projectsResponse = apiInterface.getProjects().execute().body();
         wakatimeData.setProjectsResponse(projectsResponse);
 
-        long start = System.currentTimeMillis();
+        // TODO: 12-03-2017 Seperate this task from here
         HashMap<String, SummaryResponse> summaryResponseMap = new HashMap<>();
         SummaryResponse summaryResponse;
         for (ProjectsData projectsData : projectsResponse.getProjectsList()) {
@@ -87,7 +86,6 @@ public class FetchWakatimeData {
             summaryResponse = apiInterface.getProjectSummary(projectName, startDate, endDate).execute().body();
             summaryResponseMap.put(projectName, summaryResponse);
         }
-        Timber.i("Downloading summaries took - " + (System.currentTimeMillis() - start));
         wakatimeData.setSummaryResponse(summaryResponseMap);
 
         UserResponse userResponse = apiInterface.getUserProfileData().execute().body();
