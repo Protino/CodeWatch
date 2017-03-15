@@ -54,7 +54,8 @@ public class LeaderContract {
         public static final String COLUMN_LANGUAGE_STATS = "language_stats";
 
         // User details
-        public static final String COLUMN_USER_NAME = "full_name";
+        public static final String COLUMN_USER_NAME = "user_name";
+        public static final String COLUMN_DISPLAY_NAME = "display_name";
         public static final String COLUMN_EMAIL = "email";
         public static final String COLUMN_LOCATION = "location";
         public static final String COLUMN_PHOTO = "photo";

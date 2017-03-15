@@ -12,7 +12,6 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
-
         <activity android:name=".MainActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN"/>
@@ -35,10 +34,17 @@
                     android:scheme="@string/LOGIN_SCHEME"/>
             </intent-filter>
         </activity>
+        <activity android:name=".LeaderActivity">
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value=".MainActivity"
+                />
+        </activity>
 
         <provider
             android:name=".data.LeaderProvider"
             android:authorities="io.github.protino.codewatch.app"/>
+
     </application>
 
 </manifest>

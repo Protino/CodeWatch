@@ -57,26 +57,27 @@ public class TestDb extends AndroidTestCase {
                 c.moveToFirst());
 
         // Build a HashSet of all of the column names we want to look for
-        final HashSet<String> locationColumnHashSet = new HashSet<>();
-        locationColumnHashSet.add(LeaderContract.LeaderEntry._ID);
-        locationColumnHashSet.add(LeaderContract.LeaderEntry.COLUMN_DAILY_AVERAGE);
-        locationColumnHashSet.add(LeaderContract.LeaderEntry.COLUMN_EMAIL);
-        locationColumnHashSet.add(LeaderContract.LeaderEntry.COLUMN_LANGUAGE_STATS);
-        locationColumnHashSet.add(LeaderContract.LeaderEntry.COLUMN_PHOTO);
-        locationColumnHashSet.add(LeaderContract.LeaderEntry.COLUMN_TOTAL_SECONDS);
-        locationColumnHashSet.add(LeaderContract.LeaderEntry.COLUMN_USER_ID);
-        locationColumnHashSet.add(LeaderContract.LeaderEntry.COLUMN_USER_NAME);
-        locationColumnHashSet.add(LeaderContract.LeaderEntry.COLUMN_WEBSITE);
-        locationColumnHashSet.add(LeaderContract.LeaderEntry.COLUMN_LOCATION);
+        final HashSet<String> leaderColumnHashSet = new HashSet<>();
+        leaderColumnHashSet.add(LeaderContract.LeaderEntry._ID);
+        leaderColumnHashSet.add(LeaderContract.LeaderEntry.COLUMN_DAILY_AVERAGE);
+        leaderColumnHashSet.add(LeaderContract.LeaderEntry.COLUMN_EMAIL);
+        leaderColumnHashSet.add(LeaderContract.LeaderEntry.COLUMN_LANGUAGE_STATS);
+        leaderColumnHashSet.add(LeaderContract.LeaderEntry.COLUMN_PHOTO);
+        leaderColumnHashSet.add(LeaderContract.LeaderEntry.COLUMN_TOTAL_SECONDS);
+        leaderColumnHashSet.add(LeaderContract.LeaderEntry.COLUMN_DISPLAY_NAME);
+        leaderColumnHashSet.add(LeaderContract.LeaderEntry.COLUMN_USER_ID);
+        leaderColumnHashSet.add(LeaderContract.LeaderEntry.COLUMN_USER_NAME);
+        leaderColumnHashSet.add(LeaderContract.LeaderEntry.COLUMN_WEBSITE);
+        leaderColumnHashSet.add(LeaderContract.LeaderEntry.COLUMN_LOCATION);
 
         int columnNameIndex = c.getColumnIndex("name");
         do {
             String columnName = c.getString(columnNameIndex);
-            locationColumnHashSet.remove(columnName);
+            leaderColumnHashSet.remove(columnName);
         } while (c.moveToNext());
 
-        assertTrue("Error: The database doesn't contain all of the required location entry columns",
-                locationColumnHashSet.isEmpty());
+        assertTrue("Error: The database doesn't contain all of the required leader entry columns",
+                leaderColumnHashSet.isEmpty());
         c.close();
         db.close();
     }

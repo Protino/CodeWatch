@@ -2,6 +2,8 @@ package io.github.protino.codewatch;
 
 import android.app.Application;
 
+import com.google.firebase.database.FirebaseDatabase;
+
 import timber.log.Timber;
 
 /**
@@ -17,6 +19,7 @@ public class App extends Application {
         if (BuildConfig.DEBUG) {
             Timber.plant(new Timber.DebugTree());
         }
+        FirebaseDatabase.getInstance().setPersistenceEnabled(true);
     }
 //Lifecycle end
 }

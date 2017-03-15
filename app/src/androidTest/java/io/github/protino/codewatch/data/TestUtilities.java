@@ -47,6 +47,7 @@ public class TestUtilities extends AndroidTestCase {
         leaderValues.put(LeaderContract.LeaderEntry.COLUMN_DAILY_AVERAGE, 32);
         leaderValues.put(LeaderContract.LeaderEntry.COLUMN_USER_ID, TEST_USER_ID);
         leaderValues.put(LeaderContract.LeaderEntry.COLUMN_USER_NAME, "gurupad");
+        leaderValues.put(LeaderContract.LeaderEntry.COLUMN_DISPLAY_NAME, "Gurupad M");
         leaderValues.put(LeaderContract.LeaderEntry.COLUMN_EMAIL, "gurupad@gmailc.om");
         leaderValues.put(LeaderContract.LeaderEntry.COLUMN_LOCATION, "mars");
         leaderValues.put(LeaderContract.LeaderEntry.COLUMN_PHOTO, "cad.co.com");
