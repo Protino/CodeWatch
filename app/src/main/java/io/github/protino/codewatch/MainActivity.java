@@ -25,9 +25,10 @@ import com.google.gson.Gson;
 
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
-import io.github.protino.codewatch.remote.Constants;
 import io.github.protino.codewatch.remote.FetchWakatimeData;
 import io.github.protino.codewatch.remote.model.WakatimeData;
 import io.github.protino.codewatch.remote.model.firebase.CustomPair;
@@ -38,9 +39,10 @@ import io.github.protino.codewatch.remote.model.statistics.Language;
 import io.github.protino.codewatch.remote.model.statistics.OperatingSystem;
 import io.github.protino.codewatch.remote.model.statistics.StatsData;
 import io.github.protino.codewatch.remote.model.user.ProfileData;
+import io.github.protino.codewatch.utils.Constants;
 import timber.log.Timber;
 
-import static io.github.protino.codewatch.remote.Constants.WAKATIME_DATA;
+import static io.github.protino.codewatch.utils.Constants.WAKATIME_DATA_UPDATED;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -51,6 +53,7 @@ public class MainActivity extends AppCompatActivity {
     private FirebaseAuth firebaseAuth;
     private FirebaseAuth.AuthStateListener authStateListener;
     private String firebaseUserId;
+    private DatabaseReference achievementsReference;
     private User user;
 
     //Lifecycle start
@@ -61,6 +64,8 @@ public class MainActivity extends AppCompatActivity {
 
         firebaseDatabase = FirebaseDatabase.getInstance();
         userDatabaseReference = firebaseDatabase.getReference().child("users");
+        achievementsReference = firebaseDatabase.getReference().child("achv");
+
 
         firebaseAuth = FirebaseAuth.getInstance();
         user = readData(new View(this));
@@ -73,11 +78,25 @@ public class MainActivity extends AppCompatActivity {
                     onSignedInInitialize(firebaseUser.getUid());
                 } else {
                     onSignedOutCleanup();
-                    signWithMailAndPassword(user.getEmail(), user.getUserId());
+                    signWithMailAndPassword("abcded"+user.getEmail(), user.getUserId());
+                    // TODO: 17-03-2017  generate password with random stuff obfuscate the code
                 }
             }
         };
+    }
 
+    private void signWithCustomToken(String token) {
+        firebaseAuth.signInWithCustomToken(token)
+                .addOnCompleteListener(new OnCompleteListener<AuthResult>() {
+                    @Override
+                    public void onComplete(@NonNull Task<AuthResult> task) {
+                        if (task.isSuccessful()) {
+                            Timber.d("User signed in");
+                        } else {
+                            Timber.d(task.getException());
+                        }
+                    }
+                });
     }
 
     @Override
@@ -122,6 +141,8 @@ public class MainActivity extends AppCompatActivity {
 
     private void onSignedInInitialize(String uid) {
         firebaseUserId = uid;
+        SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(this);
+        sharedPreferences.edit().putString(Constants.FIREBASE_USER_ID_PREF_KEY, uid).apply();
         attachDatabaseListener();
     }
 
@@ -143,7 +164,7 @@ public class MainActivity extends AppCompatActivity {
                 @Override
                 public void onChildAdded(DataSnapshot dataSnapshot, String s) {
                     //User addedUser = dataSnapshot.getValue(User.class);
-                    //Timber.d("Child added : Name " + addedUser.getFullName());
+                    //Timber.d("Child added : Name " + addedUser.getDisplayName());
                     Timber.d("Key " + dataSnapshot.getKey() + "  s: " + s);
                 }
 
@@ -170,21 +191,21 @@ public class MainActivity extends AppCompatActivity {
 
     public void fetchData(View view) {
         SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(this);
-        if (sharedPreferences.getString(WAKATIME_DATA, null) != null) {
+        if (sharedPreferences.getString(WAKATIME_DATA_UPDATED, null) != null) {
             new FetchWakatimeDataTask(this).execute();
         }
     }
 
     public void transform(View view) {
         SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(this);
-        String data = sharedPreferences.getString(WAKATIME_DATA, null);
+        String data = sharedPreferences.getString(WAKATIME_DATA_UPDATED, null);
         WakatimeData wakatimeData = new Gson().fromJson(data, WakatimeData.class);
 
         User user = new User();
         ProfileData profileData = wakatimeData.getUserResponse().getProfileData();
         user.setEmail(profileData.getEmail());
-        user.setFullName(profileData.getFullName());
-        user.setAchievements(0);
+        user.setDisplayName(profileData.getFullName());
+        user.setAchievements(0); // TODO: 16-03-2017 Store as achievements as auth data
         user.setCurrentPlan(profileData.getPlan());
         user.setIsEmailConfirmed(profileData.getIsEmailConfirmed());
         user.setUserId(profileData.getId());
@@ -192,6 +213,7 @@ public class MainActivity extends AppCompatActivity {
         user.setTimeZone(profileData.getTimezone());
         user.setPhotoUrl(profileData.getPhoto());
         user.setHasPremiumFeatures(profileData.getHasPremiumFeatures());
+        // Todo : Add generic language goals here
 
         Stats stats = new Stats();
         StatsData statsData = wakatimeData.getStatsResponse().getStatsData();
@@ -294,12 +316,15 @@ public class MainActivity extends AppCompatActivity {
         SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(this);
         String jsonString = sharedPreferences.getString(Constants.FIREBASE_USER_DATA_PREF_KEY, null);
         return new Gson().fromJson(jsonString, User.class);
-        //Timber.i(user.getFullName());
+        //Timber.i(user.getDisplayName());
     }
 
     public void sendData(View view) {
         if (userDatabaseReference != null) {
-            userDatabaseReference.child(firebaseUserId).setValue(user);
+            //userDatabaseReference.child(firebaseUserId).setValue(user);
+            Map<String, Integer> hashMap = new HashMap();
+            hashMap.put(user.getUserId(), 123);
+            achievementsReference.child(firebaseUserId).setValue(hashMap);
         }
     }
 
@@ -340,7 +365,7 @@ public class MainActivity extends AppCompatActivity {
             Gson gson = new Gson();
             String dataString = gson.toJson(wakatimeData);
             Timber.i("Data converted");
-            editor.putString(Constants.WAKATIME_DATA, dataString);
+            editor.putString(Constants.WAKATIME_DATA_UPDATED, dataString);
             editor.commit();
             Timber.i("Service completed successfully");
             return null;

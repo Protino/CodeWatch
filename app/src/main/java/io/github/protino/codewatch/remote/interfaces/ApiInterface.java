@@ -1,4 +1,4 @@
-package io.github.protino.codewatch.remote;
+package io.github.protino.codewatch.remote.interfaces;
 
 import android.support.annotation.StringDef;
 
@@ -8,7 +8,8 @@ import java.lang.annotation.RetentionPolicy;
 import io.github.protino.codewatch.remote.model.AccessToken;
 import io.github.protino.codewatch.remote.model.leaders.LeadersResponse;
 import io.github.protino.codewatch.remote.model.project.ProjectsResponse;
-import io.github.protino.codewatch.remote.model.project.summary.SummaryResponse;
+import io.github.protino.codewatch.remote.model.project.summary.GenericSummaryResponse;
+import io.github.protino.codewatch.remote.model.project.summary.ProjectSummaryResponse;
 import io.github.protino.codewatch.remote.model.statistics.StatsResponse;
 import io.github.protino.codewatch.remote.model.user.UserResponse;
 import retrofit2.Call;
@@ -19,11 +20,11 @@ import retrofit2.http.POST;
 import retrofit2.http.Path;
 import retrofit2.http.Query;
 
-import static io.github.protino.codewatch.remote.Constants.API_SUFFIX;
-import static io.github.protino.codewatch.remote.Constants._30_DAYS;
-import static io.github.protino.codewatch.remote.Constants._6_MONTHS;
-import static io.github.protino.codewatch.remote.Constants._7_DAYS;
-import static io.github.protino.codewatch.remote.Constants._YEAR;
+import static io.github.protino.codewatch.utils.Constants.API_SUFFIX;
+import static io.github.protino.codewatch.utils.Constants._30_DAYS;
+import static io.github.protino.codewatch.utils.Constants._6_MONTHS;
+import static io.github.protino.codewatch.utils.Constants._7_DAYS;
+import static io.github.protino.codewatch.utils.Constants._YEAR;
 
 /**
  * Created by Gurupad Mamadapur on 20-Feb-17.
@@ -60,20 +61,20 @@ public interface ApiInterface {
 
     /**
      * @param project Project whose summary is needed
-     * @return {@link SummaryResponse}
+     * @return {@link ProjectSummaryResponse}
      */
     @GET(API_SUFFIX + "summaries")
-    Call<SummaryResponse> getProjectSummary(@Query("project") String project,
-                                            @Query("start") String start,
-                                            @Query("end") String end);
+    Call<ProjectSummaryResponse> getProjectSummary(@Query("project") String project,
+                                                   @Query("start") String start,
+                                                   @Query("end") String end);
 
     /**
      * @param start start date
      * @param end   end date
-     * @return {@link SummaryResponse}
+     * @return {@link GenericSummaryResponse}
      */
     @GET(API_SUFFIX + "summaries")
-    Call<SummaryResponse> getSummary(@Query("start") String start, @Query("end") String end);
+    Call<GenericSummaryResponse> getSummary(@Query("start") String start, @Query("end") String end);
 
     /**
      * Returns profile information of the logged in user and not any user

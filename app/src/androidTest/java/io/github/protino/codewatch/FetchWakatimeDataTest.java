@@ -7,10 +7,13 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 
 import java.io.IOException;
+import java.util.List;
 
 import io.github.protino.codewatch.remote.FetchWakatimeData;
 import io.github.protino.codewatch.remote.model.WakatimeData;
-import io.github.protino.codewatch.remote.model.project.summary.SummaryResponse;
+import io.github.protino.codewatch.remote.model.project.summary.GenericSummaryData;
+import io.github.protino.codewatch.remote.model.project.summary.GenericSummaryResponse;
+import io.github.protino.codewatch.remote.model.project.summary.ProjectSummaryResponse;
 
 import static junit.framework.Assert.assertNotNull;
 import static junit.framework.Assert.assertTrue;
@@ -36,19 +39,10 @@ public class FetchWakatimeDataTest {
 
         assertNotNull(wakatimeData);
 
-        //check leaders
-        assertNotNull(wakatimeData.getLeadersResponse().getData());
-
         //check stats
         assertTrue(wakatimeData.getStatsResponse().getStatsData().getUsername().equals(USERNAME));
-
-        //check projects
-        String projectId = wakatimeData.getProjectsResponse().getProjectsList().get(0).getId();
-        assertTrue(projectId.equals(CODEWATCH_ID));
-
-        //check project summary
-        assertTrue(wakatimeData.getSummaryResponse().get(projectId).getData().get(0).getRange().getTimezone()
-                .equals(TIMEZONE));
+        assertNotNull(wakatimeData.getProjectStatsList());
+        assertNotNull(wakatimeData.getChangeInTotalSeconds());
 
         //check user data
         assertTrue(wakatimeData.getUserResponse().getProfileData().getFullName().equals(FULL_NAME));
@@ -57,12 +51,27 @@ public class FetchWakatimeDataTest {
 
     @Test
     public void testProjectSummary() throws IOException {
-        SummaryResponse response = fetchWakatimeData.fetchProjectSummary(CODEWATCH_ID);
+        ProjectSummaryResponse response = fetchWakatimeData.fetchProjectSummary(CODEWATCH_ID);
         assertTrue(response.getData().get(0).getRange().getTimezone().equals(TIMEZONE));
     }
 
     @Test
     public void testLeadersData() throws IOException {
         assertNotNull(fetchWakatimeData.fetchLeaders());
+    }
+
+    @Test
+    public void testGenericSummaryResponse() throws IOException {
+        GenericSummaryResponse response = fetchWakatimeData.fetchGenericSummaryResponse();
+        List<GenericSummaryData> dataList = response.getData();
+        for (GenericSummaryData summaryData : dataList) {
+            assertNotNull(summaryData.getProjects()); //It is never bull because I program everyday :)
+        }
+    }
+
+    @Test
+    public void testProjectSummaryResponse() throws IOException {
+        ProjectSummaryResponse response = fetchWakatimeData.fetchProjectSummary(CODEWATCH_ID);
+        assertNotNull(response.getData());
     }
 }

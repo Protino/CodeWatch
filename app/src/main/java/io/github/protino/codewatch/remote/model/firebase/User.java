@@ -8,9 +8,9 @@ import java.util.Map;
 
 public class User {
 
-    /* User basic profile data */
+    /* User basic profile data - unlikely to change often */
     private String userId;
-    private String fullName;
+    private String displayName;
     private String email;
     private String website;
     private String isEmailConfirmed;
@@ -38,12 +38,12 @@ public class User {
         this.userId = userId;
     }
 
-    public String getFullName() {
-        return fullName;
+    public String getDisplayName() {
+        return displayName;
     }
 
-    public void setFullName(String fullName) {
-        this.fullName = fullName;
+    public void setDisplayName(String displayName) {
+        this.displayName = displayName;
     }
 
     public String getEmail() {

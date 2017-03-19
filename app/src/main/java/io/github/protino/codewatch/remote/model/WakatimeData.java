@@ -1,10 +1,8 @@
 package io.github.protino.codewatch.remote.model;
 
-import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
-import io.github.protino.codewatch.remote.model.leaders.LeadersResponse;
-import io.github.protino.codewatch.remote.model.project.ProjectsResponse;
-import io.github.protino.codewatch.remote.model.project.summary.SummaryResponse;
 import io.github.protino.codewatch.remote.model.statistics.StatsResponse;
 import io.github.protino.codewatch.remote.model.user.UserResponse;
 
@@ -16,19 +14,10 @@ public class WakatimeData {
 
     private UserResponse userResponse;
     private StatsResponse statsResponse;
-    private ProjectsResponse projectsResponse;
-    private HashMap<String, SummaryResponse> summaryResponse;
-    private LeadersResponse leadersResponse;
+    private Integer changeInTotalSeconds;
+    private List<Map<String, Integer>> projectStatsList;
 
     public WakatimeData() {
-    }
-
-    public WakatimeData(UserResponse userResponse, StatsResponse statsResponse, ProjectsResponse projectsResponse, HashMap<String, SummaryResponse> summaryResponse, LeadersResponse leadersResponse) {
-        this.userResponse = userResponse;
-        this.statsResponse = statsResponse;
-        this.projectsResponse = projectsResponse;
-        this.summaryResponse = summaryResponse;
-        this.leadersResponse = leadersResponse;
     }
 
     public UserResponse getUserResponse() {
@@ -47,27 +36,19 @@ public class WakatimeData {
         this.statsResponse = statsResponse;
     }
 
-    public ProjectsResponse getProjectsResponse() {
-        return projectsResponse;
+    public List<Map<String, Integer>> getProjectStatsList() {
+        return projectStatsList;
     }
 
-    public void setProjectsResponse(ProjectsResponse projectsResponse) {
-        this.projectsResponse = projectsResponse;
+    public void setProjectStatsList(List<Map<String, Integer>> projectStats) {
+        this.projectStatsList = projectStats;
     }
 
-    public HashMap<String, SummaryResponse> getSummaryResponse() {
-        return summaryResponse;
+    public Integer getChangeInTotalSeconds() {
+        return changeInTotalSeconds;
     }
 
-    public void setSummaryResponse(HashMap<String, SummaryResponse> summaryResponse) {
-        this.summaryResponse = summaryResponse;
-    }
-
-    public LeadersResponse getLeadersResponse() {
-        return leadersResponse;
-    }
-
-    public void setLeadersResponse(LeadersResponse leadersResponse) {
-        this.leadersResponse = leadersResponse;
+    public void setChangeInTotalSeconds(Integer changeInTotalSeconds) {
+        this.changeInTotalSeconds = changeInTotalSeconds;
     }
 }

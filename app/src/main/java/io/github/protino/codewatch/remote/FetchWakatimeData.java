@@ -3,26 +3,33 @@ package io.github.protino.codewatch.remote;
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.preference.PreferenceManager;
-import android.util.Pair;
 
 import com.google.gson.Gson;
 
 import java.io.IOException;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
+import io.github.protino.codewatch.remote.interfaces.ApiInterface;
+import io.github.protino.codewatch.remote.interfaces.PublicApiInterface;
 import io.github.protino.codewatch.remote.model.AccessToken;
 import io.github.protino.codewatch.remote.model.WakatimeData;
 import io.github.protino.codewatch.remote.model.leaders.LeadersResponse;
-import io.github.protino.codewatch.remote.model.project.ProjectsData;
 import io.github.protino.codewatch.remote.model.project.ProjectsResponse;
-import io.github.protino.codewatch.remote.model.project.summary.SummaryData;
-import io.github.protino.codewatch.remote.model.project.summary.SummaryResponse;
+import io.github.protino.codewatch.remote.model.project.summary.GenericSummaryData;
+import io.github.protino.codewatch.remote.model.project.summary.GenericSummaryResponse;
+import io.github.protino.codewatch.remote.model.project.summary.Project;
+import io.github.protino.codewatch.remote.model.project.summary.ProjectSummaryResponse;
 import io.github.protino.codewatch.remote.model.statistics.StatsResponse;
 import io.github.protino.codewatch.remote.model.user.UserResponse;
+import io.github.protino.codewatch.remote.retrofit.ServiceGenerator;
+import io.github.protino.codewatch.utils.Constants;
 
-import static io.github.protino.codewatch.remote.Constants.ACCESS_TOKEN_PREF_KEY;
+import static io.github.protino.codewatch.utils.Constants.ACCESS_TOKEN_PREF_KEY;
 
 /**
  * Created by Gurupad Mamadapur on 10-03-2017.
@@ -31,7 +38,6 @@ import static io.github.protino.codewatch.remote.Constants.ACCESS_TOKEN_PREF_KEY
 public class FetchWakatimeData {
 
     private final static String dateFormat = "yyyy-MM-dd";
-    private static final String LOG_TAG = FetchWakatimeData.class.getSimpleName();
     private ApiInterface apiInterface;
     private PublicApiInterface publicApiInterface;
     private String startDate;
@@ -72,29 +78,44 @@ public class FetchWakatimeData {
         }
         WakatimeData wakatimeData = new WakatimeData();
 
-        StatsResponse statsResponse = apiInterface.getStats(Constants._7_DAYS).execute().body();
+        StatsResponse statsResponse = fetchStats();
         wakatimeData.setStatsResponse(statsResponse);
 
-        ProjectsResponse projectsResponse = apiInterface.getProjects().execute().body();
-        wakatimeData.setProjectsResponse(projectsResponse);
-
+        /*
         // TODO: 12-03-2017 Seperate this task from here
-        HashMap<String, SummaryResponse> summaryResponseMap = new HashMap<>();
-        SummaryResponse summaryResponse;
+        HashMap<String, ProjectSummaryResponse> summaryResponseMap = new HashMap<>();
+        ProjectSummaryResponse projectSummaryResponse;
         for (ProjectsData projectsData : projectsResponse.getProjectsList()) {
             String projectName = projectsData.getName();
-            summaryResponse = apiInterface.getProjectSummary(projectName, startDate, endDate).execute().body();
-            summaryResponseMap.put(projectName, summaryResponse);
+            projectSummaryResponse = apiInterface.getProjectSummary(projectName, startDate, endDate).execute().body();
+            summaryResponseMap.put(projectName, projectSummaryResponse);
         }
-        wakatimeData.setSummaryResponse(summaryResponseMap);
+        wakatimeData.setSummaryResponse(summaryResponseMap);*/
 
-        UserResponse userResponse = apiInterface.getUserProfileData().execute().body();
+        UserResponse userResponse = fetchUserDetails();
         wakatimeData.setUserResponse(userResponse);
 
+        GenericSummaryResponse genericSummaryResponse = fetchGenericSummaryResponse();
+        Map<String, Integer> projectStats;
+        List<Map<String, Integer>> projectStatsList = new ArrayList<>();
+        for (GenericSummaryData summaryData : genericSummaryResponse.getData()) {
+            projectStats = new HashMap<>();
+            for (Project project : summaryData.getProjects()) {
+                projectStats.put(project.getName(), project.getTotalSeconds());
+            }
+            projectStatsList.add(projectStats);
+        }
+        wakatimeData.setProjectStatsList(projectStatsList);
+
+        wakatimeData.setChangeInTotalSeconds(getChangeInTotalSeconds());
         return wakatimeData;
     }
 
-    public SummaryResponse fetchProjectSummary(String project_id) throws IOException {
+    public UserResponse fetchUserDetails() throws IOException {
+        return apiInterface.getUserProfileData().execute().body();
+    }
+
+    public ProjectSummaryResponse fetchProjectSummary(String project_id) throws IOException {
         return apiInterface.getProjectSummary(project_id, startDate, endDate).execute().body();
     }
 
@@ -110,13 +131,20 @@ public class FetchWakatimeData {
         return apiInterface.getProjects().execute().body();
     }
 
-    public Pair<Integer, Integer> fetchTwoDaysTotalTime() throws IOException {
-        SummaryResponse summaryResponse = apiInterface.getSummary(yesterday, endDate).execute().body();
+    public int getChangeInTotalSeconds() throws IOException {
+        GenericSummaryResponse response = apiInterface.getSummary(yesterday, endDate).execute().body();
 
-        SummaryData yesterdaysData = summaryResponse.getData().get(0);
-        SummaryData todaysData = summaryResponse.getData().get(1);
+        int yesterdaysTotalSeconds = response.getData().get(0).getGrandTotal().getTotalSeconds();
+        int todaysTotalSeconds = response.getData().get(1).getGrandTotal().getTotalSeconds();
 
-        return new Pair<>(yesterdaysData.getGrandTotal().getTotalSeconds(),
-                todaysData.getGrandTotal().getTotalSeconds());
+        return todaysTotalSeconds - yesterdaysTotalSeconds;
+    }
+
+    /*
+        Note: Only the projects list matters for the project. But keeping that out
+        to be as modular and independent as possible.
+     */
+    public GenericSummaryResponse fetchGenericSummaryResponse() throws IOException {
+        return apiInterface.getSummary(startDate, endDate).execute().body();
     }
 }

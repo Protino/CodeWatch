@@ -1,6 +1,7 @@
 package io.github.protino.codewatch.remote.model.firebase;
 
 import java.util.List;
+import java.util.Map;
 
 /**
  * Created by Gurupad Mamadapur on 11-03-2017.
@@ -18,10 +19,11 @@ public class Stats {
     private Integer totalSeconds;
     private Integer todaysTotalSeconds;
     private Integer changeInTotalSeconds;
-    private List<CustomPair> projectPairList;
+    private List<Map<String, Integer>> projectPairList;
     private List<CustomPair> languagePairList;
     private List<CustomPair> osPairList;
     private List<CustomPair> editorPairList;
+
     public Stats() {
     }
 
@@ -97,11 +99,11 @@ public class Stats {
         this.changeInTotalSeconds = changeInTotalSeconds;
     }
 
-    public List<CustomPair> getProjectPairList() {
+    public List<Map<String, Integer>> getProjectPairList() {
         return projectPairList;
     }
 
-    public void setProjectPairList(List<CustomPair> projectPairList) {
+    public void setProjectPairList(List<Map<String, Integer>> projectPairList) {
         this.projectPairList = projectPairList;
     }
 

@@ -8,9 +8,9 @@ import com.google.gson.Gson;
 
 import io.github.protino.codewatch.remote.model.AccessToken;
 
-import static io.github.protino.codewatch.remote.Constants.ACCESS_CODE_PREF_KEY;
-import static io.github.protino.codewatch.remote.Constants.ACCESS_TOKEN_PREF_KEY;
-import static io.github.protino.codewatch.remote.Constants.STATE_PREF_KEY;
+import static io.github.protino.codewatch.utils.Constants.ACCESS_CODE_PREF_KEY;
+import static io.github.protino.codewatch.utils.Constants.ACCESS_TOKEN_PREF_KEY;
+import static io.github.protino.codewatch.utils.Constants.STATE_PREF_KEY;
 
 /**
  * Created by Gurupad Mamadapur on 10-03-2017.

@@ -1,4 +1,4 @@
-package io.github.protino.codewatch.remote;
+package io.github.protino.codewatch.remote.interfaces;
 
 import io.github.protino.codewatch.remote.model.leaders.LeadersResponse;
 import retrofit2.Call;

@@ -6,7 +6,7 @@ import com.google.gson.annotations.SerializedName;
 
 import java.util.List;
 
-public class SummaryResponse {
+public class ProjectSummaryResponse {
 
     @SerializedName("available_branches")
     @Expose
@@ -16,7 +16,7 @@ public class SummaryResponse {
     private List<Object> branches = null;
     @SerializedName("data")
     @Expose
-    private List<SummaryData> data = null;
+    private List<ProjectSummaryData> data = null;
     @SerializedName("end")
     @Expose
     private String end;
@@ -40,11 +40,11 @@ public class SummaryResponse {
         this.branches = branches;
     }
 
-    public List<SummaryData> getData() {
+    public List<ProjectSummaryData> getData() {
         return data;
     }
 
-    public void setData(List<SummaryData> data) {
+    public void setData(List<ProjectSummaryData> data) {
         this.data = data;
     }
 

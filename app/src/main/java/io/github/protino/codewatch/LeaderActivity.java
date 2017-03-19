@@ -2,7 +2,6 @@ package io.github.protino.codewatch;
 
 import android.annotation.SuppressLint;
 import android.app.LoaderManager;
-import android.content.ContentValues;
 import android.content.Context;
 import android.content.CursorLoader;
 import android.content.Loader;
@@ -26,23 +25,24 @@ import com.google.gson.reflect.TypeToken;
 
 import java.io.IOException;
 import java.lang.reflect.Type;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 
 import io.github.protino.codewatch.data.LeaderContract;
-import io.github.protino.codewatch.remote.Constants;
 import io.github.protino.codewatch.remote.FetchWakatimeData;
 import io.github.protino.codewatch.remote.model.leaders.Language;
 import io.github.protino.codewatch.remote.model.leaders.LeadersData;
-import io.github.protino.codewatch.remote.model.leaders.RunningTotal;
-import io.github.protino.codewatch.remote.model.leaders.User;
-import timber.log.Timber;
+import io.github.protino.codewatch.utils.Constants;
+import io.github.protino.codewatch.utils.FilterCursor;
+import io.github.protino.codewatch.utils.LeaderDb;
 
 public class LeaderActivity extends AppCompatActivity implements LoaderManager.LoaderCallbacks<Cursor> {
     private static final int LOADER_ID = 1;
     private static final String LOG_TAG = LeaderActivity.class.getSimpleName();
     private ListView listView;
     private LeaderListAdapter listAdapter;
+    private Cursor cursor;
 
     //Lifecycle start
     @Override
@@ -54,8 +54,8 @@ public class LeaderActivity extends AppCompatActivity implements LoaderManager.L
 //Lifecycle end
 
     public void storeInDb(View view) {
-        new StoreToDbTask(this).execute();
-        //loadResultsFromProvider();
+        //new StoreToDbTask(this).execute();
+        loadResultsFromProvider();
     }
 
     private void loadResultsFromProvider() {
@@ -75,6 +75,7 @@ public class LeaderActivity extends AppCompatActivity implements LoaderManager.L
     @Override
     public void onLoadFinished(Loader<Cursor> loader, Cursor data) {
         if (data != null) {
+            cursor = data;
             listAdapter = new LeaderListAdapter(this, data, true);
             listView.setAdapter(listAdapter);
             listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
@@ -104,6 +105,27 @@ public class LeaderActivity extends AppCompatActivity implements LoaderManager.L
         listAdapter.swapCursor(null);
     }
 
+    public void filterJava(View view) {
+        //get the type of language and filter the original cursor
+        List<Integer> filterMap = new ArrayList<>();
+        if (cursor != null) {
+            for (cursor.moveToFirst(); !cursor.isAfterLast(); cursor.moveToNext()) {
+                String languageMapString = cursor.getString(Constants.COL_LANGUAGE_STATS);
+                if (languageMapString.contains("\"Java\"")) {
+                    filterMap.add(cursor.getPosition());
+                }
+            }
+            cursor.moveToFirst();
+            listAdapter.swapCursor(new FilterCursor(cursor, filterMap));
+        }
+    }
+
+    @Override
+    protected void onDestroy() {
+        System.gc();
+        super.onDestroy();
+    }
+
     private class StoreToDbTask extends AsyncTask<Void, Void, Boolean> {
         private final Type typeLeadersData = new TypeToken<List<LeadersData>>() {
         }.getType();
@@ -130,49 +152,17 @@ public class LeaderActivity extends AppCompatActivity implements LoaderManager.L
             FetchWakatimeData wakatimeData = new FetchWakatimeData(context);
             try {
                 SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(context);
-                if (sharedPreferences.contains(Constants.LEADER_PREF_KEY)) {
-                    dataListString = sharedPreferences.getString(Constants.LEADER_PREF_KEY, null);
+                if (sharedPreferences.contains(Constants.LEADERBOARD_UPDATED)) {
+                    dataListString = sharedPreferences.getString(Constants.LEADERBOARD_UPDATED, null);
                     dataList = new Gson().fromJson(dataListString, typeLeadersData);
                 } else {
                     //Fetch data
                     dataList = wakatimeData.fetchLeaders().getData();
                     dataListString = new Gson().toJson(dataList, typeLeadersData);
-                    sharedPreferences.edit().putString(Constants.LEADER_PREF_KEY, dataListString).commit();
+                    sharedPreferences.edit().putString(Constants.LEADERBOARD_UPDATED, dataListString).commit();
                 }
                 //store in cv
-                ContentValues[] leaderValues = new ContentValues[dataList.size()];
-                ContentValues values;
-                HashMap<String, Integer> languageMap;
-                for (int i = 0; i < dataList.size(); i++) {
-                    values = new ContentValues();
-                    languageMap = new HashMap<>();
-                    LeadersData leadersData = dataList.get(i);
-                    RunningTotal runningTotal = leadersData.getRunningTotal();
-                    values.put(LeaderContract.LeaderEntry.COLUMN_TOTAL_SECONDS, runningTotal.getTotalSeconds());
-                    values.put(LeaderContract.LeaderEntry.COLUMN_DAILY_AVERAGE, runningTotal.getDailyAverage());
-
-                    //transform language list to languageMap and then to gsonString
-                    languages = runningTotal.getLanguages();
-                    for (Language language : languages) {
-                        languageMap.put(language.getName(), language.getTotalSeconds());
-                    }
-                    String languageMapString = new Gson().toJson(languageMap, typeHashMap);
-                    values.put(LeaderContract.LeaderEntry.COLUMN_LANGUAGE_STATS, languageMapString);
-
-                    User user = leadersData.getUser();
-                    values.put(LeaderContract.LeaderEntry.COLUMN_USER_ID, user.getId());
-                    values.put(LeaderContract.LeaderEntry.COLUMN_PHOTO, user.getPhoto());
-                    values.put(LeaderContract.LeaderEntry.COLUMN_USER_NAME, user.getUsername());
-                    values.put(LeaderContract.LeaderEntry.COLUMN_DISPLAY_NAME, user.getDisplayName());
-                    values.put(LeaderContract.LeaderEntry.COLUMN_LOCATION, user.getLocation());
-                    values.put(LeaderContract.LeaderEntry.COLUMN_EMAIL, user.getEmail());
-                    values.put(LeaderContract.LeaderEntry.COLUMN_WEBSITE, user.getWebsite());
-                    leaderValues[i] = values;
-                }
-                //delete earlier data and then bulkInsert
-                context.getContentResolver().delete(LeaderContract.LeaderEntry.CONTENT_URI, null, null);
-                int rows = context.getContentResolver().bulkInsert(LeaderContract.LeaderEntry.CONTENT_URI, leaderValues);
-                Timber.d("Successfully inserted " + rows);
+                LeaderDb.store(context, dataList);
                 return true;
             } catch (IOException e) {
                 e.printStackTrace();

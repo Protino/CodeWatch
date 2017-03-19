@@ -21,18 +21,18 @@ import java.util.Random;
 import io.github.protino.codewatch.BuildConfig;
 import io.github.protino.codewatch.R;
 import io.github.protino.codewatch.event.LoginEvent;
-import io.github.protino.codewatch.remote.ApiInterface;
-import io.github.protino.codewatch.remote.ServiceGenerator;
+import io.github.protino.codewatch.remote.interfaces.ApiInterface;
+import io.github.protino.codewatch.remote.retrofit.ServiceGenerator;
 import io.github.protino.codewatch.remote.model.AccessToken;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
 
-import static io.github.protino.codewatch.remote.Constants.ACCESS_CODE_PREF_KEY;
-import static io.github.protino.codewatch.remote.Constants.ACCESS_TOKEN_PREF_KEY;
-import static io.github.protino.codewatch.remote.Constants.REDIRECT_URI;
-import static io.github.protino.codewatch.remote.Constants.SCHEME;
-import static io.github.protino.codewatch.remote.Constants.STATE_PREF_KEY;
+import static io.github.protino.codewatch.utils.Constants.ACCESS_CODE_PREF_KEY;
+import static io.github.protino.codewatch.utils.Constants.ACCESS_TOKEN_PREF_KEY;
+import static io.github.protino.codewatch.utils.Constants.REDIRECT_URI;
+import static io.github.protino.codewatch.utils.Constants.SCHEME;
+import static io.github.protino.codewatch.utils.Constants.STATE_PREF_KEY;
 
 public class LoginActivity extends AppCompatActivity {
 

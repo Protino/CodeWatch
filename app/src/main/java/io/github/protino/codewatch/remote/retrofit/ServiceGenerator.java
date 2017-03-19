@@ -1,4 +1,4 @@
-package io.github.protino.codewatch.remote;
+package io.github.protino.codewatch.remote.retrofit;
 
 
 import okhttp3.OkHttpClient;
