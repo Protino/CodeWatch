@@ -1,5 +1,11 @@
 package io.github.protino.codewatch.utils;
 
+import android.util.Pair;
+
+import java.util.ArrayList;
+import java.util.List;
+
+import io.github.protino.codewatch.R;
 import io.github.protino.codewatch.data.LeaderContract;
 
 /**
@@ -46,6 +52,20 @@ public final class Constants {
     public static final int SYNC_PERIOD = 60 * 60 * 24;
     public static final String PERIODIC_SYNC_SCHEDULED_KEY = "periodic_sync_scheduled_key";
 
+    /* UI */
+    public static final List<Pair<String, Integer>> NAVIGATION_ITEMS_ARRAY = createMap();
+
     private Constants() {
+    }
+
+    private static List<Pair<String, Integer>> createMap() {
+        List<Pair<String, Integer>> pairList = new ArrayList<>();
+        pairList.add(new Pair<>("Dashboard", R.drawable.ic_dashboard_black_24dp));
+        pairList.add(new Pair<>("Goals", R.drawable.ic_access_time_grey_900_24dp));
+        pairList.add(new Pair<>("Leaderboard", R.drawable.profile_avatar_placeholder));
+        pairList.add(new Pair<>("Achievements", R.drawable.ic_grade_grey_900_24dp));
+        pairList.add(new Pair<>("Projects", R.drawable.ic_view_module_grey_900_24dp));
+        pairList.add(new Pair<>("Settings", R.drawable.ic_settings_grey_900_24dp));
+        return pairList;
     }
 }

@@ -44,7 +44,7 @@ import timber.log.Timber;
 
 import static io.github.protino.codewatch.utils.Constants.WAKATIME_DATA_UPDATED;
 
-public class MainActivity extends AppCompatActivity {
+public class FirebaseTestActivity extends AppCompatActivity {
 
     private static final String ANONYMOUS = "ANONYMOUS";
     private FirebaseDatabase firebaseDatabase;

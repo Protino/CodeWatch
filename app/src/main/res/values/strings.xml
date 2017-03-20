@@ -4,4 +4,6 @@
     <!-- Related to login-->
     <string name="LOGIN_HOST">callback</string>
     <string name="LOGIN_SCHEME">codewatch</string>
+	<string name="drawer_close">Close drawer</string>
+	<string name="drawer_open">Open drawer</string>
 </resources>

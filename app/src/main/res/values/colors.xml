@@ -1,6 +1,16 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <color name="colorPrimary">#3F51B5</color>
-    <color name="colorPrimaryDark">#303F9F</color>
-    <color name="colorAccent">#FF4081</color>
+	<color name="colorPrimary">#3F51B5</color>
+	<color name="colorPrimaryDark">#303F9F</color>
+	<color name="colorAccent">#FF4081</color>
+	<color name="gold">#FFD700</color>
+	<color name="light_silver">#D3D3D3</color>
+	<color name="dark_silver">#C0C0C0</color>
+	<color name="silver">#A9A9A9</color>
+	<color name="bronze">#CD7F32</color>
+	<color name="dark_bronze">#A57164</color>
+
+
+	<drawable name="pressed_gray">#0c000000</drawable>
+	<drawable name="selected_gray">#2c000000</drawable>
 </resources>

@@ -42,8 +42,9 @@ public class User {
         return displayName;
     }
 
-    public void setDisplayName(String displayName) {
+    public User setDisplayName(String displayName) {
         this.displayName = displayName;
+        return this;
     }
 
     public String getEmail() {
@@ -82,16 +83,18 @@ public class User {
         return location;
     }
 
-    public void setLocation(String location) {
+    public User setLocation(String location) {
         this.location = location;
+        return this;
     }
 
     public String getPhotoUrl() {
         return photoUrl;
     }
 
-    public void setPhotoUrl(String photoUrl) {
+    public User setPhotoUrl(String photoUrl) {
         this.photoUrl = photoUrl;
+        return this;
     }
 
     public String getCurrentPlan() {
@@ -130,7 +133,8 @@ public class User {
         return achievements;
     }
 
-    public void setAchievements(Integer achievements) {
+    public User setAchievements(Integer achievements) {
         this.achievements = achievements;
+        return this;
     }
 }
