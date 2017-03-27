@@ -13,13 +13,13 @@ import java.util.List;
 import java.util.concurrent.CountDownLatch;
 
 import io.github.protino.codewatch.remote.FetchWakatimeData;
-import io.github.protino.codewatch.remote.model.WakatimeData;
-import io.github.protino.codewatch.remote.model.firebase.User;
-import io.github.protino.codewatch.remote.model.leaders.LeadersData;
-import io.github.protino.codewatch.utils.Cache;
+import io.github.protino.codewatch.model.WakatimeData;
+import io.github.protino.codewatch.model.firebase.User;
+import io.github.protino.codewatch.model.leaders.LeadersData;
+import io.github.protino.codewatch.utils.CacheUtils;
 import io.github.protino.codewatch.utils.Constants;
-import io.github.protino.codewatch.utils.LeaderDb;
-import io.github.protino.codewatch.utils.Transform;
+import io.github.protino.codewatch.utils.LeaderDbUtils;
+import io.github.protino.codewatch.utils.TransformUtils;
 import timber.log.Timber;
 
 
@@ -27,7 +27,7 @@ public class WakatimeDataSyncJob extends JobService {
     @Override
     public boolean onStartJob(final JobParameters job) {
         //check whether logged in or not, also check network connectivity
-        if (!Cache.isLoggedIn(getApplicationContext())) {
+        if (!CacheUtils.isLoggedIn(getApplicationContext())) {
             jobFinished(job, true);
         }
         new MainThread(job).start();
@@ -83,19 +83,19 @@ public class WakatimeDataSyncJob extends JobService {
                 SharedPreferences sharedPreferences =
                         PreferenceManager.getDefaultSharedPreferences(getApplicationContext());
                 SharedPreferences.Editor editor = sharedPreferences.edit();
-                editor.putBoolean(Constants.WAKATIME_DATA_UPDATED, false);
+                editor.putBoolean(Constants.PREF_WAKATIME_DATA_UPDATED, false);
                 FetchWakatimeData fetchWakatimeData = new FetchWakatimeData(getApplicationContext());
                 WakatimeData wakatimeData = fetchWakatimeData.execute();
                 Timber.d("Successfully download wakatimeData");
-                User user = new Transform(wakatimeData, new User()).execute();
+                User user = new TransformUtils(wakatimeData, new User()).execute();
                 //save to firebase
                 Timber.d("Saving to firebase rdb");
-                String uid = sharedPreferences.getString(Constants.FIREBASE_USER_ID_PREF_KEY, null);
+                String uid = sharedPreferences.getString(Constants.PREF_FIREBASE_USER_ID, null);
                 if (uid != null) {
                     FirebaseDatabase firebaseDatabase = FirebaseDatabase.getInstance();
                     DatabaseReference databaseReference = firebaseDatabase.getReference().child("users");
                     databaseReference.child(uid).setValue(user);
-                    editor.putBoolean(Constants.WAKATIME_DATA_UPDATED, true);
+                    editor.putBoolean(Constants.PREF_WAKATIME_DATA_UPDATED, true);
                 }
                 editor.commit();
             } catch (Exception e) {
@@ -121,7 +121,7 @@ public class WakatimeDataSyncJob extends JobService {
             try {
                 List<LeadersData> dataList = fetchWakatimeData.fetchLeaders().getData();
                 Timber.d("Successfully download leadersData");
-                LeaderDb.store(getApplicationContext(), dataList);
+                LeaderDbUtils.store(getApplicationContext(), dataList);
                 Timber.d("Successfully stored wakatimeData");
             } catch (Exception e) {
                 Timber.d(e, "LeaderboardSyncTask failed");

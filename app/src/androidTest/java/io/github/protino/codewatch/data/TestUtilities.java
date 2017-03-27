@@ -11,7 +11,7 @@ import android.test.AndroidTestCase;
 import java.util.Map;
 import java.util.Set;
 
-import io.github.protino.codewatch.utils.PollingCheck;
+import io.github.protino.codewatch.utils.PollingCheckUtils;
 
 /*
     Students: These are functions and some test data to make it easier to test your database and
@@ -108,7 +108,7 @@ public class TestUtilities extends AndroidTestCase {
         }
 
         public void waitForNotificationOrFail() {
-            new PollingCheck(5000) {
+            new PollingCheckUtils(5000) {
                 @Override
                 protected boolean check() {
                     return mContentChanged;

@@ -16,20 +16,20 @@ import java.util.Map;
 
 import io.github.protino.codewatch.remote.interfaces.ApiInterface;
 import io.github.protino.codewatch.remote.interfaces.PublicApiInterface;
-import io.github.protino.codewatch.remote.model.AccessToken;
-import io.github.protino.codewatch.remote.model.WakatimeData;
-import io.github.protino.codewatch.remote.model.leaders.LeadersResponse;
-import io.github.protino.codewatch.remote.model.project.ProjectsResponse;
-import io.github.protino.codewatch.remote.model.project.summary.GenericSummaryData;
-import io.github.protino.codewatch.remote.model.project.summary.GenericSummaryResponse;
-import io.github.protino.codewatch.remote.model.project.summary.Project;
-import io.github.protino.codewatch.remote.model.project.summary.ProjectSummaryResponse;
-import io.github.protino.codewatch.remote.model.statistics.StatsResponse;
-import io.github.protino.codewatch.remote.model.user.UserResponse;
+import io.github.protino.codewatch.model.AccessToken;
+import io.github.protino.codewatch.model.WakatimeData;
+import io.github.protino.codewatch.model.leaders.LeadersResponse;
+import io.github.protino.codewatch.model.project.ProjectsResponse;
+import io.github.protino.codewatch.model.project.summary.GenericSummaryData;
+import io.github.protino.codewatch.model.project.summary.GenericSummaryResponse;
+import io.github.protino.codewatch.model.project.summary.Project;
+import io.github.protino.codewatch.model.project.summary.ProjectSummaryResponse;
+import io.github.protino.codewatch.model.statistics.StatsResponse;
+import io.github.protino.codewatch.model.user.UserResponse;
 import io.github.protino.codewatch.remote.retrofit.ServiceGenerator;
 import io.github.protino.codewatch.utils.Constants;
 
-import static io.github.protino.codewatch.utils.Constants.ACCESS_TOKEN_PREF_KEY;
+import static io.github.protino.codewatch.utils.Constants.PREF_ACCESS_TOKEN;
 
 /**
  * Created by Gurupad Mamadapur on 10-03-2017.
@@ -49,7 +49,7 @@ public class FetchWakatimeData {
 
     public FetchWakatimeData(Context context) {
         SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(context);
-        String accessTokenJson = sharedPreferences.getString(ACCESS_TOKEN_PREF_KEY, null);
+        String accessTokenJson = sharedPreferences.getString(PREF_ACCESS_TOKEN, null);
         Gson gson = new Gson();
         String accessToken = gson.fromJson(accessTokenJson, AccessToken.class).getAccessToken();
         apiInterface = ServiceGenerator.createService(ApiInterface.class, accessToken);

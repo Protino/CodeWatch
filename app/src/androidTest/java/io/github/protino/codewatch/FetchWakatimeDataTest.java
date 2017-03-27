@@ -10,10 +10,10 @@ import java.io.IOException;
 import java.util.List;
 
 import io.github.protino.codewatch.remote.FetchWakatimeData;
-import io.github.protino.codewatch.remote.model.WakatimeData;
-import io.github.protino.codewatch.remote.model.project.summary.GenericSummaryData;
-import io.github.protino.codewatch.remote.model.project.summary.GenericSummaryResponse;
-import io.github.protino.codewatch.remote.model.project.summary.ProjectSummaryResponse;
+import io.github.protino.codewatch.model.WakatimeData;
+import io.github.protino.codewatch.model.project.summary.GenericSummaryData;
+import io.github.protino.codewatch.model.project.summary.GenericSummaryResponse;
+import io.github.protino.codewatch.model.project.summary.ProjectSummaryResponse;
 
 import static junit.framework.Assert.assertNotNull;
 import static junit.framework.Assert.assertTrue;

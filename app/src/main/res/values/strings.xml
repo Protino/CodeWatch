@@ -1,9 +1,51 @@
-<resources>
-    <string name="app_name">CodeWatch</string>
+<resources xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
+	<string name="app_name">CodeWatch</string>
 
-    <!-- Related to login-->
-    <string name="LOGIN_HOST">callback</string>
-    <string name="LOGIN_SCHEME">codewatch</string>
+	<!-- Related to login-->
+	<string name="LOGIN_HOST">callback</string>
+	<string name="LOGIN_SCHEME">codewatch</string>
 	<string name="drawer_close">Close drawer</string>
 	<string name="drawer_open">Open drawer</string>
+	<string name="dashboard">Dashboard</string>
+	<string name="goals">Goals</string>
+	<string name="leaderboards">Leaderboards</string>
+	<string name="achievements">Achievements</string>
+	<string name="projects">Projects</string>
+	<string name="settings">Settings</string>
+	<string name="card_activity_header">Activity</string>
+
+	<string name="CD_PROGRESS">
+		You\'ve logged
+		<xliff:g example="2" id="quantity">%.2f</xliff:g>%% of your daily average.
+	</string>
+	<string name="performance_title">Performance</string>
+	<string name="percent_change_in_daily_avg">
+		<xliff:g example="7.2" id="quantity">%1$.2f</xliff:g>%%
+		<xliff:g example="increase/decrease">%2$s</xliff:g> in daily average.
+	</string>
+	<string name="result_decreased">decrease</string>
+	<string name="result_increase">increase</string>
+	<string name="default_time_format">
+		<xliff:g example="7" id="hours">%1$d</xliff:g> hrs
+		<xliff:g example="10" id="minutes">%2$d</xliff:g> min
+	</string>
+	<string name="daily_average_format">
+		Daily average -
+		<xliff:g example="3 hrs 5 min" id="time">%s</xliff:g>
+		<!-- above format is dependent on default_time_format-->
+	</string>
+	<string name="todays_log_percent_text">
+		Today you logged
+		<xliff:g example="45.32" id="quantity">%.2f</xliff:g>
+		%% of your daily average.
+	</string>
+	<string name="todays_total_log_time">
+		You coded for <xliff:g example="7" id="hours">%1$d</xliff:g> hrs
+		<xliff:g example="10" id="minutes">%2$d</xliff:g> min today.
+	</string>
+	<string name="card_languages_header">Languages</string>
+	<string name="card_editors_header">Editors</string>
+	<string name="card_os_header">Operating Systems</string>
+	<string name="percent_format"><xliff:g id="percent">%.2f</xliff:g>%%</string>
+
 </resources>

@@ -1,0 +1,331 @@
+<ScrollView
+	xmlns:android="http://schemas.android.com/apk/res/android"
+	xmlns:app="http://schemas.android.com/apk/res-auto"
+	xmlns:tools="http://schemas.android.com/tools"
+	android:layout_width="match_parent"
+	android:layout_height="match_parent"
+	android:scrollbarSize="0dp"
+	android:scrollbars="none">
+
+	<RelativeLayout
+		android:layout_width="match_parent"
+		android:layout_height="wrap_content"
+		android:layout_margin="16dp">
+
+		<android.support.v7.widget.CardView
+			android:id="@+id/card_activity"
+			android:layout_width="match_parent"
+			android:layout_height="wrap_content">
+
+			<RelativeLayout
+				android:layout_width="match_parent"
+				android:layout_height="match_parent"
+				android:paddingBottom="16dp"
+				android:paddingEnd="16dp"
+				android:paddingStart="16dp"
+				android:paddingTop="8dp">
+
+				<TextView
+					android:id="@+id/title_activity_chart"
+					style="@style/Base.TextAppearance.AppCompat.Title"
+					android:layout_width="wrap_content"
+					android:layout_height="wrap_content"
+					android:paddingBottom="16dp"
+					android:paddingTop="8dp"
+					android:text="@string/card_activity_header"/>
+
+				<ImageView
+					android:id="@+id/share_activity_chart"
+					android:layout_width="wrap_content"
+					android:layout_height="wrap_content"
+					android:layout_alignParentEnd="true"
+					android:layout_alignParentRight="true"
+					android:background="?attr/selectableItemBackgroundBorderless"
+					android:clickable="true"
+					android:padding="8dp"
+					android:src="@drawable/ic_share_black_24dp"/>
+
+				<com.github.mikephil.charting.charts.LineChart
+					android:id="@+id/linechart_activity"
+					android:layout_width="match_parent"
+					android:layout_height="@dimen/chart_default_height"
+					android:layout_below="@id/title_activity_chart"/>
+
+				<TextView
+					android:id="@+id/activity_total"
+					android:layout_width="match_parent"
+					android:layout_height="wrap_content"
+					android:layout_below="@id/linechart_activity"
+					android:gravity="center"
+					tools:text="Coded 45 hrs in total this week"/>
+			</RelativeLayout>
+		</android.support.v7.widget.CardView>
+
+		<android.support.v7.widget.CardView
+			android:id="@+id/card_performance"
+			android:layout_width="wrap_content"
+			android:layout_height="wrap_content"
+			android:layout_below="@+id/card_activity"
+			android:layout_marginTop="16dp">
+
+			<RelativeLayout
+				android:layout_width="match_parent"
+				android:layout_height="match_parent"
+				android:padding="16dp">
+
+				<TextView
+					android:id="@+id/performance_title"
+					style="@style/Base.TextAppearance.AppCompat.Title"
+					android:layout_width="match_parent"
+					android:layout_height="wrap_content"
+					android:paddingBottom="8dp"
+					android:text="@string/performance_title"/>
+
+				<TextView
+					android:id="@+id/today_log_percent_text"
+					android:layout_width="match_parent"
+					android:layout_height="wrap_content"
+					android:layout_below="@id/performance_title"
+					android:gravity="center"
+					android:paddingBottom="8dp"
+					tools:text="Today you logged 7% of your daily average"/>
+
+				<io.github.protino.codewatch.ui.widget.PerformanceBarView
+					android:id="@+id/performance_bar"
+					android:layout_width="match_parent"
+					android:layout_height="wrap_content"
+					android:layout_below="@+id/today_log_percent_text"
+					android:layout_marginBottom="8dp"
+					android:layout_marginTop="8dp"
+					app:shadowEnabled="true"/>
+
+				<TextView
+					android:id="@+id/change_in_daily_average_text"
+					android:layout_width="match_parent"
+					android:layout_height="wrap_content"
+					android:layout_below="@id/performance_bar"
+					android:gravity="center"
+					android:paddingBottom="8dp"
+					android:textStyle="italic"
+					tools:text="7% increase in daily average"/>
+
+				<TextView
+					android:id="@+id/daily_average_text"
+					style="@style/Base.TextAppearance.AppCompat.Subhead"
+					android:layout_width="match_parent"
+					android:layout_height="wrap_content"
+					android:layout_below="@id/change_in_daily_average_text"
+					android:gravity="center"
+					tools:text="Daily average - 3 hrs 5 min"/>
+			</RelativeLayout>
+		</android.support.v7.widget.CardView>
+
+		<android.support.v7.widget.CardView
+			android:id="@+id/card_languages_stats"
+			android:layout_width="wrap_content"
+			android:layout_height="wrap_content"
+			android:layout_below="@+id/card_performance"
+			android:layout_marginTop="16dp">
+
+			<RelativeLayout
+				android:layout_width="match_parent"
+				android:layout_height="wrap_content"
+				android:paddingBottom="16dp"
+				android:paddingEnd="16dp"
+				android:paddingStart="16dp"
+				android:paddingTop="8dp">
+
+
+				<TextView
+					android:id="@+id/title_languages"
+					style="@style/Base.TextAppearance.AppCompat.Title"
+					android:layout_width="wrap_content"
+					android:layout_height="wrap_content"
+					android:paddingBottom="16dp"
+					android:paddingTop="8dp"
+					android:text="@string/card_languages_header"/>
+
+				<ImageView
+					android:id="@+id/share_language_chart"
+					android:layout_width="wrap_content"
+					android:layout_height="wrap_content"
+					android:layout_alignParentEnd="true"
+					android:layout_alignParentRight="true"
+					android:background="?attr/selectableItemBackgroundBorderless"
+					android:clickable="true"
+					android:padding="8dp"
+					android:src="@drawable/ic_share_black_24dp"/>
+
+				<com.github.mikephil.charting.charts.PieChart
+					android:id="@+id/piechart_languages"
+					android:layout_width="match_parent"
+					android:layout_height="@dimen/pie_chart_default_height"
+					android:layout_below="@id/title_languages"/>
+
+				<LinearLayout
+					android:layout_width="match_parent"
+					android:layout_height="wrap_content"
+					android:layout_below="@id/piechart_languages"
+					android:orientation="vertical"
+					android:paddingTop="8dp">
+
+					<ImageView
+						android:id="@+id/expand_piechart_language"
+						android:layout_width="wrap_content"
+						android:layout_height="wrap_content"
+						android:layout_gravity="center"
+						android:background="?attr/selectableItemBackgroundBorderless"
+						android:clickable="true"
+						android:src="@drawable/ic_expand_more_black_24dp"/>
+
+					<android.support.v7.widget.RecyclerView
+						android:id="@+id/list_languages"
+						android:layout_width="match_parent"
+						android:layout_height="wrap_content"
+						android:visibility="gone"/>
+				</LinearLayout>
+			</RelativeLayout>
+		</android.support.v7.widget.CardView>
+
+		<android.support.v7.widget.CardView
+			android:id="@+id/card_editors_stats"
+			android:layout_width="wrap_content"
+			android:layout_height="wrap_content"
+			android:layout_below="@+id/card_languages_stats"
+			android:layout_marginTop="16dp">
+
+			<RelativeLayout
+				android:layout_width="match_parent"
+				android:layout_height="wrap_content"
+				android:paddingBottom="16dp"
+				android:paddingEnd="16dp"
+				android:paddingStart="16dp"
+				android:paddingTop="8dp">
+
+
+				<TextView
+					android:id="@+id/title_editors"
+					style="@style/Base.TextAppearance.AppCompat.Title"
+					android:layout_width="wrap_content"
+					android:layout_height="wrap_content"
+					android:paddingBottom="16dp"
+					android:paddingTop="8dp"
+					android:text="@string/card_editors_header"/>
+
+				<ImageView
+					android:id="@+id/share_editors_chart"
+					android:layout_width="wrap_content"
+					android:layout_height="wrap_content"
+					android:layout_alignParentEnd="true"
+					android:layout_alignParentRight="true"
+					android:background="?attr/selectableItemBackgroundBorderless"
+					android:clickable="true"
+					android:padding="8dp"
+					android:src="@drawable/ic_share_black_24dp"/>
+
+				<com.github.mikephil.charting.charts.PieChart
+					android:id="@+id/piechart_editors"
+					android:layout_width="match_parent"
+					android:layout_height="@dimen/chart_default_height"
+					android:layout_below="@id/title_editors"/>
+
+				<LinearLayout
+					android:layout_width="match_parent"
+
+					android:layout_height="wrap_content"
+					android:layout_below="@id/piechart_editors"
+					android:orientation="vertical"
+					android:paddingTop="8dp">
+
+					<ImageView
+						android:id="@+id/expand_piechart_editors"
+						android:layout_width="wrap_content"
+						android:layout_height="wrap_content"
+						android:layout_gravity="center"
+						android:background="?attr/selectableItemBackgroundBorderless"
+						android:clickable="true"
+						android:src="@drawable/ic_expand_more_black_24dp"/>
+
+					<android.support.v7.widget.RecyclerView
+						android:id="@+id/list_editors"
+						android:layout_width="match_parent"
+						android:layout_height="wrap_content"
+						android:visibility="gone"/>
+				</LinearLayout>
+			</RelativeLayout>
+		</android.support.v7.widget.CardView>
+
+		<android.support.v7.widget.CardView
+			android:id="@+id/card_os_stats"
+			android:layout_width="wrap_content"
+			android:layout_height="wrap_content"
+			android:layout_below="@+id/card_editors_stats"
+			android:layout_marginTop="16dp">
+
+			<RelativeLayout
+				android:layout_width="match_parent"
+				android:layout_height="wrap_content"
+				android:paddingBottom="16dp"
+				android:paddingEnd="16dp"
+				android:paddingStart="16dp"
+				android:paddingTop="8dp">
+
+
+				<TextView
+					android:id="@+id/title_os"
+					style="@style/Base.TextAppearance.AppCompat.Title"
+					android:layout_width="wrap_content"
+					android:layout_height="wrap_content"
+					android:paddingBottom="16dp"
+					android:paddingTop="8dp"
+					android:text="@string/card_os_header"/>
+
+				<ImageView
+					android:id="@+id/share_os_chart"
+					android:layout_width="wrap_content"
+					android:layout_height="wrap_content"
+					android:layout_alignParentEnd="true"
+					android:layout_alignParentRight="true"
+					android:background="?attr/selectableItemBackgroundBorderless"
+					android:clickable="true"
+					android:paddingBottom="8dp"
+					android:paddingEnd="0dp"
+					android:paddingLeft="8dp"
+					android:paddingRight="0dp"
+					android:paddingStart="8dp"
+					android:paddingTop="8dp"
+					android:src="@drawable/ic_share_black_24dp"/>
+
+				<com.github.mikephil.charting.charts.PieChart
+					android:id="@+id/piechart_os"
+					android:layout_width="match_parent"
+					android:layout_height="@dimen/chart_default_height"
+					android:layout_below="@id/title_os"/>
+
+				<LinearLayout
+					android:layout_width="match_parent"
+					android:layout_height="wrap_content"
+					android:layout_below="@id/piechart_os"
+					android:orientation="vertical"
+					android:paddingTop="8dp">
+
+					<ImageView
+						android:id="@+id/expand_piechart_os"
+						android:layout_width="wrap_content"
+						android:layout_height="wrap_content"
+						android:layout_gravity="center"
+
+						android:background="?attr/selectableItemBackgroundBorderless"
+						android:clickable="true"
+						android:src="@drawable/ic_expand_more_black_24dp"/>
+
+					<android.support.v7.widget.RecyclerView
+						android:id="@+id/list_os"
+						android:layout_width="match_parent"
+						android:layout_height="wrap_content"
+						android:visibility="gone"/>
+				</LinearLayout>
+			</RelativeLayout>
+		</android.support.v7.widget.CardView>
+	</RelativeLayout>
+</ScrollView>

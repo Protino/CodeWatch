@@ -30,19 +30,19 @@ import java.util.List;
 import java.util.Map;
 
 import io.github.protino.codewatch.remote.FetchWakatimeData;
-import io.github.protino.codewatch.remote.model.WakatimeData;
-import io.github.protino.codewatch.remote.model.firebase.CustomPair;
-import io.github.protino.codewatch.remote.model.firebase.Stats;
-import io.github.protino.codewatch.remote.model.firebase.User;
-import io.github.protino.codewatch.remote.model.statistics.Editor;
-import io.github.protino.codewatch.remote.model.statistics.Language;
-import io.github.protino.codewatch.remote.model.statistics.OperatingSystem;
-import io.github.protino.codewatch.remote.model.statistics.StatsData;
-import io.github.protino.codewatch.remote.model.user.ProfileData;
+import io.github.protino.codewatch.model.WakatimeData;
+import io.github.protino.codewatch.model.firebase.CustomPair;
+import io.github.protino.codewatch.model.firebase.Stats;
+import io.github.protino.codewatch.model.firebase.User;
+import io.github.protino.codewatch.model.statistics.Editor;
+import io.github.protino.codewatch.model.statistics.Language;
+import io.github.protino.codewatch.model.statistics.OperatingSystem;
+import io.github.protino.codewatch.model.statistics.StatsData;
+import io.github.protino.codewatch.model.user.ProfileData;
 import io.github.protino.codewatch.utils.Constants;
 import timber.log.Timber;
 
-import static io.github.protino.codewatch.utils.Constants.WAKATIME_DATA_UPDATED;
+import static io.github.protino.codewatch.utils.Constants.PREF_WAKATIME_DATA_UPDATED;
 
 public class FirebaseTestActivity extends AppCompatActivity {
 
@@ -142,7 +142,7 @@ public class FirebaseTestActivity extends AppCompatActivity {
     private void onSignedInInitialize(String uid) {
         firebaseUserId = uid;
         SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(this);
-        sharedPreferences.edit().putString(Constants.FIREBASE_USER_ID_PREF_KEY, uid).apply();
+        sharedPreferences.edit().putString(Constants.PREF_FIREBASE_USER_ID, uid).apply();
         attachDatabaseListener();
     }
 
@@ -191,14 +191,14 @@ public class FirebaseTestActivity extends AppCompatActivity {
 
     public void fetchData(View view) {
         SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(this);
-        if (sharedPreferences.getString(WAKATIME_DATA_UPDATED, null) != null) {
+        if (sharedPreferences.getString(PREF_WAKATIME_DATA_UPDATED, null) != null) {
             new FetchWakatimeDataTask(this).execute();
         }
     }
 
     public void transform(View view) {
         SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(this);
-        String data = sharedPreferences.getString(WAKATIME_DATA_UPDATED, null);
+        String data = sharedPreferences.getString(PREF_WAKATIME_DATA_UPDATED, null);
         WakatimeData wakatimeData = new Gson().fromJson(data, WakatimeData.class);
 
         User user = new User();
@@ -308,13 +308,13 @@ public class FirebaseTestActivity extends AppCompatActivity {
         Gson gson = new Gson();
         String userDataString = gson.toJson(user);
         SharedPreferences.Editor editor = sharedPreferences.edit();
-        editor.putString(Constants.FIREBASE_USER_DATA_PREF_KEY, userDataString);
+        editor.putString(Constants.PREF_FIREBASE_USER_DATA, userDataString);
         editor.apply();
     }
 
     public User readData(View view) {
         SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(this);
-        String jsonString = sharedPreferences.getString(Constants.FIREBASE_USER_DATA_PREF_KEY, null);
+        String jsonString = sharedPreferences.getString(Constants.PREF_FIREBASE_USER_DATA, null);
         return new Gson().fromJson(jsonString, User.class);
         //Timber.i(user.getDisplayName());
     }
@@ -365,7 +365,7 @@ public class FirebaseTestActivity extends AppCompatActivity {
             Gson gson = new Gson();
             String dataString = gson.toJson(wakatimeData);
             Timber.i("Data converted");
-            editor.putString(Constants.WAKATIME_DATA_UPDATED, dataString);
+            editor.putString(Constants.PREF_WAKATIME_DATA_UPDATED, dataString);
             editor.commit();
             Timber.i("Service completed successfully");
             return null;

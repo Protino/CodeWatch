@@ -31,11 +31,11 @@ import java.util.List;
 
 import io.github.protino.codewatch.data.LeaderContract;
 import io.github.protino.codewatch.remote.FetchWakatimeData;
-import io.github.protino.codewatch.remote.model.leaders.Language;
-import io.github.protino.codewatch.remote.model.leaders.LeadersData;
+import io.github.protino.codewatch.model.leaders.Language;
+import io.github.protino.codewatch.model.leaders.LeadersData;
 import io.github.protino.codewatch.utils.Constants;
-import io.github.protino.codewatch.utils.FilterCursor;
-import io.github.protino.codewatch.utils.LeaderDb;
+import io.github.protino.codewatch.utils.FilterCursorUtils;
+import io.github.protino.codewatch.utils.LeaderDbUtils;
 
 public class LeaderActivity extends AppCompatActivity implements LoaderManager.LoaderCallbacks<Cursor> {
     private static final int LOADER_ID = 1;
@@ -116,7 +116,7 @@ public class LeaderActivity extends AppCompatActivity implements LoaderManager.L
                 }
             }
             cursor.moveToFirst();
-            listAdapter.swapCursor(new FilterCursor(cursor, filterMap));
+            listAdapter.swapCursor(new FilterCursorUtils(cursor, filterMap));
         }
     }
 
@@ -152,17 +152,17 @@ public class LeaderActivity extends AppCompatActivity implements LoaderManager.L
             FetchWakatimeData wakatimeData = new FetchWakatimeData(context);
             try {
                 SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(context);
-                if (sharedPreferences.contains(Constants.LEADERBOARD_UPDATED)) {
-                    dataListString = sharedPreferences.getString(Constants.LEADERBOARD_UPDATED, null);
+                if (sharedPreferences.contains(Constants.PREF_LEADERBOARD_UPDATED)) {
+                    dataListString = sharedPreferences.getString(Constants.PREF_LEADERBOARD_UPDATED, null);
                     dataList = new Gson().fromJson(dataListString, typeLeadersData);
                 } else {
                     //Fetch data
                     dataList = wakatimeData.fetchLeaders().getData();
                     dataListString = new Gson().toJson(dataList, typeLeadersData);
-                    sharedPreferences.edit().putString(Constants.LEADERBOARD_UPDATED, dataListString).commit();
+                    sharedPreferences.edit().putString(Constants.PREF_LEADERBOARD_UPDATED, dataListString).commit();
                 }
                 //store in cv
-                LeaderDb.store(context, dataList);
+                LeaderDbUtils.store(context, dataList);
                 return true;
             } catch (IOException e) {
                 e.printStackTrace();

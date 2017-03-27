@@ -1,6 +1,6 @@
 package io.github.protino.codewatch.remote.interfaces;
 
-import io.github.protino.codewatch.remote.model.leaders.LeadersResponse;
+import io.github.protino.codewatch.model.leaders.LeadersResponse;
 import retrofit2.Call;
 import retrofit2.http.GET;
 

@@ -1,17 +1,27 @@
 package io.github.protino.codewatch.ui;
 
+import android.content.Intent;
+import android.content.SharedPreferences;
+import android.content.res.Configuration;
 import android.os.Bundle;
+import android.preference.PreferenceManager;
+import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
+import android.support.design.widget.NavigationView;
 import android.support.v4.widget.DrawerLayout;
+import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
+import android.view.Gravity;
+import android.view.MenuItem;
+import android.view.View;
+import android.widget.TextView;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import io.github.protino.codewatch.R;
-import io.github.protino.codewatch.remote.model.firebase.User;
-import io.github.protino.codewatch.ui.adapter.NavigationDrawerAdapter;
-import timber.log.Timber;
+import io.github.protino.codewatch.model.firebase.User;
+import io.github.protino.codewatch.utils.Constants;
 
 /**
  * This activity handles setting up the navigation drawer
@@ -20,49 +30,128 @@ import timber.log.Timber;
  * @author Gurupad Mamadapur
  */
 
-public class NavigationDrawerActivity extends AppCompatActivity
-        implements NavigationDrawerAdapter.NavigationDrawerCallbacks {
+public class NavigationDrawerActivity extends AppCompatActivity implements
+        NavigationView.OnNavigationItemSelectedListener {
 
     //@formatter:off
-    @BindView(R.id.toolbar) Toolbar toolbar;
-    @BindView(R.id.drawer) DrawerLayout drawerLayout;
+    @BindView(R.id.toolbar) public Toolbar toolbar;
+    @BindView(R.id.drawer_layout) public DrawerLayout drawerLayout;
+    @BindView(R.id.navigationView) public NavigationView navigationView;
     //@formatter:on
-    private NavigationDrawerFragment navigationDrawerFragment;
+    private ActionBarDrawerToggle drawerToggler;
+    private SharedPreferences sharedPreferences;
+    private boolean hasUserLearntDrawer;
+
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_navigation_drawer);
         ButterKnife.bind(this);
-
+        sharedPreferences = PreferenceManager.getDefaultSharedPreferences(this);
         setSupportActionBar(toolbar);
-        navigationDrawerFragment = (NavigationDrawerFragment)
-                getFragmentManager().findFragmentById(R.id.fragment_drawer);
+        setupDrawer();
+        if (savedInstanceState == null) {
+            MenuItem item = navigationView.getMenu().findItem(R.id.dashboard);
+            onNavigationItemSelected(item);
+            item.setChecked(true);
+        }
+    }
 
-        // Set up the drawer.
-        navigationDrawerFragment.setup(R.id.fragment_drawer, drawerLayout, toolbar);
+    private void setupDrawer() {
+        navigationView.setNavigationItemSelectedListener(this);
+        drawerToggler = setupDrawerToggler();
+        setupHeader();
+        drawerLayout.setDrawerListener(drawerToggler);
+        hasUserLearntDrawer = sharedPreferences.getBoolean(Constants.PREF_USER_LEARNED_DRAWER, false);
+        if (!hasUserLearntDrawer) {
+            drawerLayout.openDrawer(Gravity.START);
+        }
+    }
 
+    private ActionBarDrawerToggle setupDrawerToggler() {
+        return new ActionBarDrawerToggle(
+                this, drawerLayout, toolbar, R.string.drawer_open, R.string.drawer_close) {
+            @Override
+            public void onDrawerClosed(View drawerView) {
+                if (!hasUserLearntDrawer) {
+                    sharedPreferences.edit().putBoolean(Constants.PREF_USER_LEARNED_DRAWER, true).apply();
+                }
+                super.onDrawerClosed(drawerView);
+            }
+        };
+    }
+
+    private void setupHeader() {
         User user = new User()
                 .setDisplayName("Gurupad Mamadapur")
                 .setAchievements(0)
                 .setPhotoUrl(null);
-        // populate the navigation drawer.
-        navigationDrawerFragment.setCurrentUserProfileData(user);
+
+        View navigationHeader = navigationView.inflateHeaderView(R.layout.navigation_header);
+
+        ((TextView) navigationHeader.findViewById(R.id.username)).setText(user.getDisplayName());
+
+        String ach = String.valueOf(user.getAchievements());
+        ((TextView) navigationHeader.findViewById(R.id.silver_badge_count)).setText(ach);
+        ((TextView) navigationHeader.findViewById(R.id.gold_badge_count)).setText(ach);
+        ((TextView) navigationHeader.findViewById(R.id.bronze_badge_count)).setText(ach);
     }
 
     @Override
-    public void onNavigationDrawerItemSelected(int position) {
-        Timber.d(String.valueOf(position));
+    protected void onPostCreate(@Nullable Bundle savedInstanceState) {
+        super.onPostCreate(savedInstanceState);
+        drawerToggler.syncState();
+    }
+
+    @Override
+    public void onConfigurationChanged(Configuration newConfig) {
+        super.onConfigurationChanged(newConfig);
+        drawerToggler.onConfigurationChanged(newConfig);
+    }
+
+    @Override
+    public boolean onNavigationItemSelected(@NonNull MenuItem item) {
+
+        item.setChecked(!item.isChecked());
+        String text;
+        DashboardFragment dashboardFragment = new DashboardFragment();
+        switch (item.getItemId()) {
+            case R.id.dashboard:
+                text = "Dashboard";
+                break;
+            case R.id.goals:
+                text = "Goals";
+                break;
+            case R.id.achievements:
+                text = "Ach";
+                break;
+            case R.id.leaderboards:
+                text = "Leaderboards";
+                break;
+            case R.id.projects:
+                text = "Projects";
+                break;
+            case R.id.settings:
+                text = "Settings";
+                break;
+            default:
+                throw new UnsupportedOperationException("Invalid menu item");
+        }
+        Bundle bundle = new Bundle();
+        bundle.putString(Intent.EXTRA_TEXT, text);
+        dashboardFragment.setArguments(bundle);
+        getSupportFragmentManager().beginTransaction().replace(R.id.container, dashboardFragment).commit();
+        drawerLayout.closeDrawers();
+        return true;
     }
 
     @Override
     public void onBackPressed() {
-        if (navigationDrawerFragment.isDrawerOpen()) {
-            navigationDrawerFragment.closeDrawer();
+        if (drawerLayout.isDrawerOpen(Gravity.START)) {
+            drawerLayout.closeDrawers();
         } else {
             super.onBackPressed();
         }
     }
-
-
 }
