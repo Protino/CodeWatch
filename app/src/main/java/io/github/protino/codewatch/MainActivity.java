@@ -11,6 +11,11 @@ import android.support.annotation.NonNull;
 import android.support.v7.app.AppCompatActivity;
 import android.view.View;
 
+import com.firebase.jobdispatcher.Constraint;
+import com.firebase.jobdispatcher.FirebaseJobDispatcher;
+import com.firebase.jobdispatcher.GooglePlayDriver;
+import com.firebase.jobdispatcher.Job;
+import com.firebase.jobdispatcher.Trigger;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.AuthResult;
@@ -39,6 +44,7 @@ import io.github.protino.codewatch.remote.model.statistics.Language;
 import io.github.protino.codewatch.remote.model.statistics.OperatingSystem;
 import io.github.protino.codewatch.remote.model.statistics.StatsData;
 import io.github.protino.codewatch.remote.model.user.ProfileData;
+import io.github.protino.codewatch.sync.WakatimeDataSyncJob;
 import io.github.protino.codewatch.utils.Constants;
 import timber.log.Timber;
 
@@ -78,11 +84,24 @@ public class MainActivity extends AppCompatActivity {
                     onSignedInInitialize(firebaseUser.getUid());
                 } else {
                     onSignedOutCleanup();
-                    signWithMailAndPassword("abcded"+user.getEmail(), user.getUserId());
+                    signWithMailAndPassword("guru@gmail.com", "12313213");
                     // TODO: 17-03-2017  generate password with random stuff obfuscate the code
                 }
             }
         };
+
+        FirebaseJobDispatcher dispatcher = new FirebaseJobDispatcher(new GooglePlayDriver(this));
+
+        Job synJob = dispatcher.newJobBuilder()
+                .setService(WakatimeDataSyncJob.class)
+                .setTag(Constants.WAKATIME_DATA_SYNC_JOB_TAG)
+                .setReplaceCurrent(true)
+                .setRecurring(false)
+                .setTrigger(Trigger.executionWindow(1, 2))
+                .setConstraints(Constraint.ON_ANY_NETWORK)
+                .build();
+        dispatcher.mustSchedule(synJob);
+
     }
 
     private void signWithCustomToken(String token) {

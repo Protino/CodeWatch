@@ -108,6 +108,8 @@ public class FetchWakatimeData {
         wakatimeData.setProjectStatsList(projectStatsList);
 
         wakatimeData.setChangeInTotalSeconds(getChangeInTotalSeconds());
+
+        wakatimeData.setProjectsResponse(fetchProjectsList());
         return wakatimeData;
     }
 
@@ -146,5 +148,9 @@ public class FetchWakatimeData {
      */
     public GenericSummaryResponse fetchGenericSummaryResponse() throws IOException {
         return apiInterface.getSummary(startDate, endDate).execute().body();
+    }
+
+    public ProjectsResponse fetchProjectsList() throws IOException {
+        return apiInterface.getProjects().execute().body();
     }
 }

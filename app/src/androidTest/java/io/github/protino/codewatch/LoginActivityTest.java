@@ -27,7 +27,7 @@ public class LoginActivityTest {
         Context context = InstrumentationRegistry.getTargetContext();
         Cache.clearLoginInfo(context);
         testRule.launchActivity(new Intent());
-        Thread.sleep(15000);
+        Thread.sleep(18000);
         assertTrue(Cache.isLoggedIn(context));
     }
 
