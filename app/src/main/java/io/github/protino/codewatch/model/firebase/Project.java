@@ -15,24 +15,8 @@ public class Project {
     private List<CustomPair> languageList;
     private List<CustomPair> osPairList;
     private List<CustomPair> editorPaiList;
-    /* CodeWatch data */
-    private Integer deadline;       // time since epoch in seconds!
-    private Integer dailyHourGoal;  // in seconds
 
     public Project() {
-
-    }
-
-    public Project(String id, List<Integer> timeSpent, List<CustomPair> languageList,
-                   List<CustomPair> osPairList, List<CustomPair> editorPaiList,
-                   Integer deadline, Integer dailyHourGoal) {
-        this.id = id;
-        this.timeSpent = timeSpent;
-        this.languageList = languageList;
-        this.osPairList = osPairList;
-        this.editorPaiList = editorPaiList;
-        this.deadline = deadline;
-        this.dailyHourGoal = dailyHourGoal;
     }
 
     public String getName() {
@@ -81,22 +65,6 @@ public class Project {
 
     public void setEditorPaiList(List<CustomPair> editorPaiList) {
         this.editorPaiList = editorPaiList;
-    }
-
-    public Integer getDailyHourGoal() {
-        return dailyHourGoal;
-    }
-
-    public void setDailyHourGoal(Integer dailyHourGoal) {
-        this.dailyHourGoal = dailyHourGoal;
-    }
-
-    public Integer getDeadline() {
-        return deadline;
-    }
-
-    public void setDeadline(Integer deadline) {
-        this.deadline = deadline;
     }
 
     public String getId() {

@@ -1,12 +1,16 @@
 package io.github.protino.codewatch.utils;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import io.github.protino.codewatch.model.WakatimeData;
 import io.github.protino.codewatch.model.firebase.CustomPair;
+import io.github.protino.codewatch.model.firebase.Project;
 import io.github.protino.codewatch.model.firebase.Stats;
 import io.github.protino.codewatch.model.firebase.User;
+import io.github.protino.codewatch.model.project.ProjectsData;
 import io.github.protino.codewatch.model.statistics.Editor;
 import io.github.protino.codewatch.model.statistics.Language;
 import io.github.protino.codewatch.model.statistics.OperatingSystem;
@@ -29,6 +33,29 @@ public class TransformUtils {
     public User execute() {
         transformProfileData();
         transformStats();
+        transformProjectsData();
+        return user;
+    }
+
+    private User transformProjectsData() {
+        Map<String, Project> projectMap = new HashMap<>();
+        Project project;
+
+        List<ProjectsData> dataList = wakatimeData.getProjectsResponse().getProjectsList();
+        for (ProjectsData data : dataList) {
+            project = new Project();
+            project.setTimeSpent(null);
+            project.setEditorPaiList(null);
+            project.setLanguageList(null);
+            project.setOsPairList(null);
+
+            project.setPublicUrl(data.getPublicUrl());
+            project.setName(data.getName());
+            project.setId(data.getId());
+            projectMap.put(data.getId(), project);
+        }
+
+        user.setProjects(projectMap);
         return user;
     }
 

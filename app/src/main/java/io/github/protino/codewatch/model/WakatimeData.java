@@ -3,6 +3,7 @@ package io.github.protino.codewatch.model;
 import java.util.List;
 import java.util.Map;
 
+import io.github.protino.codewatch.model.project.ProjectsResponse;
 import io.github.protino.codewatch.model.statistics.StatsResponse;
 import io.github.protino.codewatch.model.user.UserResponse;
 
@@ -16,6 +17,7 @@ public class WakatimeData {
     private StatsResponse statsResponse;
     private Integer changeInTotalSeconds;
     private List<Map<String, Integer>> projectStatsList;
+    private ProjectsResponse projectsResponse;
 
     public WakatimeData() {
     }
@@ -50,5 +52,13 @@ public class WakatimeData {
 
     public void setChangeInTotalSeconds(Integer changeInTotalSeconds) {
         this.changeInTotalSeconds = changeInTotalSeconds;
+    }
+
+    public ProjectsResponse getProjectsResponse() {
+        return projectsResponse;
+    }
+
+    public void setProjectsResponse(ProjectsResponse projectsResponse) {
+        this.projectsResponse = projectsResponse;
     }
 }

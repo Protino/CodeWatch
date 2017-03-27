@@ -9,26 +9,23 @@ import com.firebase.jobdispatcher.JobService;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 
-import java.util.List;
 import java.util.concurrent.CountDownLatch;
 
-import io.github.protino.codewatch.remote.FetchWakatimeData;
 import io.github.protino.codewatch.model.WakatimeData;
 import io.github.protino.codewatch.model.firebase.User;
-import io.github.protino.codewatch.model.leaders.LeadersData;
+import io.github.protino.codewatch.remote.FetchWakatimeData;
 import io.github.protino.codewatch.utils.CacheUtils;
 import io.github.protino.codewatch.utils.Constants;
-import io.github.protino.codewatch.utils.LeaderDbUtils;
 import io.github.protino.codewatch.utils.TransformUtils;
 import timber.log.Timber;
 
 
 public class WakatimeDataSyncJob extends JobService {
     @Override
-    public boolean onStartJob(final JobParameters job) {
+    public boolean onStartJob(JobParameters job) {
         //check whether logged in or not, also check network connectivity
         if (!CacheUtils.isLoggedIn(getApplicationContext())) {
-            jobFinished(job, true);
+            return false;
         }
         new MainThread(job).start();
         return true;
@@ -119,9 +116,9 @@ public class WakatimeDataSyncJob extends JobService {
         public void run() {
             FetchWakatimeData fetchWakatimeData = new FetchWakatimeData(getApplicationContext());
             try {
-                List<LeadersData> dataList = fetchWakatimeData.fetchLeaders().getData();
+                //List<LeadersData> dataList = fetchWakatimeData.fetchLeaders().getData();
                 Timber.d("Successfully download leadersData");
-                LeaderDbUtils.store(getApplicationContext(), dataList);
+                // LeaderDb.store(getApplicationContext(), dataList);
                 Timber.d("Successfully stored wakatimeData");
             } catch (Exception e) {
                 Timber.d(e, "LeaderboardSyncTask failed");
