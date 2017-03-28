@@ -1,6 +1,7 @@
 package io.github.protino.codewatch.remote.model.firebase;
 
 import java.util.List;
+import java.util.Map;
 
 /**
  * Created by Gurupad Mamadapur on 11-03-2017.
@@ -12,9 +13,9 @@ public class Project {
     private String name;
     private String publicUrl;
     private List<Integer> timeSpent;
-    private List<CustomPair> languageList;
-    private List<CustomPair> osPairList;
-    private List<CustomPair> editorPaiList;
+    private Map<String, Integer> languageList;
+    private Map<String, Integer> osPairList;
+    private Map<String, Integer> editorPaiList;
 
     public Project() {
     }
@@ -43,27 +44,27 @@ public class Project {
         this.timeSpent = timeSpent;
     }
 
-    public List<CustomPair> getLanguageList() {
+    public Map<String, Integer> getLanguageList() {
         return languageList;
     }
 
-    public void setLanguageList(List<CustomPair> languageList) {
+    public void setLanguageList(Map<String, Integer> languageList) {
         this.languageList = languageList;
     }
 
-    public List<CustomPair> getOsPairList() {
+    public Map<String, Integer> getOsPairList() {
         return osPairList;
     }
 
-    public void setOsPairList(List<CustomPair> osPairList) {
+    public void setOsPairList(Map<String, Integer> osPairList) {
         this.osPairList = osPairList;
     }
 
-    public List<CustomPair> getEditorPaiList() {
+    public Map<String, Integer> getEditorPaiList() {
         return editorPaiList;
     }
 
-    public void setEditorPaiList(List<CustomPair> editorPaiList) {
+    public void setEditorPaiList(Map<String, Integer> editorPaiList) {
         this.editorPaiList = editorPaiList;
     }
 

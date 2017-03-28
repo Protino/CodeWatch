@@ -29,14 +29,13 @@ import com.google.firebase.database.FirebaseDatabase;
 import com.google.gson.Gson;
 
 import java.io.IOException;
-import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 
 import io.github.protino.codewatch.remote.FetchWakatimeData;
 import io.github.protino.codewatch.remote.model.WakatimeData;
-import io.github.protino.codewatch.remote.model.firebase.CustomPair;
+import io.github.protino.codewatch.remote.model.firebase.Goals;
+import io.github.protino.codewatch.remote.model.firebase.ProjectGoal;
 import io.github.protino.codewatch.remote.model.firebase.Stats;
 import io.github.protino.codewatch.remote.model.firebase.User;
 import io.github.protino.codewatch.remote.model.statistics.Editor;
@@ -55,11 +54,13 @@ public class MainActivity extends AppCompatActivity {
     private static final String ANONYMOUS = "ANONYMOUS";
     private FirebaseDatabase firebaseDatabase;
     private DatabaseReference userDatabaseReference;
+    private DatabaseReference goalsDatabaseReference;
     private ChildEventListener childEventListener;
     private FirebaseAuth firebaseAuth;
     private FirebaseAuth.AuthStateListener authStateListener;
     private String firebaseUserId;
     private DatabaseReference achievementsReference;
+    private DatabaseReference goalsReference;
     private User user;
 
     //Lifecycle start
@@ -71,7 +72,7 @@ public class MainActivity extends AppCompatActivity {
         firebaseDatabase = FirebaseDatabase.getInstance();
         userDatabaseReference = firebaseDatabase.getReference().child("users");
         achievementsReference = firebaseDatabase.getReference().child("achv");
-
+        goalsDatabaseReference = firebaseDatabase.getReference().child("goals");
 
         firebaseAuth = FirebaseAuth.getInstance();
         user = readData(new View(this));
@@ -100,7 +101,7 @@ public class MainActivity extends AppCompatActivity {
                 .setTrigger(Trigger.executionWindow(1, 2))
                 .setConstraints(Constraint.ON_ANY_NETWORK)
                 .build();
-        dispatcher.mustSchedule(synJob);
+        //dispatcher.mustSchedule(synJob);
 
     }
 
@@ -248,22 +249,25 @@ public class MainActivity extends AppCompatActivity {
         // TODO: 12-03-2017 separate call to fetch projects data
         stats.setProjectPairList(null);
 
-        List<CustomPair> languagePairsList = new ArrayList<>();
-        List<CustomPair> osPairList = new ArrayList<>();
-        List<CustomPair> editorPairList = new ArrayList<>();
+        Map<String, Integer> map = new HashMap<>();
 
         for (Language language : statsData.getLanguages()) {
-            languagePairsList.add(new CustomPair(language.getName(), language.getTotalSeconds()));
+            map.put(language.getName(), language.getTotalSeconds());
         }
+        stats.setLanguagesMap(map);
+
+        map = new HashMap<>();
         for (OperatingSystem operatingSystem : statsData.getOperatingSystems()) {
-            osPairList.add(new CustomPair(operatingSystem.getName(), operatingSystem.getTotalSeconds()));
+            map.put(operatingSystem.getName(), operatingSystem.getTotalSeconds());
         }
+        stats.setOsMap(map);
+
+        map = new HashMap<>();
+
         for (Editor editor : statsData.getEditors()) {
-            editorPairList.add(new CustomPair(editor.getName(), editor.getTotalSeconds()));
+            map.put(editor.getName(), editor.getTotalSeconds());
         }
-        stats.setLanguagePairList(languagePairsList);
-        stats.setOsPairList(osPairList);
-        stats.setEditorPairList(editorPairList);
+        stats.setEditorsMap(map);
 
         user.setStats(stats);
 
@@ -314,7 +318,7 @@ public class MainActivity extends AppCompatActivity {
             }
 
             project.setTimeSpent(timeSpent);
-            project.setOsPairList(osPairList);
+            project.setOsMap(osPairList);
             project.setLanguageList(languagePairsList);
             project.setEditorPaiList(editorPairList);
 
@@ -339,16 +343,31 @@ public class MainActivity extends AppCompatActivity {
     }
 
     public void sendData(View view) {
-        if (userDatabaseReference != null) {
+        if (goalsDatabaseReference != null) {
+            Goals goals = new Goals();
+
+            Map<String, Integer> map = new HashMap<>();
+            map.put("JAVa", 231434);
+            goals.setLanguageGoals(map);
+
+            ProjectGoal projectGoal = new ProjectGoal();
+            projectGoal.setDaily(2432);
+            projectGoal.setDeadline(2343);
+
+            Map<String, ProjectGoal> newMap = new HashMap<>();
+            newMap.put("CodeWatch", projectGoal);
+            goals.setProjectGoals(newMap);
+
+            goalsDatabaseReference.child(firebaseUserId).setValue(goals);
             //userDatabaseReference.child(firebaseUserId).setValue(user);
-            Map<String, Integer> hashMap = new HashMap();
-            hashMap.put(user.getUserId(), 123);
-            achievementsReference.child(firebaseUserId).setValue(hashMap);
+            //Map<String, Integer> hashMap = new HashMap();
+            //hashMap.put(user.getUserId(), 123);
+            //achievementsReference.child(firebaseUserId).setValue(hashMap);
         }
     }
 
     public void updateData(View view) {
-        userDatabaseReference.child(firebaseUserId).child("timeZone").setValue("10  ");
+        //userDatabaseReference.child(firebaseUserId).child("goals").setValue("10  ");
     }
 
     public void logout(View view) {

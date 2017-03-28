@@ -20,9 +20,9 @@ public class Stats {
     private Integer todaysTotalSeconds;
     private Integer changeInTotalSeconds;
     private List<Map<String, Integer>> projectPairList;
-    private List<CustomPair> languagePairList;
-    private List<CustomPair> osPairList;
-    private List<CustomPair> editorPairList;
+    private Map<String, Integer> languagesMap;
+    private Map<String, Integer> osMap;
+    private Map<String, Integer> editorsMap;
 
     public Stats() {
     }
@@ -107,27 +107,27 @@ public class Stats {
         this.projectPairList = projectPairList;
     }
 
-    public List<CustomPair> getLanguagePairList() {
-        return languagePairList;
+    public Map<String, Integer> getLanguagesMap() {
+        return languagesMap;
     }
 
-    public void setLanguagePairList(List<CustomPair> languagePairList) {
-        this.languagePairList = languagePairList;
+    public void setLanguagesMap(Map<String, Integer> languagesMap) {
+        this.languagesMap = languagesMap;
     }
 
-    public List<CustomPair> getOsPairList() {
-        return osPairList;
+    public Map<String, Integer> getOsMap() {
+        return osMap;
     }
 
-    public void setOsPairList(List<CustomPair> osPairList) {
-        this.osPairList = osPairList;
+    public void setOsMap(Map<String, Integer> osMap) {
+        this.osMap = osMap;
     }
 
-    public List<CustomPair> getEditorPairList() {
-        return editorPairList;
+    public Map<String, Integer> getEditorsMap() {
+        return editorsMap;
     }
 
-    public void setEditorPairList(List<CustomPair> editorPairList) {
-        this.editorPairList = editorPairList;
+    public void setEditorsMap(Map<String, Integer> editorsMap) {
+        this.editorsMap = editorsMap;
     }
 }
