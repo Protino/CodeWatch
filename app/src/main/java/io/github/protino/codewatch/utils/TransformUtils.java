@@ -1,12 +1,10 @@
 package io.github.protino.codewatch.utils;
 
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
 import io.github.protino.codewatch.model.WakatimeData;
-import io.github.protino.codewatch.model.firebase.CustomPair;
 import io.github.protino.codewatch.model.firebase.Project;
 import io.github.protino.codewatch.model.firebase.Stats;
 import io.github.protino.codewatch.model.firebase.User;
@@ -73,22 +71,25 @@ public class TransformUtils {
 
         stats.setProjectPairList(wakatimeData.getProjectStatsList());
 
-        List<CustomPair> languagePairsList = new ArrayList<>();
-        List<CustomPair> osPairList = new ArrayList<>();
-        List<CustomPair> editorPairList = new ArrayList<>();
+        Map<String, Integer> map = new HashMap<>();
 
         for (Language language : statsData.getLanguages()) {
-            languagePairsList.add(new CustomPair(language.getName(), language.getTotalSeconds()));
+            map.put(language.getName(), language.getTotalSeconds());
         }
+        stats.setLanguagesMap(map);
+
+        map = new HashMap<>();
         for (OperatingSystem operatingSystem : statsData.getOperatingSystems()) {
-            osPairList.add(new CustomPair(operatingSystem.getName(), operatingSystem.getTotalSeconds()));
+            map.put(operatingSystem.getName(), operatingSystem.getTotalSeconds());
         }
+        stats.setOsMap(map);
+
+        map = new HashMap<>();
+
         for (Editor editor : statsData.getEditors()) {
-            editorPairList.add(new CustomPair(editor.getName(), editor.getTotalSeconds()));
+            map.put(editor.getName(), editor.getTotalSeconds());
         }
-        stats.setLanguagePairList(languagePairsList);
-        stats.setOsPairList(osPairList);
-        stats.setEditorPairList(editorPairList);
+        stats.setEditorsMap(map);
 
         user.setStats(stats);
         return user;
