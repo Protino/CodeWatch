@@ -1,4 +1,4 @@
-package io.github.protino.codewatch.remote.model.firebase;
+package io.github.protino.codewatch.model.firebase;
 
 import java.util.Map;
 
