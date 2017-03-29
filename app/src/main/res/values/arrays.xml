@@ -19,4 +19,1067 @@
 		<item>@color/grey_800</item>
 		<item>@color/blue_grey_400</item>
 	</array>
+
+	<string-array name="languages">
+		<item>ASP</item>
+		<item>ActionScript</item>
+		<item>ApacheConf</item>
+		<item>AppleScript</item>
+		<item>Assembly</item>
+		<item>Awk</item>
+		<item>Bash</item>
+		<item>BrightScript</item>
+		<item>C</item>
+		<item>C#</item>
+		<item>C++</item>
+		<item>CSHTML</item>
+		<item>CSS</item>
+		<item>Clojure</item>
+		<item>Cocoa</item>
+		<item>CoffeeScript</item>
+		<item>ColdFusion</item>
+		<item>Common Lisp</item>
+		<item>Dart</item>
+		<item>Delphi</item>
+		<item>Elixir</item>
+		<item>Elm</item>
+		<item>Emacs Lisp</item>
+		<item>Erlang</item>
+		<item>F#</item>
+		<item>Fortran</item>
+		<item>Go</item>
+		<item>Gosu</item>
+		<item>Groovy</item>
+		<item>HTML</item>
+		<item>Haskell</item>
+		<item>Haxe</item>
+		<item>INI</item>
+		<item>JSON</item>
+		<item>JSX</item>
+		<item>Jade</item>
+		<item>Java</item>
+		<item>JavaScript</item>
+		<item>Kotlin</item>
+		<item>LESS</item>
+		<item>Lua</item>
+		<item>Markdown</item>
+		<item>Matlab</item>
+		<item>Mustache</item>
+		<item>OCaml</item>
+		<item>Objective-C</item>
+		<item>Objective-C++</item>
+		<item>Objective-J</item>
+		<item>PHP</item>
+		<item>Perl</item>
+		<item>PowerShell</item>
+		<item>Prolog</item>
+		<item>Puppet</item>
+		<item>Python</item>
+		<item>R</item>
+		<item>Ruby</item>
+		<item>Rust</item>
+		<item>SCSS</item>
+		<item>SQL</item>
+		<item>Sass</item>
+		<item>Scala</item>
+		<item>Scheme</item>
+		<item>Shell</item>
+		<item>Slim</item>
+		<item>Smalltalk</item>
+		<item>Swift</item>
+		<item>Text</item>
+		<item>Turing</item>
+		<item>Twig</item>
+		<item>TypeScript</item>
+		<item>VB.net</item>
+		<item>VimL</item>
+		<item>XAML</item>
+		<item>XML</item>
+		<item>YAML</item>
+		<item>reStructuredText</item>
+		<item>.NET C#</item>
+		<item>.NET Config</item>
+		<item>.NET EntityFramework</item>
+		<item>.conf Configuration</item>
+		<item>.desktop</item>
+		<item>.env</item>
+		<item>.gitignore</item>
+		<item>.hg/hgrc</item>
+		<item>.hgrc</item>
+		<item>.install</item>
+		<item>.map</item>
+		<item>.org</item>
+		<item>.rules (udev)</item>
+		<item>/etc/group</item>
+		<item>/etc/hosts</item>
+		<item>/etc/modprobe.d conf</item>
+		<item>/etc/passwd</item>
+		<item>160106</item>
+		<item>160107</item>
+		<item>160215</item>
+		<item>3D blender</item>
+		<item>6Stelle</item>
+		<item>ABAP</item>
+		<item>ABNF</item>
+		<item>ANTLR With Ruby Target</item>
+		<item>API Blueprint</item>
+		<item>API Dotfile</item>
+		<item>API v1</item>
+		<item>APL</item>
+		<item>ASM</item>
+		<item>ASN.1</item>
+		<item>ASP Classic</item>
+		<item>ASP MVC</item>
+		<item>ASP.NET</item>
+		<item>ASP.Net Razor</item>
+		<item>AVRCo</item>
+		<item>AWS</item>
+		<item>AWS Elastic Beanstalk</item>
+		<item>ActionScript 3</item>
+		<item>ActiveReports</item>
+		<item>Administración VPS</item>
+		<item>Administrative</item>
+		<item>Adonix</item>
+		<item>Advanced SubStation Alpha (ASS)</item>
+		<item>Agda</item>
+		<item>Alien language</item>
+		<item>Alloy</item>
+		<item>AmbientTalk</item>
+		<item>Ampl</item>
+		<item>Angular</item>
+		<item>Angular Material</item>
+		<item>Antlers</item>
+		<item>Apache Ant</item>
+		<item>Apache Conf</item>
+		<item>Apache Configuration</item>
+		<item>Apache Configuration File</item>
+		<item>App Config</item>
+		<item>Application</item>
+		<item>Asana</item>
+		<item>Asciidoc</item>
+		<item>Aseprite</item>
+		<item>AspectJ</item>
+		<item>Asset</item>
+		<item>Asterisk</item>
+		<item>Asterisk Configuration</item>
+		<item>Asymptote</item>
+		<item>Audio</item>
+		<item>AutoIt</item>
+		<item>BC</item>
+		<item>BEM</item>
+		<item>BIS</item>
+		<item>BIS/MAPPER</item>
+		<item>BNF</item>
+		<item>BO Model</item>
+		<item>BO Model Designer</item>
+		<item>BP</item>
+		<item>BPMN</item>
+		<item>BPMN2</item>
+		<item>BST</item>
+		<item>BUGS</item>
+		<item>Balsamiq</item>
+		<item>Basic</item>
+		<item>Batch</item>
+		<item>Batchfile</item>
+		<item>Bazel</item>
+		<item>Beef</item>
+		<item>Bernese Config Files</item>
+		<item>Bernese PCF Files</item>
+		<item>Better Java</item>
+		<item>BibTeX</item>
+		<item>Bilderkram</item>
+		<item>Bison</item>
+		<item>Bitbake</item>
+		<item>BizTalk</item>
+		<item>Blade</item>
+		<item>Blade PHP</item>
+		<item>Blade Template</item>
+		<item>BlitzBasic</item>
+		<item>BlitzMax</item>
+		<item>Boogie</item>
+		<item>Brainfuck</item>
+		<item>Brainstorming</item>
+		<item>Brando Documentation</item>
+		<item>Browser</item>
+		<item>Browser test/debug</item>
+		<item>Browsing</item>
+		<item>Browsing/Testing</item>
+		<item>Builds</item>
+		<item>C# (Code-behind)</item>
+		<item>C# Project File</item>
+		<item>C# Razor</item>
+		<item>C# project</item>
+		<item>CFEngine3</item>
+		<item>CHROME</item>
+		<item>CJSX</item>
+		<item>CLI</item>
+		<item>CMake</item>
+		<item>COBOLFree</item>
+		<item>CP backend</item>
+		<item>CSON</item>
+		<item>CSS Stylus</item>
+		<item>CUDA</item>
+		<item>CUE</item>
+		<item>CUE Sheet</item>
+		<item>Cake - View</item>
+		<item>Cake Template</item>
+		<item>CakePHP Template</item>
+		<item>Cap\'n Proto</item>
+		<item>CapDL</item>
+		<item>Capistrano</item>
+		<item>Capybara</item>
+		<item>CashBot-Data</item>
+		<item>ChaiScript</item>
+		<item>Cham++</item>
+		<item>Changelog</item>
+		<item>Chapel</item>
+		<item>Cheetah</item>
+		<item>Chicken</item>
+		<item>Chrome Inspect</item>
+		<item>Chrome Settings</item>
+		<item>Chuck</item>
+		<item>Cinema4D</item>
+		<item>Class Diagram</item>
+		<item>Classic ASP</item>
+		<item>Clay</item>
+		<item>Clean</item>
+		<item>Clipper / Crescendo</item>
+		<item>ClojureScript</item>
+		<item>Closure Templates</item>
+		<item>CloudFormation</item>
+		<item>Cocoapods</item>
+		<item>Code Documentation</item>
+		<item>CodeKit</item>
+		<item>Codepen</item>
+		<item>CoffeeReact</item>
+		<item>CoffeeScript/React</item>
+		<item>Command</item>
+		<item>Commit</item>
+		<item>Commit Message</item>
+		<item>Commiting</item>
+		<item>Component Pascal</item>
+		<item>Composer</item>
+		<item>Conf</item>
+		<item>Config file</item>
+		<item>Config files</item>
+		<item>Configs</item>
+		<item>Configuration</item>
+		<item>Configuration File</item>
+		<item>Configurations</item>
+		<item>Configure File</item>
+		<item>Conky</item>
+		<item>Crontab</item>
+		<item>Cryptol</item>
+		<item>Crystal</item>
+		<item>Crystal Report</item>
+		<item>Crystal Report 666</item>
+		<item>Crystal Reports</item>
+		<item>CrystalReports</item>
+		<item>Csound Document</item>
+		<item>Csound Orchestra</item>
+		<item>Csound Score</item>
+		<item>Cypher</item>
+		<item>Cython</item>
+		<item>DNS</item>
+		<item>DTD</item>
+		<item>Darcs Patch</item>
+		<item>Data</item>
+		<item>Debian Control</item>
+		<item>Debian Control file</item>
+		<item>Debian Sourcelist</item>
+		<item>Debug</item>
+		<item>Debugging</item>
+		<item>Design</item>
+		<item>Design Research</item>
+		<item>Dev Research</item>
+		<item>Dev Server</item>
+		<item>Dev Site</item>
+		<item>DevOps</item>
+		<item>Development</item>
+		<item>Devsite</item>
+		<item>Diff</item>
+		<item>Dimond</item>
+		<item>Django</item>
+		<item>Django HTML Template</item>
+		<item>Django Template</item>
+		<item>Django/Jinja</item>
+		<item>Djinni</item>
+		<item>Doc</item>
+		<item>Docker</item>
+		<item>Docs</item>
+		<item>Dot</item>
+		<item>Doxygen</item>
+		<item>Drunk Games Server</item>
+		<item>Drupal</item>
+		<item>Duel</item>
+		<item>DumpFile</item>
+		<item>Dust</item>
+		<item>Dust.js</item>
+		<item>DylanLID</item>
+		<item>EBNF</item>
+		<item>ECO</item>
+		<item>ECT</item>
+		<item>EDS</item>
+		<item>EDS Circle CI</item>
+		<item>EDS PR</item>
+		<item>EXCLUDE</item>
+		<item>Earl Grey</item>
+		<item>Easytrieve</item>
+		<item>Ebuild</item>
+		<item>EcmaScript 6</item>
+		<item>EditorConfig</item>
+		<item>Ef</item>
+		<item>Ejemplos</item>
+		<item>Elasticsearch</item>
+		<item>EleonorHELP</item>
+		<item>Elixir(eex)</item>
+		<item>Elixir(test)</item>
+		<item>Emacs</item>
+		<item>Emacs org-mode</item>
+		<item>Email</item>
+		<item>Embedded Ruby</item>
+		<item>Ember</item>
+		<item>Emblem</item>
+		<item>Emblem.js</item>
+		<item>English</item>
+		<item>Entity Framework</item>
+		<item>Env</item>
+		<item>Environment</item>
+		<item>Environment Variable</item>
+		<item>Environnement</item>
+		<item>Etools / API</item>
+		<item>Euclid</item>
+		<item>Euphoria</item>
+		<item>Excellon Drill File</item>
+		<item>FEDS</item>
+		<item>FOP</item>
+		<item>FPL</item>
+		<item>FTL</item>
+		<item>FXML</item>
+		<item>Factcool</item>
+		<item>Felix</item>
+		<item>Findie</item>
+		<item>Firebase</item>
+		<item>Fish</item>
+		<item>Fish Shell</item>
+		<item>FlashDevelop</item>
+		<item>Flex</item>
+		<item>Forth</item>
+		<item>FortranFixed</item>
+		<item>FoxPro</item>
+		<item>Free Marker</item>
+		<item>FreeMarker</item>
+		<item>FunnelWeb</item>
+		<item>G Code</item>
+		<item>G Suite</item>
+		<item>GAP</item>
+		<item>GAS</item>
+		<item>GIT Commit</item>
+		<item>GLSL</item>
+		<item>GNU Assembler</item>
+		<item>GSP</item>
+		<item>GSP (Grails Server Page)</item>
+		<item>GYP</item>
+		<item>Genshi</item>
+		<item>GeoJSON</item>
+		<item>Gettext Catalog</item>
+		<item>Gherkin</item>
+		<item>Git Attributes</item>
+		<item>Git Commit Message</item>
+		<item>Git Config</item>
+		<item>Git Configuration</item>
+		<item>Git Files</item>
+		<item>Git VCS</item>
+		<item>Git commit comment</item>
+		<item>Git ignore</item>
+		<item>GitCommit</item>
+		<item>GitCommitMessage</item>
+		<item>GitConfig</item>
+		<item>GitHub</item>
+		<item>GitMerge</item>
+		<item>GitRebase</item>
+		<item>Gitignore</item>
+		<item>Gitlab CI</item>
+		<item>Glang</item>
+		<item>Gmail</item>
+		<item>GnuPG conf</item>
+		<item>Gnuplot</item>
+		<item>Go HTML</item>
+		<item>Golang</item>
+		<item>GoldyTeam</item>
+		<item>Golo</item>
+		<item>Goodle</item>
+		<item>Google</item>
+		<item>Google Docs</item>
+		<item>Gosu Template</item>
+		<item>Gradle</item>
+		<item>GraphQL</item>
+		<item>Greytruck!</item>
+		<item>Groff</item>
+		<item>Groovy Server Pages</item>
+		<item>Gulp</item>
+		<item>HCL</item>
+		<item>HTML &amp; Javascript</item>
+		<item>HTML &amp; Twig</item>
+		<item>HTML Liquid</item>
+		<item>HTML PHP Phalcon</item>
+		<item>HTML Rails</item>
+		<item>HTML Template</item>
+		<item>HTML+CSS+JS</item>
+		<item>HTML+PHP</item>
+		<item>HTML/PHP Template</item>
+		<item>HTSL</item>
+		<item>HTTP</item>
+		<item>HTTP Testing</item>
+		<item>HTTPS</item>
+		<item>Handlebars</item>
+		<item>Happytours</item>
+		<item>Harbour</item>
+		<item>Heroku</item>
+		<item>High Level Shading Language</item>
+		<item>Hosts</item>
+		<item>Hound</item>
+		<item>Hy</item>
+		<item>Hybris</item>
+		<item>IDL</item>
+		<item>INI Files</item>
+		<item>IQS</item>
+		<item>IRC logs</item>
+		<item>IRText</item>
+		<item>ISH Content Model</item>
+		<item>ISML</item>
+		<item>IcedCoffeeScript</item>
+		<item>Idris</item>
+		<item>Ignore</item>
+		<item>Immediate</item>
+		<item>Impex</item>
+		<item>Inform</item>
+		<item>Inform 6</item>
+		<item>Inform 7</item>
+		<item>Infrastructure</item>
+		<item>Inno Setup</item>
+		<item>IntegrationServices</item>
+		<item>IntelHex</item>
+		<item>Interface Builder</item>
+		<item>Interface Buldier</item>
+		<item>Internet</item>
+		<item>Isabelle</item>
+		<item>JAGS</item>
+		<item>JCL</item>
+		<item>JS</item>
+		<item>JSHint</item>
+		<item>JSON-LD</item>
+		<item>JSP</item>
+		<item>JScript</item>
+		<item>Java FXML</item>
+		<item>Java Server Page</item>
+		<item>JavaFx</item>
+		<item>JavaScript &amp; HTML</item>
+		<item>JavaScript(test)</item>
+		<item>JavaScript+Django/Jinja</item>
+		<item>JavaScript+PHP</item>
+		<item>JavaScript+Ruby</item>
+		<item>Javascript Map</item>
+		<item>Javascript+mozpreproc</item>
+		<item>Jinja</item>
+		<item>Jinja2</item>
+		<item>Jinja2/HTML</item>
+		<item>Jira/Confluence</item>
+		<item>Justickets</item>
+		<item>KIE Tests</item>
+		<item>KanBan</item>
+		<item>Kconfig</item>
+		<item>Kepler</item>
+		<item>Kibana</item>
+		<item>Kirby Planet Robobot HPTO</item>
+		<item>Kivy</item>
+		<item>KiwiScript</item>
+		<item>Koka</item>
+		<item>Kubernetes</item>
+		<item>LDIF</item>
+		<item>LFE</item>
+		<item>LLDB</item>
+		<item>LLVM</item>
+		<item>LOGFILE</item>
+		<item>LSL</item>
+		<item>LaTeX</item>
+		<item>Language</item>
+		<item>Language file</item>
+		<item>Laravel Blade</item>
+		<item>Laravel Template</item>
+		<item>Laroute</item>
+		<item>Lasso</item>
+		<item>Latte</item>
+		<item>Lean</item>
+		<item>Ledger</item>
+		<item>LessCSS</item>
+		<item>LibConfig Konfiguration</item>
+		<item>LightSwitch</item>
+		<item>Lilypond</item>
+		<item>Limbo</item>
+		<item>Linker Script</item>
+		<item>Linting</item>
+		<item>Lisp Flavoured Erlang</item>
+		<item>Literate Agda</item>
+		<item>Literate Idris</item>
+		<item>Live CSS</item>
+		<item>LiveScript</item>
+		<item>Localization</item>
+		<item>Log</item>
+		<item>Log Files</item>
+		<item>Log-Files</item>
+		<item>Logfiles</item>
+		<item>Logos</item>
+		<item>Logs</item>
+		<item>M4</item>
+		<item>MISS</item>
+		<item>MOOCode</item>
+		<item>MQL</item>
+		<item>MS-DOS Batch</item>
+		<item>MSBuild</item>
+		<item>MVC</item>
+		<item>MXML</item>
+		<item>MXS</item>
+		<item>Magento</item>
+		<item>Mail</item>
+		<item>Mako</item>
+		<item>Managment</item>
+		<item>Map</item>
+		<item>Map file</item>
+		<item>Mario and Luigi Paper Jam HPTO</item>
+		<item>Mario and Luigi Paper Jam Site</item>
+		<item>Markdown (GitHub)</item>
+		<item>Mask</item>
+		<item>Mason</item>
+		<item>Masterclass (TLCS)</item>
+		<item>Material</item>
+		<item>Material Guidelines</item>
+		<item>Mathematica</item>
+		<item>Maven</item>
+		<item>Maya</item>
+		<item>Medidor PM</item>
+		<item>Merging</item>
+		<item>Mermaid</item>
+		<item>Mermaid UML</item>
+		<item>Metapost/Metafont</item>
+		<item>Metrics Email</item>
+		<item>MetricsEmail</item>
+		<item>Mind Map</item>
+		<item>Minified file</item>
+		<item>Modelica</item>
+		<item>Modula-2</item>
+		<item>Module Definition</item>
+		<item>Mojo Template</item>
+		<item>Monkey</item>
+		<item>Monte</item>
+		<item>MoonScript</item>
+		<item>Motorola DSP56k</item>
+		<item>Mscgen</item>
+		<item>MuCow</item>
+		<item>MuPAD</item>
+		<item>MyScript</item>
+		<item>N3</item>
+		<item>NASM</item>
+		<item>NCL</item>
+		<item>NECS Campaign Plugin</item>
+		<item>NFO</item>
+		<item>NSIS</item>
+		<item>Nagios</item>
+		<item>Navegação</item>
+		<item>Neo4j</item>
+		<item>Neon</item>
+		<item>NewLisp</item>
+		<item>Newspeak</item>
+		<item>Nginx Configuration</item>
+		<item>Nginx configuration file</item>
+		<item>Ninja build file</item>
+		<item>Nit</item>
+		<item>Nix</item>
+		<item>Node.js</item>
+		<item>Normal</item>
+		<item>Notes</item>
+		<item>NuGet</item>
+		<item>NuGet Spec File</item>
+		<item>NuSMV</item>
+		<item>Nucleus</item>
+		<item>Nuget Packaging</item>
+		<item>NumPy</item>
+		<item>Nunjucks</item>
+		<item>ODIN</item>
+		<item>Octave</item>
+		<item>Octave/MATLAB</item>
+		<item>Omnibus Props</item>
+		<item>Omnibus Rule</item>
+		<item>Omnibus Rules</item>
+		<item>Online</item>
+		<item>OpenCL</item>
+		<item>OpenGL Shader Language</item>
+		<item>OpenSCAD</item>
+		<item>OpenSSL</item>
+		<item>Org File</item>
+		<item>Org mode</item>
+		<item>Org-mode</item>
+		<item>OrgMode</item>
+		<item>Orga</item>
+		<item>Other</item>
+		<item>Other Binary</item>
+		<item>Oxygene</item>
+		<item>Oxygene Project File</item>
+		<item>PAKET</item>
+		<item>PDF</item>
+		<item>PDF-Suite</item>
+		<item>PHP (HTML)</item>
+		<item>PHP (Laravel)</item>
+		<item>PHP Config</item>
+		<item>PHP Lexer</item>
+		<item>PHP Smarty</item>
+		<item>PHTML</item>
+		<item>PL/SQL</item>
+		<item>PM &amp; Planning</item>
+		<item>PNG</item>
+		<item>POVRay</item>
+		<item>PacmanConf</item>
+		<item>ParaSail</item>
+		<item>Pascal</item>
+		<item>Pawn</item>
+		<item>Peg</item>
+		<item>PegJs</item>
+		<item>Performance Analysis</item>
+		<item>Pesquisa</item>
+		<item>PhalconPHP volt</item>
+		<item>Phonegap</item>
+		<item>PhpStorm Scratches</item>
+		<item>PicAsm</item>
+		<item>Pig</item>
+		<item>Pike</item>
+		<item>PkgConfig</item>
+		<item>Plain Text</item>
+		<item>Planning</item>
+		<item>PlantUML</item>
+		<item>PlantUML Diagram (Class)</item>
+		<item>PlantUML Diagram (Sequence)</item>
+		<item>PlantUML Diagram (Usecase)</item>
+		<item>Plist</item>
+		<item>Podfile</item>
+		<item>Polymer</item>
+		<item>Pony</item>
+		<item>PostCSS</item>
+		<item>PostScript</item>
+		<item>Postman</item>
+		<item>Praat</item>
+		<item>Prefab</item>
+		<item>Preferences</item>
+		<item>Prod</item>
+		<item>Progress</item>
+		<item>Project</item>
+		<item>Project Config</item>
+		<item>Project Resourses</item>
+		<item>Project management</item>
+		<item>ProjectConfigs</item>
+		<item>Properties</item>
+		<item>Property list</item>
+		<item>PropertyList</item>
+		<item>Proto</item>
+		<item>Proto.io</item>
+		<item>Protocol Buffer</item>
+		<item>Prototype</item>
+		<item>Puffin</item>
+		<item>Pug</item>
+		<item>Pug (Jade)</item>
+		<item>Purescript</item>
+		<item>Pystachio</item>
+		<item>Python 3</item>
+		<item>QA</item>
+		<item>QBasic</item>
+		<item>QML</item>
+		<item>QMake</item>
+		<item>QRE</item>
+		<item>Quack</item>
+		<item>R-qidos.nl</item>
+		<item>R-werkenmantelzorg.nl</item>
+		<item>RAML</item>
+		<item>RConsole</item>
+		<item>README Files</item>
+		<item>ROS</item>
+		<item>RPMSpec</item>
+		<item>RSL</item>
+		<item>RSpec</item>
+		<item>Ragel in Ruby Host</item>
+		<item>Rawr</item>
+		<item>Razor</item>
+		<item>Razor C#</item>
+		<item>Razor/Front</item>
+		<item>Razor/MVC View</item>
+		<item>RazorEngine</item>
+		<item>Rd</item>
+		<item>React</item>
+		<item>React (CJSX)</item>
+		<item>React (JSX)</item>
+		<item>React VCRC (Test)</item>
+		<item>ReactJS</item>
+		<item>ReactJavaScript</item>
+		<item>Reading Docs</item>
+		<item>Red</item>
+		<item>Redcode</item>
+		<item>RedemptionCenterServer</item>
+		<item>Redmine</item>
+		<item>Reduxstagram</item>
+		<item>Reference</item>
+		<item>Relax-NG Compact</item>
+		<item>Ren\'Py</item>
+		<item>RenderScript</item>
+		<item>ReportViewer(SSRS)</item>
+		<item>Reporting Services</item>
+		<item>Research</item>
+		<item>Resource</item>
+		<item>Resource Definition</item>
+		<item>Resource file</item>
+		<item>Resource files</item>
+		<item>Restructured Text</item>
+		<item>Review</item>
+		<item>Rexx</item>
+		<item>Riot</item>
+		<item>Rmd</item>
+		<item>Rnw</item>
+		<item>Roboconf Graph</item>
+		<item>Robot</item>
+		<item>Robot Framework</item>
+		<item>Robotframework</item>
+		<item>RocketJSON</item>
+		<item>Rprofile</item>
+		<item>S</item>
+		<item>S coreware file</item>
+		<item>SAS</item>
+		<item>SAS log</item>
+		<item>SMC Modeler</item>
+		<item>SML</item>
+		<item>SPARQL</item>
+		<item>SS Template</item>
+		<item>SVG</item>
+		<item>SVN</item>
+		<item>SWIG</item>
+		<item>Salt</item>
+		<item>Scalate Server Page</item>
+		<item>Scene</item>
+		<item>Search</item>
+		<item>Settings</item>
+		<item>Shader</item>
+		<item>Shaders</item>
+		<item>Shen</item>
+		<item>Shopify</item>
+		<item>SilverStripe</item>
+		<item>Silverstripe Templates</item>
+		<item>Simulator Language</item>
+		<item>Sketch</item>
+		<item>Sketch Drawing</item>
+		<item>Skola</item>
+		<item>Skype</item>
+		<item>Slack</item>
+		<item>SlackSites</item>
+		<item>Smali</item>
+		<item>Smarty template</item>
+		<item>SnapForm</item>
+		<item>Snippets</item>
+		<item>Social</item>
+		<item>Softwaretechnik 1</item>
+		<item>Solidity</item>
+		<item>Source Control</item>
+		<item>SourcePawn</item>
+		<item>Sphere</item>
+		<item>Sphinx</item>
+		<item>SportsDirect</item>
+		<item>Sprite Kit Files</item>
+		<item>SquidConf</item>
+		<item>Squirrel</item>
+		<item>StackOverflow</item>
+		<item>Stan</item>
+		<item>Stata</item>
+		<item>Storyboard</item>
+		<item>Storyboards</item>
+		<item>Stream</item>
+		<item>Strings</item>
+		<item>Sublime</item>
+		<item>Sublime Conf</item>
+		<item>Sublime Config</item>
+		<item>Sublime Settings</item>
+		<item>Sublime Text</item>
+		<item>Sublime Text 3 Settings</item>
+		<item>Sublime Text Settings</item>
+		<item>Sublime project file</item>
+		<item>SublimeText Configuration</item>
+		<item>Sublimetext</item>
+		<item>Subtitle</item>
+		<item>SugarSS</item>
+		<item>Switch HPTO</item>
+		<item>Syncthing ignore</item>
+		<item>Systemd</item>
+		<item>Systemd Service Unit</item>
+		<item>Systemd service</item>
+		<item>T4</item>
+		<item>T4Templates</item>
+		<item>TADS 3</item>
+		<item>TAP</item>
+		<item>TASM</item>
+		<item>TODO</item>
+		<item>TODO Liste</item>
+		<item>TOML</item>
+		<item>TXT</item>
+		<item>Tag</item>
+		<item>Task Lists</item>
+		<item>Task Management</item>
+		<item>Task Todo</item>
+		<item>TaskPaper</item>
+		<item>Tasks</item>
+		<item>Tcsh</item>
+		<item>TeX</item>
+		<item>Tea</item>
+		<item>Tech Talent South</item>
+		<item>Tecnoliq</item>
+		<item>Tempalates PDT</item>
+		<item>Template Toolkit</item>
+		<item>TemplateToolkit</item>
+		<item>Termcap</item>
+		<item>Terminal</item>
+		<item>Terminal Commands</item>
+		<item>Terminfo</item>
+		<item>Terra</item>
+		<item>Terraform</item>
+		<item>TestFile</item>
+		<item>Testing</item>
+		<item>Tests</item>
+		<item>Text Plain</item>
+		<item>Text Template</item>
+		<item>Textile</item>
+		<item>The Idle Developer - Vagrant</item>
+		<item>Thrift</item>
+		<item>Time Management</item>
+		<item>TinTin++</item>
+		<item>Titanium Style Sheets</item>
+		<item>Toc</item>
+		<item>Todo Lists</item>
+		<item>Todotxt</item>
+		<item>TrafficScript</item>
+		<item>Train Build Project</item>
+		<item>Training</item>
+		<item>Transact-SQL</item>
+		<item>Trash</item>
+		<item>Treehouse</item>
+		<item>Treetop</item>
+		<item>Trello</item>
+		<item>Troff Mandoc</item>
+		<item>Turtle</item>
+		<item>TypoScript</item>
+		<item>UI</item>
+		<item>UI/UX Testing</item>
+		<item>URL Rwr</item>
+		<item>UX</item>
+		<item>Ultraspire</item>
+		<item>Unity</item>
+		<item>Unity Asset</item>
+		<item>Unity Prefab</item>
+		<item>Unity\'s Asset File</item>
+		<item>Unity3D</item>
+		<item>Unknown Language</item>
+		<item>Unreal Engine</item>
+		<item>Unreal Engine 4</item>
+		<item>Urano</item>
+		<item>UrbiScript</item>
+		<item>VB</item>
+		<item>VB Script</item>
+		<item>VB6</item>
+		<item>VB6 Form</item>
+		<item>VBA</item>
+		<item>VBHTML</item>
+		<item>VBScript</item>
+		<item>VCL</item>
+		<item>VIT Omnibus</item>
+		<item>VSTS</item>
+		<item>Vagrant</item>
+		<item>Vagrantfile</item>
+		<item>Varnish Control Language</item>
+		<item>Velocity</item>
+		<item>Velocity/HTML</item>
+		<item>Videv Studios</item>
+		<item>Vim Snippets</item>
+		<item>Vimwiki Markdown</item>
+		<item>Visual FoxPro</item>
+		<item>Visualforce</item>
+		<item>Vmail</item>
+		<item>Volt</item>
+		<item>Vue component file</item>
+		<item>Vue.js</item>
+		<item>VueJS</item>
+		<item>WINE Config</item>
+		<item>WPF</item>
+		<item>Waka Time</item>
+		<item>Wakatime</item>
+		<item>Wasted Time</item>
+		<item>Web</item>
+		<item>Web Browser</item>
+		<item>Web Browsing</item>
+		<item>Web Config</item>
+		<item>WebBrowsing</item>
+		<item>WebConfig</item>
+		<item>WebStorm scratch file</item>
+		<item>Webpage</item>
+		<item>Webserver Config</item>
+		<item>Website</item>
+		<item>WiX</item>
+		<item>WiX Installer</item>
+		<item>Wiki</item>
+		<item>Windows Manifest</item>
+		<item>Windows Resource File</item>
+		<item>Wix#</item>
+		<item>Word</item>
+		<item>Wordpress</item>
+		<item>Work</item>
+		<item>WorkSites</item>
+		<item>Wren</item>
+		<item>XAF Model</item>
+		<item>XIB</item>
+		<item>XKeyMap</item>
+		<item>XLIFF</item>
+		<item>XML Resource File</item>
+		<item>XOJO</item>
+		<item>XSLT</item>
+		<item>XUL</item>
+		<item>Xamarin</item>
+		<item>Xamarin Editor</item>
+		<item>Xamboo</item>
+		<item>Xcode</item>
+		<item>Xcode Configuration</item>
+		<item>Xonsh lexer</item>
+		<item>Xorg</item>
+		<item>Xresources</item>
+		<item>Xtend</item>
+		<item>YML</item>
+		<item>Yate</item>
+		<item>ZK</item>
+		<item>ZK Framework</item>
+		<item>Zephir</item>
+		<item>Zoom</item>
+		<item>Zsh</item>
+		<item>angular-material2</item>
+		<item>ansible</item>
+		<item>apache cfg</item>
+		<item>app.config</item>
+		<item>ascx</item>
+		<item>atlas</item>
+		<item>bash_aliases</item>
+		<item>botanical-online.com</item>
+		<item>brithotel</item>
+		<item>c/i/d</item>
+		<item>c_cpp</item>
+		<item>cabal-config</item>
+		<item>coconut</item>
+		<item>coffee</item>
+		<item>com</item>
+		<item>conversation</item>
+		<item>cron</item>
+		<item>csh</item>
+		<item>dev</item>
+		<item>dg</item>
+		<item>dhcpd.conf</item>
+		<item>do</item>
+		<item>dosini</item>
+		<item>dotfiles</item>
+		<item>dustjs</item>
+		<item>e-Bursátil</item>
+		<item>eXpressApp</item>
+		<item>elisp</item>
+		<item>euphoria3</item>
+		<item>facebook</item>
+		<item>flUId</item>
+		<item>flash</item>
+		<item>fstab</item>
+		<item>git-index</item>
+		<item>github.com</item>
+		<item>go-lang</item>
+		<item>grunt</item>
+		<item>hbs</item>
+		<item>help</item>
+		<item>hlsl</item>
+		<item>i3-config</item>
+		<item>i3blocks-conf</item>
+		<item>iOS</item>
+		<item>iZine Framework Javascript</item>
+		<item>iZine Framework Setting</item>
+		<item>irssi config</item>
+		<item>jQuery</item>
+		<item>jetsetter</item>
+		<item>json_info</item>
+		<item>known_hosts</item>
+		<item>lex</item>
+		<item>lighttpd.conf</item>
+		<item>liquid</item>
+		<item>lisp</item>
+		<item>localhost</item>
+		<item>lts.conf (LTSP)</item>
+		<item>maggiori</item>
+		<item>mbsyncrc</item>
+		<item>md</item>
+		<item>mercurial</item>
+		<item>mips</item>
+		<item>mongo</item>
+		<item>monitorap</item>
+		<item>mopidy-conf</item>
+		<item>muttrc</item>
+		<item>natural</item>
+		<item>nesC</item>
+		<item>nimbus</item>
+		<item>no language</item>
+		<item>node</item>
+		<item>npm</item>
+		<item>nsswitch.conf</item>
+		<item>obj</item>
+		<item>objdump</item>
+		<item>offlineimaprc</item>
+		<item>org</item>
+		<item>pacman.conf</item>
+		<item>palnea</item>
+		<item>php - Cloud9</item>
+		<item>postgreSQL</item>
+		<item>postscr</item>
+		<item>processing</item>
+		<item>procmailrc</item>
+		<item>ps1</item>
+		<item>q/a</item>
+		<item>qf</item>
+		<item>quickrun</item>
+		<item>rc</item>
+		<item>reg</item>
+		<item>rst</item>
+		<item>sbt</item>
+		<item>searchresults</item>
+		<item>setup</item>
+		<item>sh</item>
+		<item>shifer.rf</item>
+		<item>sip</item>
+		<item>slade</item>
+		<item>smartprogress</item>
+		<item>ss_NEW/bin/www</item>
+		<item>ss_admin_tools</item>
+		<item>ssh</item>
+		<item>sublime-text configuration</item>
+		<item>sublime-tinkering</item>
+		<item>systemverilog</item>
+		<item>telnet</item>
+		<item>telus_io</item>
+		<item>template</item>
+		<item>test</item>
+		<item>tmux.conf</item>
+		<item>tpassistance</item>
+		<item>vCard, vCalendar, iCalendar</item>
+		<item>varnish</item>
+		<item>vim</item>
+		<item>vue</item>
+		<item>we the flyer</item>
+		<item>websurf</item>
+		<item>www</item>
+		<item>xbuild</item>
+		<item>xorg.conf</item>
+		<item>yacc</item>
+		<item>yndenz - rms-platform</item>
+		<item>zshrc</item>
+	</string-array>
 </resources>

@@ -19,6 +19,12 @@ public final class Constants {
     public static final String _30_DAYS = "last_30_days";
     public static final String _6_MONTHS = "last_6_months";
     public static final String _YEAR = "last_year";
+
+    /* Goal types */
+    public static final int LANGUAGE_GOAL = 0;
+    public static final int PROJECT_DEADLINE_GOAL = 1;
+    public static final int PROJECT_DAILY_GOAL = 2;
+
     /* API core constants */
     public static final String API_SUFFIX = "api/v1/users/current/";
     /* Cache constants */

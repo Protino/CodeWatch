@@ -47,5 +47,32 @@
 	<string name="card_editors_header">Editors</string>
 	<string name="card_os_header">Operating Systems</string>
 	<string name="percent_format"><xliff:g id="percent">%.2f</xliff:g>%%</string>
+	<string name="language_goal">
+		Code in <xliff:g id="name">$1%s</xliff:g> for
+		<xliff:g example="3 hrs 5 min" id="time">$2%s</xliff:g> daily.
+	</string>
+	<string name="project_deadline_goal">
+		Finish <xliff:g id="project_name">$1%s</xliff:g> by
+		<xliff:g example="4 Jun" id="date">$2%s</xliff:g>. <!-- Don't worry date is translated -->
+	</string>
+	<string name="project_daily_goal">
+		Spend <xliff:g example="3 hrs" id="time">$1%s</xliff:g> in
+		<xliff:g id="project_name">$1%s</xliff:g> daily.
+	</string>
+	<string name="choose_goal_type">Choose goal type</string>
+	<string name="cancel">Cancel</string>
+	<string name="choose_language">Choose language</string>
+	<string name="choose_hours">Choose hours</string>
+	<string name="ok">OK</string>
+	<string name="invalid_language_hint">%s is not supported yet. Choose one among the list.</string>
+	<string name="choose_project">Choose Project</string>
+	<string name="finish">Finish</string>
+	<string name="by">by</string>
 
+	<string-array name="goal_types">
+		<!-- Order is important -->
+		<item>Code in X language for Y hours</item>
+		<item>Finish a project by X date</item>
+		<item>Spend X hours in a project</item>
+	</string-array>
 </resources>
