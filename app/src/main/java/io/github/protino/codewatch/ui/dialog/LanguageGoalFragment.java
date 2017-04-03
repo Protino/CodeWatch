@@ -13,6 +13,8 @@ import android.widget.AutoCompleteTextView;
 import android.widget.Button;
 import android.widget.NumberPicker;
 
+import org.greenrobot.eventbus.EventBus;
+
 import java.util.Arrays;
 
 import butterknife.BindArray;
@@ -20,7 +22,9 @@ import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.Unbinder;
 import io.github.protino.codewatch.R;
-import timber.log.Timber;
+import io.github.protino.codewatch.model.GoalItem;
+
+import static io.github.protino.codewatch.utils.Constants.LANGUAGE_GOAL;
 
 /**
  * @author Gurupad Mamadapur
@@ -47,7 +51,8 @@ public class LanguageGoalFragment extends DialogFragment implements DialogInterf
 
         Arrays.sort(validLanguages);
 
-        autoCompleteTextView.setAdapter(new ArrayAdapter<>(getActivity(), android.R.layout.simple_dropdown_item_1line, validLanguages));
+        autoCompleteTextView.setAdapter(new ArrayAdapter<>(
+                        getActivity(), android.R.layout.simple_dropdown_item_1line, validLanguages));
         autoCompleteTextView.setValidator(new Validator());
         autoCompleteTextView.setOnFocusChangeListener(new FocusListener());
         autoCompleteTextView.setThreshold(1);
@@ -82,8 +87,12 @@ public class LanguageGoalFragment extends DialogFragment implements DialogInterf
             public void onClick(View view) {
                 autoCompleteTextView.performValidation();
                 if (isValidLanguage) {
+                    GoalItem goalItem = new GoalItem(
+                            autoCompleteTextView.getText().toString(),
+                            LANGUAGE_GOAL,
+                            hoursPicker.getValue());
+                    EventBus.getDefault().post(goalItem);
                     dismiss();
-                    Timber.d(autoCompleteTextView.getText()+ "  "+hoursPicker.getValue());
                 }
             }
         });
@@ -99,7 +108,8 @@ public class LanguageGoalFragment extends DialogFragment implements DialogInterf
 
         @Override
         public CharSequence fixText(CharSequence invalidText) {
-            autoCompleteTextView.setError(String.format(getString(R.string.invalid_language_hint), invalidText));
+            autoCompleteTextView.setError(
+                    String.format(getString(R.string.invalid_language_hint), invalidText));
             return invalidText;
         }
     }
@@ -113,6 +123,4 @@ public class LanguageGoalFragment extends DialogFragment implements DialogInterf
             }
         }
     }
-
-
 }

@@ -17,9 +17,9 @@ public class GoalItem {
     private String id;
     @GoalType
     private int type;
-    private int data; //depends on type
+    private long data; //depends on type
 
-    public GoalItem(String id, int type, int data) {
+    public GoalItem(String id, int type, long data) {
         this.id = id;
         this.type = type;
         this.data = data;
@@ -41,11 +41,11 @@ public class GoalItem {
         this.type = type;
     }
 
-    public int getData() {
+    public long getData() {
         return data;
     }
 
-    public void setData(int data) {
+    public void setData(long data) {
         this.data = data;
     }
 

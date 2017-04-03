@@ -7,10 +7,10 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.widget.DatePicker;
 
+import org.greenrobot.eventbus.EventBus;
+
 import java.util.Calendar;
 import java.util.Date;
-
-import timber.log.Timber;
 
 /**
  * @author Gurupad Mamadapur
@@ -39,7 +39,6 @@ public class DatePickerFragment extends DialogFragment implements DatePickerDial
                         calendar.get(Calendar.DAY_OF_MONTH));
 
         datePickerDialog.getDatePicker().setMinDate(System.currentTimeMillis());
-
         return datePickerDialog;
     }
 
@@ -47,8 +46,6 @@ public class DatePickerFragment extends DialogFragment implements DatePickerDial
     public void onDateSet(DatePicker view, int year, int month, int dayOfMonth) {
         Calendar calendar = Calendar.getInstance();
         calendar.set(year, month, dayOfMonth);
-        Timber.d(year + "  " +
-                        " " + month+
-                "    " + dayOfMonth);
+        EventBus.getDefault().post(calendar);
     }
 }

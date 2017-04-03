@@ -32,8 +32,10 @@ import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
 
-import io.github.protino.codewatch.remote.FetchWakatimeData;
 import io.github.protino.codewatch.model.WakatimeData;
+import io.github.protino.codewatch.model.firebase.Goals;
+import io.github.protino.codewatch.model.firebase.LanguageGoal;
+import io.github.protino.codewatch.model.firebase.ProjectGoal;
 import io.github.protino.codewatch.model.firebase.Stats;
 import io.github.protino.codewatch.model.firebase.User;
 import io.github.protino.codewatch.model.statistics.Editor;
@@ -41,8 +43,7 @@ import io.github.protino.codewatch.model.statistics.Language;
 import io.github.protino.codewatch.model.statistics.OperatingSystem;
 import io.github.protino.codewatch.model.statistics.StatsData;
 import io.github.protino.codewatch.model.user.ProfileData;
-import io.github.protino.codewatch.model.firebase.Goals;
-import io.github.protino.codewatch.model.firebase.ProjectGoal;
+import io.github.protino.codewatch.remote.FetchWakatimeData;
 import io.github.protino.codewatch.sync.WakatimeDataSyncJob;
 import io.github.protino.codewatch.utils.Constants;
 import timber.log.Timber;
@@ -346,11 +347,13 @@ public class FirebaseTestActivity extends AppCompatActivity {
         if (goalsDatabaseReference != null) {
             Goals goals = new Goals();
 
-            Map<String, Integer> map = new HashMap<>();
-            map.put("JAVa", 231434);
+            Map<String, LanguageGoal> map = new HashMap<>();
+            LanguageGoal languageGoal = new LanguageGoal("Java", 45684, new int[]{2, 4, 5, 6, 7, 78});
+
+            map.put("Java", languageGoal);
             goals.setLanguageGoals(map);
 
-            ProjectGoal projectGoal = new ProjectGoal();
+            ProjectGoal projectGoal = new ProjectGoal("32424", "CodeWatch", 43, 564, 345, new int[]{23, 5, 46, 56});
             projectGoal.setDaily(2432);
             projectGoal.setDeadline(2343);
 

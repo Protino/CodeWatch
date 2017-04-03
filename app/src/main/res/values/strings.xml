@@ -48,16 +48,16 @@
 	<string name="card_os_header">Operating Systems</string>
 	<string name="percent_format"><xliff:g id="percent">%.2f</xliff:g>%%</string>
 	<string name="language_goal">
-		Code in <xliff:g id="name">$1%s</xliff:g> for
-		<xliff:g example="3 hrs 5 min" id="time">$2%s</xliff:g> daily.
+		Code in <xliff:g id="name">%1$s</xliff:g> for
+		<xliff:g example="3 hrs 5 min" id="time">%2$d</xliff:g> hrs daily.
 	</string>
 	<string name="project_deadline_goal">
-		Finish <xliff:g id="project_name">$1%s</xliff:g> by
-		<xliff:g example="4 Jun" id="date">$2%s</xliff:g>. <!-- Don't worry date is translated -->
+		Finish <xliff:g id="project_name">%1$s</xliff:g> by
+		<xliff:g example="4 Jun" id="date">%2$s</xliff:g>. <!-- Don't worry date is translated -->
 	</string>
 	<string name="project_daily_goal">
-		Spend <xliff:g example="3 hrs" id="time">$1%s</xliff:g> in
-		<xliff:g id="project_name">$1%s</xliff:g> daily.
+		Spend <xliff:g id="time">%1$d</xliff:g> hrs on
+		<xliff:g id="project_name">%2$s</xliff:g> daily.
 	</string>
 	<string name="choose_goal_type">Choose goal type</string>
 	<string name="cancel">Cancel</string>
@@ -68,6 +68,12 @@
 	<string name="choose_project">Choose Project</string>
 	<string name="finish">Finish</string>
 	<string name="by">by</string>
+	<string name="duplicate_goal_message">This goal is already added.</string>
+	<string name="day">day</string>
+	<string name="days">days</string>
+	<string name="remaining_days">
+		<xliff:g id="remainingDays">%1$d</xliff:g>
+		<xliff:g id="day/s">%2$s</xliff:g> remaining. </string>
 
 	<string-array name="goal_types">
 		<!-- Order is important -->
@@ -75,4 +81,15 @@
 		<item>Finish a project by X date</item>
 		<item>Spend X hours in a project</item>
 	</string-array>
+
+	<!-- bar chart -->
+	<string name="hours">%d hrs</string>
+	<string name="goal">Goal</string>
+	<string name="deadline_reached">Deadline reached</string>
+	<string name="marker_text">
+		<xliff:g id="time">%1$s</xliff:g> on
+		<xliff:g id="date">%2$s</xliff:g>
+	</string>
+	<string name="minutes">%d min</string>
+	<string name="delete">Delete</string>
 </resources>

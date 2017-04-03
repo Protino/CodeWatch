@@ -16,6 +16,8 @@
 	<drawable name="pressed_gray">#0c000000</drawable>
 	<drawable name="selected_gray">#2c000000</drawable>
 
+	<color name="dark_grey_with_opacity">#DE3C3F41</color>
+
 
 	<!-- All material design colors, needed to represent chart colors -->
 

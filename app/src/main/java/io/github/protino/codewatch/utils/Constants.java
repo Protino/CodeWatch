@@ -34,7 +34,7 @@ public final class Constants {
     public static final String PREF_LEADERBOARD_UPDATED = "leaderboard_pref_key";
     public static final String PREF_USER_LEARNED_DRAWER = "pref_user_learned_drawer";
 
-    /*Projections*/
+    /*Projections */
     public static final int COL_LEADER_ID = 0;
     public static final int COL_USER_ID = 1;
     public static final int COL_FULL_NAME = 2;
@@ -48,10 +48,13 @@ public final class Constants {
             LeaderContract.LeaderEntry.COLUMN_LANGUAGE_STATS
     };
     public static final String LEADER_SORT_ORDER = LeaderContract.LeaderEntry.COLUMN_TOTAL_SECONDS + " DESC";
-    /* Firebase Constants*/
+    /* Firebase Constants */
     public static final String WAKATIME_DATA_SYNC_JOB_TAG = "daily_sync_job";
     public static final int SYNC_TOLERANCE = 60;
     public static final int SYNC_PERIOD = 60 * 60 * 24;
     public static final String PERIODIC_SYNC_SCHEDULED_KEY = "periodic_sync_scheduled_key";
 
+    /* Goal Detail keys */
+    public static final String GOAL_DATA_KEY = "goal_data_key";
+    public static final String GOAL_TYPE_KEY = "goal_type_key";
 }

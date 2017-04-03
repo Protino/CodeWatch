@@ -4,36 +4,61 @@ import android.annotation.SuppressLint;
 import android.app.Dialog;
 import android.app.DialogFragment;
 import android.content.DialogInterface;
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.app.AlertDialog;
 import android.view.LayoutInflater;
 import android.view.View;
-import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.NumberPicker;
 import android.widget.Spinner;
 
+import com.google.gson.Gson;
+import com.google.gson.reflect.TypeToken;
+
+import org.greenrobot.eventbus.EventBus;
+
+import java.lang.reflect.Type;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.Unbinder;
 import io.github.protino.codewatch.R;
-import timber.log.Timber;
+import io.github.protino.codewatch.model.GoalItem;
+
+import static io.github.protino.codewatch.utils.Constants.PROJECT_DAILY_GOAL;
 
 /**
  * @author Gurupad Mamadapur
  */
 
-public class ProjectDailyGoalFragment extends DialogFragment implements AdapterView.OnItemSelectedListener {
+public class ProjectDailyGoalFragment extends DialogFragment {
     //@formatter:off
     @BindView(R.id.spinner) Spinner spinner;
     @BindView(R.id.hours_picker) NumberPicker hoursPicker;
     private Unbinder unbinder;
     //@formatter:on
 
-    private List<String> projects;
+    private List<String> projectNames;
+    private List<String> projectIds;
+
+    private Map<String, String> projectNameMap;
+
+    @Override
+    public void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        try {
+            String mapString = getArguments().getString(Intent.EXTRA_TEXT);
+            Type mapType = new TypeToken<Map<String, String>>() {
+            }.getType();
+            projectNameMap = new Gson().fromJson(mapString, mapType);
+        } catch (Exception e) {
+            throw new IllegalArgumentException("Project ID-NAME map not set.");
+        }
+    }
 
     @SuppressLint("InflateParams")
     @Override
@@ -54,7 +79,13 @@ public class ProjectDailyGoalFragment extends DialogFragment implements AdapterV
                 .setPositiveButton(R.string.ok, new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
-                        Timber.d(spinner.getSelectedItem().toString() + "  " + hoursPicker.getValue());
+                        String projectId = getProjectId(spinner.getSelectedItem().toString());
+
+                        GoalItem goalItem = new GoalItem(
+                                projectId,
+                                PROJECT_DAILY_GOAL,
+                                hoursPicker.getValue());
+                        EventBus.getDefault().post(goalItem);
                     }
                 })
                 .setNegativeButton(R.string.cancel, new DialogInterface.OnClickListener() {
@@ -64,11 +95,9 @@ public class ProjectDailyGoalFragment extends DialogFragment implements AdapterV
                     }
                 });
 
-        spinner.setOnItemSelectedListener(this);
-
         ArrayAdapter<String> adapter = new ArrayAdapter<>(
                 getActivity(),
-                android.R.layout.simple_spinner_item, projects);
+                android.R.layout.simple_spinner_item, projectNames);
 
         adapter.setDropDownViewResource(android.R.layout.simple_dropdown_item_1line);
         spinner.setAdapter(adapter);
@@ -77,14 +106,16 @@ public class ProjectDailyGoalFragment extends DialogFragment implements AdapterV
     }
 
     private void loadProjectsData() {
-        projects = new ArrayList<>();
-        projects.add("CodeWatch");
-        projects.add("CodeWatch");
-        projects.add("Lego");
-        projects.add("Something");
-        projects.add("One");
-        projects.add("Two");
-        projects.add("Three");
+        projectIds = new ArrayList<>();
+        projectNames = new ArrayList<>();
+        for (Map.Entry<String, String> entry : projectNameMap.entrySet()) {
+            projectIds.add(entry.getKey());
+            projectNames.add(entry.getValue());
+        }
+    }
+
+    private String getProjectId(String projectName) {
+        return projectIds.get(projectNames.indexOf(projectName));
     }
 
     @Override
@@ -93,14 +124,5 @@ public class ProjectDailyGoalFragment extends DialogFragment implements AdapterV
             unbinder.unbind();
         }
         super.onDestroyView();
-    }
-
-    @Override
-    public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
-    }
-
-    @Override
-    public void onNothingSelected(AdapterView<?> parent) {
-
     }
 }

@@ -8,7 +8,7 @@ import java.util.Map;
 
 public class Goals {
     private Map<String, ProjectGoal> projectGoals;
-    private Map<String, Integer> languageGoals;
+    private Map<String, LanguageGoal> languageGoals;
 
     public Goals() {
     }
@@ -21,11 +21,11 @@ public class Goals {
         this.projectGoals = projectGoals;
     }
 
-    public Map<String, Integer> getLanguageGoals() {
+    public Map<String, LanguageGoal> getLanguageGoals() {
         return languageGoals;
     }
 
-    public void setLanguageGoals(Map<String, Integer> languageGoals) {
+    public void setLanguageGoals(Map<String, LanguageGoal> languageGoals) {
         this.languageGoals = languageGoals;
     }
 }
