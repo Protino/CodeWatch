@@ -26,12 +26,12 @@
 	<string name="result_decreased">decrease</string>
 	<string name="result_increase">increase</string>
 	<string name="default_time_format">
-		<xliff:g example="7" id="hours">%1$d</xliff:g> hrs
-		<xliff:g example="10" id="minutes">%2$d</xliff:g> min
+		<xliff:g example="7" id="hours">%1$d</xliff:g> h
+		<xliff:g example="10" id="minutes">%2$d</xliff:g> m
 	</string>
 	<string name="daily_average_format">
 		Daily average -
-		<xliff:g example="3 hrs 5 min" id="time">%s</xliff:g>
+		<xliff:g example="3 h 5 m" id="time">%s</xliff:g>
 		<!-- above format is dependent on default_time_format-->
 	</string>
 	<string name="todays_log_percent_text">
@@ -40,8 +40,8 @@
 		%% of your daily average.
 	</string>
 	<string name="todays_total_log_time">
-		You coded for <xliff:g example="7" id="hours">%1$d</xliff:g> hrs
-		<xliff:g example="10" id="minutes">%2$d</xliff:g> min today.
+		You coded for <xliff:g example="7" id="hours">%1$d</xliff:g> h
+		<xliff:g example="10" id="minutes">%2$d</xliff:g> m today.
 	</string>
 	<string name="card_languages_header">Languages</string>
 	<string name="card_editors_header">Editors</string>
@@ -49,14 +49,14 @@
 	<string name="percent_format"><xliff:g id="percent">%.2f</xliff:g>%%</string>
 	<string name="language_goal">
 		Code in <xliff:g id="name">%1$s</xliff:g> for
-		<xliff:g example="3 hrs 5 min" id="time">%2$d</xliff:g> hrs daily.
+		<xliff:g example="3 hrs 5 min" id="time">%2$d</xliff:g> h daily.
 	</string>
 	<string name="project_deadline_goal">
 		Finish <xliff:g id="project_name">%1$s</xliff:g> by
 		<xliff:g example="4 Jun" id="date">%2$s</xliff:g>. <!-- Don't worry date is translated -->
 	</string>
 	<string name="project_daily_goal">
-		Spend <xliff:g id="time">%1$d</xliff:g> hrs on
+		Spend <xliff:g id="time">%1$d</xliff:g> h on
 		<xliff:g id="project_name">%2$s</xliff:g> daily.
 	</string>
 	<string name="choose_goal_type">Choose goal type</string>
@@ -83,13 +83,21 @@
 	</string-array>
 
 	<!-- bar chart -->
-	<string name="hours">%d hrs</string>
+	<string name="hours">%d h</string>
 	<string name="goal">Goal</string>
 	<string name="deadline_reached">Deadline reached</string>
 	<string name="marker_text">
 		<xliff:g id="time">%1$s</xliff:g> on
 		<xliff:g id="date">%2$s</xliff:g>
 	</string>
-	<string name="minutes">%d min</string>
+	<string name="minutes">%d m</string>
 	<string name="delete">Delete</string>
+	<string name="filter">leader_fitler</string>
+	<string name="find_me">Find me</string>
+	<string name="filter_by_language">Filter by language</string>
+	<string name="_3">3</string>
+	<string name="_1">1</string>
+	<string name="_2">2</string>
+	<string name="empty_leaderboard">No users using - <xliff:g id="language">%s</xliff:g></string>
+	<string name="not_found">Not found</string>
 </resources>

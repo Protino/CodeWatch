@@ -31,7 +31,7 @@ public class FormatUtils {
 
     public static Pair<Integer, Integer> getHoursAndMinutes(int seconds) {
         return new Pair<>(
-                (seconds / (60 * 60)) % 24,
+                (seconds / (60 * 60)),
                 (seconds / 60) % 60);
     }
 

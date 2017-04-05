@@ -15,14 +15,13 @@ import android.widget.NumberPicker;
 
 import org.greenrobot.eventbus.EventBus;
 
-import java.util.Arrays;
-
 import butterknife.BindArray;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.Unbinder;
 import io.github.protino.codewatch.R;
 import io.github.protino.codewatch.model.GoalItem;
+import io.github.protino.codewatch.utils.LanguageValidator;
 
 import static io.github.protino.codewatch.utils.Constants.LANGUAGE_GOAL;
 
@@ -37,7 +36,7 @@ public class LanguageGoalFragment extends DialogFragment implements DialogInterf
     @BindView(R.id.hours_picker) NumberPicker hoursPicker;
     @BindArray(R.array.languages) String[] validLanguages;
     private Unbinder unbinder;
-    private Boolean isValidLanguage;
+    private LanguageValidator validator;
     //@formatter:on
 
     @SuppressLint("InflateParams")
@@ -49,13 +48,18 @@ public class LanguageGoalFragment extends DialogFragment implements DialogInterf
         View rootView = layoutInflater.inflate(R.layout.dialog_add_language_goal, null);
         unbinder = ButterKnife.bind(this, rootView);
 
-        Arrays.sort(validLanguages);
-
         autoCompleteTextView.setAdapter(new ArrayAdapter<>(
-                        getActivity(), android.R.layout.simple_dropdown_item_1line, validLanguages));
-        autoCompleteTextView.setValidator(new Validator());
+                getActivity(), android.R.layout.simple_dropdown_item_1line, validLanguages));
+        validator = new LanguageValidator(getActivity(), autoCompleteTextView, validLanguages);
+        autoCompleteTextView.setValidator(validator);
         autoCompleteTextView.setOnFocusChangeListener(new FocusListener());
         autoCompleteTextView.setThreshold(1);
+        autoCompleteTextView.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                autoCompleteTextView.showDropDown();
+            }
+        });
 
         hoursPicker.setMinValue(1);
         hoursPicker.setMaxValue(24);
@@ -86,7 +90,7 @@ public class LanguageGoalFragment extends DialogFragment implements DialogInterf
             @Override
             public void onClick(View view) {
                 autoCompleteTextView.performValidation();
-                if (isValidLanguage) {
+                if (validator.isValidLanguage()) {
                     GoalItem goalItem = new GoalItem(
                             autoCompleteTextView.getText().toString(),
                             LANGUAGE_GOAL,
@@ -96,22 +100,6 @@ public class LanguageGoalFragment extends DialogFragment implements DialogInterf
                 }
             }
         });
-    }
-
-    private class Validator implements AutoCompleteTextView.Validator {
-
-        @Override
-        public boolean isValid(CharSequence text) {
-            isValidLanguage = Arrays.binarySearch(validLanguages, text.toString()) > -1;
-            return isValidLanguage;
-        }
-
-        @Override
-        public CharSequence fixText(CharSequence invalidText) {
-            autoCompleteTextView.setError(
-                    String.format(getString(R.string.invalid_language_hint), invalidText));
-            return invalidText;
-        }
     }
 
     private class FocusListener implements View.OnFocusChangeListener {

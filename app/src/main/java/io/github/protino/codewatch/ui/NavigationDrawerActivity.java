@@ -130,6 +130,7 @@ public class NavigationDrawerActivity extends AppCompatActivity implements
                 break;
             case R.id.leaderboards:
                 text = "Leaderboards";
+                replaceFragment(new LeaderboardFragment(), text);
                 break;
             case R.id.projects:
                 text = "Projects";

@@ -20,83 +20,8 @@
 		<item>@color/blue_grey_400</item>
 	</array>
 
+	<!-- This is sorted alphanumerically! -->
 	<string-array name="languages">
-		<item>ASP</item>
-		<item>ActionScript</item>
-		<item>ApacheConf</item>
-		<item>AppleScript</item>
-		<item>Assembly</item>
-		<item>Awk</item>
-		<item>Bash</item>
-		<item>BrightScript</item>
-		<item>C</item>
-		<item>C#</item>
-		<item>C++</item>
-		<item>CSHTML</item>
-		<item>CSS</item>
-		<item>Clojure</item>
-		<item>Cocoa</item>
-		<item>CoffeeScript</item>
-		<item>ColdFusion</item>
-		<item>Common Lisp</item>
-		<item>Dart</item>
-		<item>Delphi</item>
-		<item>Elixir</item>
-		<item>Elm</item>
-		<item>Emacs Lisp</item>
-		<item>Erlang</item>
-		<item>F#</item>
-		<item>Fortran</item>
-		<item>Go</item>
-		<item>Gosu</item>
-		<item>Groovy</item>
-		<item>HTML</item>
-		<item>Haskell</item>
-		<item>Haxe</item>
-		<item>INI</item>
-		<item>JSON</item>
-		<item>JSX</item>
-		<item>Jade</item>
-		<item>Java</item>
-		<item>JavaScript</item>
-		<item>Kotlin</item>
-		<item>LESS</item>
-		<item>Lua</item>
-		<item>Markdown</item>
-		<item>Matlab</item>
-		<item>Mustache</item>
-		<item>OCaml</item>
-		<item>Objective-C</item>
-		<item>Objective-C++</item>
-		<item>Objective-J</item>
-		<item>PHP</item>
-		<item>Perl</item>
-		<item>PowerShell</item>
-		<item>Prolog</item>
-		<item>Puppet</item>
-		<item>Python</item>
-		<item>R</item>
-		<item>Ruby</item>
-		<item>Rust</item>
-		<item>SCSS</item>
-		<item>SQL</item>
-		<item>Sass</item>
-		<item>Scala</item>
-		<item>Scheme</item>
-		<item>Shell</item>
-		<item>Slim</item>
-		<item>Smalltalk</item>
-		<item>Swift</item>
-		<item>Text</item>
-		<item>Turing</item>
-		<item>Twig</item>
-		<item>TypeScript</item>
-		<item>VB.net</item>
-		<item>VimL</item>
-		<item>XAML</item>
-		<item>XML</item>
-		<item>YAML</item>
-		<item>reStructuredText</item>
 		<item>.NET C#</item>
 		<item>.NET Config</item>
 		<item>.NET EntityFramework</item>
@@ -114,9 +39,6 @@
 		<item>/etc/hosts</item>
 		<item>/etc/modprobe.d conf</item>
 		<item>/etc/passwd</item>
-		<item>160106</item>
-		<item>160107</item>
-		<item>160215</item>
 		<item>3D blender</item>
 		<item>6Stelle</item>
 		<item>ABAP</item>
@@ -128,6 +50,7 @@
 		<item>APL</item>
 		<item>ASM</item>
 		<item>ASN.1</item>
+		<item>ASP</item>
 		<item>ASP Classic</item>
 		<item>ASP MVC</item>
 		<item>ASP.NET</item>
@@ -135,6 +58,7 @@
 		<item>AVRCo</item>
 		<item>AWS</item>
 		<item>AWS Elastic Beanstalk</item>
+		<item>ActionScript</item>
 		<item>ActionScript 3</item>
 		<item>ActiveReports</item>
 		<item>Administración VPS</item>
@@ -153,18 +77,22 @@
 		<item>Apache Conf</item>
 		<item>Apache Configuration</item>
 		<item>Apache Configuration File</item>
+		<item>ApacheConf</item>
 		<item>App Config</item>
+		<item>AppleScript</item>
 		<item>Application</item>
 		<item>Asana</item>
 		<item>Asciidoc</item>
 		<item>Aseprite</item>
 		<item>AspectJ</item>
+		<item>Assembly</item>
 		<item>Asset</item>
 		<item>Asterisk</item>
 		<item>Asterisk Configuration</item>
 		<item>Asymptote</item>
 		<item>Audio</item>
 		<item>AutoIt</item>
+		<item>Awk</item>
 		<item>BC</item>
 		<item>BEM</item>
 		<item>BIS</item>
@@ -178,6 +106,7 @@
 		<item>BST</item>
 		<item>BUGS</item>
 		<item>Balsamiq</item>
+		<item>Bash</item>
 		<item>Basic</item>
 		<item>Batch</item>
 		<item>Batchfile</item>
@@ -200,15 +129,19 @@
 		<item>Brainfuck</item>
 		<item>Brainstorming</item>
 		<item>Brando Documentation</item>
+		<item>BrightScript</item>
 		<item>Browser</item>
 		<item>Browser test/debug</item>
 		<item>Browsing</item>
 		<item>Browsing/Testing</item>
 		<item>Builds</item>
+		<item>C</item>
+		<item>C#</item>
 		<item>C# (Code-behind)</item>
 		<item>C# Project File</item>
 		<item>C# Razor</item>
 		<item>C# project</item>
+		<item>C++</item>
 		<item>CFEngine3</item>
 		<item>CHROME</item>
 		<item>CJSX</item>
@@ -216,7 +149,9 @@
 		<item>CMake</item>
 		<item>COBOLFree</item>
 		<item>CP backend</item>
+		<item>CSHTML</item>
 		<item>CSON</item>
+		<item>CSS</item>
 		<item>CSS Stylus</item>
 		<item>CUDA</item>
 		<item>CUE</item>
@@ -244,19 +179,24 @@
 		<item>Clay</item>
 		<item>Clean</item>
 		<item>Clipper / Crescendo</item>
+		<item>Clojure</item>
 		<item>ClojureScript</item>
 		<item>Closure Templates</item>
 		<item>CloudFormation</item>
+		<item>Cocoa</item>
 		<item>Cocoapods</item>
 		<item>Code Documentation</item>
 		<item>CodeKit</item>
 		<item>Codepen</item>
 		<item>CoffeeReact</item>
+		<item>CoffeeScript</item>
 		<item>CoffeeScript/React</item>
+		<item>ColdFusion</item>
 		<item>Command</item>
 		<item>Commit</item>
 		<item>Commit Message</item>
 		<item>Commiting</item>
+		<item>Common Lisp</item>
 		<item>Component Pascal</item>
 		<item>Composer</item>
 		<item>Conf</item>
@@ -283,12 +223,14 @@
 		<item>DNS</item>
 		<item>DTD</item>
 		<item>Darcs Patch</item>
+		<item>Dart</item>
 		<item>Data</item>
 		<item>Debian Control</item>
 		<item>Debian Control file</item>
 		<item>Debian Sourcelist</item>
 		<item>Debug</item>
 		<item>Debugging</item>
+		<item>Delphi</item>
 		<item>Design</item>
 		<item>Design Research</item>
 		<item>Dev Research</item>
@@ -332,9 +274,12 @@
 		<item>Ejemplos</item>
 		<item>Elasticsearch</item>
 		<item>EleonorHELP</item>
+		<item>Elixir</item>
 		<item>Elixir(eex)</item>
 		<item>Elixir(test)</item>
+		<item>Elm</item>
 		<item>Emacs</item>
+		<item>Emacs Lisp</item>
 		<item>Emacs org-mode</item>
 		<item>Email</item>
 		<item>Embedded Ruby</item>
@@ -347,10 +292,12 @@
 		<item>Environment</item>
 		<item>Environment Variable</item>
 		<item>Environnement</item>
+		<item>Erlang</item>
 		<item>Etools / API</item>
 		<item>Euclid</item>
 		<item>Euphoria</item>
 		<item>Excellon Drill File</item>
+		<item>F#</item>
 		<item>FEDS</item>
 		<item>FOP</item>
 		<item>FPL</item>
@@ -365,6 +312,7 @@
 		<item>FlashDevelop</item>
 		<item>Flex</item>
 		<item>Forth</item>
+		<item>Fortran</item>
 		<item>FortranFixed</item>
 		<item>FoxPro</item>
 		<item>Free Marker</item>
@@ -404,6 +352,7 @@
 		<item>Gmail</item>
 		<item>GnuPG conf</item>
 		<item>Gnuplot</item>
+		<item>Go</item>
 		<item>Go HTML</item>
 		<item>Golang</item>
 		<item>GoldyTeam</item>
@@ -411,14 +360,17 @@
 		<item>Goodle</item>
 		<item>Google</item>
 		<item>Google Docs</item>
+		<item>Gosu</item>
 		<item>Gosu Template</item>
 		<item>Gradle</item>
 		<item>GraphQL</item>
 		<item>Greytruck!</item>
 		<item>Groff</item>
+		<item>Groovy</item>
 		<item>Groovy Server Pages</item>
 		<item>Gulp</item>
 		<item>HCL</item>
+		<item>HTML</item>
 		<item>HTML &amp; Javascript</item>
 		<item>HTML &amp; Twig</item>
 		<item>HTML Liquid</item>
@@ -435,6 +387,8 @@
 		<item>Handlebars</item>
 		<item>Happytours</item>
 		<item>Harbour</item>
+		<item>Haskell</item>
+		<item>Haxe</item>
 		<item>Heroku</item>
 		<item>High Level Shading Language</item>
 		<item>Hosts</item>
@@ -442,6 +396,7 @@
 		<item>Hy</item>
 		<item>Hybris</item>
 		<item>IDL</item>
+		<item>INI</item>
 		<item>INI Files</item>
 		<item>IQS</item>
 		<item>IRC logs</item>
@@ -468,12 +423,17 @@
 		<item>JCL</item>
 		<item>JS</item>
 		<item>JSHint</item>
+		<item>JSON</item>
 		<item>JSON-LD</item>
 		<item>JSP</item>
+		<item>JSX</item>
 		<item>JScript</item>
+		<item>Jade</item>
+		<item>Java</item>
 		<item>Java FXML</item>
 		<item>Java Server Page</item>
 		<item>JavaFx</item>
+		<item>JavaScript</item>
 		<item>JavaScript &amp; HTML</item>
 		<item>JavaScript(test)</item>
 		<item>JavaScript+Django/Jinja</item>
@@ -495,8 +455,10 @@
 		<item>Kivy</item>
 		<item>KiwiScript</item>
 		<item>Koka</item>
+		<item>Kotlin</item>
 		<item>Kubernetes</item>
 		<item>LDIF</item>
+		<item>LESS</item>
 		<item>LFE</item>
 		<item>LLDB</item>
 		<item>LLVM</item>
@@ -531,6 +493,7 @@
 		<item>Logfiles</item>
 		<item>Logos</item>
 		<item>Logs</item>
+		<item>Lua</item>
 		<item>M4</item>
 		<item>MISS</item>
 		<item>MOOCode</item>
@@ -548,6 +511,7 @@
 		<item>Map file</item>
 		<item>Mario and Luigi Paper Jam HPTO</item>
 		<item>Mario and Luigi Paper Jam Site</item>
+		<item>Markdown</item>
 		<item>Markdown (GitHub)</item>
 		<item>Mask</item>
 		<item>Mason</item>
@@ -555,6 +519,7 @@
 		<item>Material</item>
 		<item>Material Guidelines</item>
 		<item>Mathematica</item>
+		<item>Matlab</item>
 		<item>Maven</item>
 		<item>Maya</item>
 		<item>Medidor PM</item>
@@ -577,6 +542,7 @@
 		<item>Mscgen</item>
 		<item>MuCow</item>
 		<item>MuPAD</item>
+		<item>Mustache</item>
 		<item>MyScript</item>
 		<item>N3</item>
 		<item>NASM</item>
@@ -605,7 +571,11 @@
 		<item>Nuget Packaging</item>
 		<item>NumPy</item>
 		<item>Nunjucks</item>
+		<item>OCaml</item>
 		<item>ODIN</item>
+		<item>Objective-C</item>
+		<item>Objective-C++</item>
+		<item>Objective-J</item>
 		<item>Octave</item>
 		<item>Octave/MATLAB</item>
 		<item>Omnibus Props</item>
@@ -628,6 +598,7 @@
 		<item>PAKET</item>
 		<item>PDF</item>
 		<item>PDF-Suite</item>
+		<item>PHP</item>
 		<item>PHP (HTML)</item>
 		<item>PHP (Laravel)</item>
 		<item>PHP Config</item>
@@ -645,6 +616,7 @@
 		<item>Peg</item>
 		<item>PegJs</item>
 		<item>Performance Analysis</item>
+		<item>Perl</item>
 		<item>Pesquisa</item>
 		<item>PhalconPHP volt</item>
 		<item>Phonegap</item>
@@ -666,6 +638,7 @@
 		<item>PostCSS</item>
 		<item>PostScript</item>
 		<item>Postman</item>
+		<item>PowerShell</item>
 		<item>Praat</item>
 		<item>Prefab</item>
 		<item>Preferences</item>
@@ -676,6 +649,7 @@
 		<item>Project Resourses</item>
 		<item>Project management</item>
 		<item>ProjectConfigs</item>
+		<item>Prolog</item>
 		<item>Properties</item>
 		<item>Property list</item>
 		<item>PropertyList</item>
@@ -686,8 +660,10 @@
 		<item>Puffin</item>
 		<item>Pug</item>
 		<item>Pug (Jade)</item>
+		<item>Puppet</item>
 		<item>Purescript</item>
 		<item>Pystachio</item>
+		<item>Python</item>
 		<item>Python 3</item>
 		<item>QA</item>
 		<item>QBasic</item>
@@ -695,6 +671,7 @@
 		<item>QMake</item>
 		<item>QRE</item>
 		<item>Quack</item>
+		<item>R</item>
 		<item>R-qidos.nl</item>
 		<item>R-werkenmantelzorg.nl</item>
 		<item>RAML</item>
@@ -747,24 +724,32 @@
 		<item>Robotframework</item>
 		<item>RocketJSON</item>
 		<item>Rprofile</item>
+		<item>Ruby</item>
+		<item>Rust</item>
 		<item>S</item>
 		<item>S coreware file</item>
 		<item>SAS</item>
 		<item>SAS log</item>
+		<item>SCSS</item>
 		<item>SMC Modeler</item>
 		<item>SML</item>
 		<item>SPARQL</item>
+		<item>SQL</item>
 		<item>SS Template</item>
 		<item>SVG</item>
 		<item>SVN</item>
 		<item>SWIG</item>
 		<item>Salt</item>
+		<item>Sass</item>
+		<item>Scala</item>
 		<item>Scalate Server Page</item>
 		<item>Scene</item>
+		<item>Scheme</item>
 		<item>Search</item>
 		<item>Settings</item>
 		<item>Shader</item>
 		<item>Shaders</item>
+		<item>Shell</item>
 		<item>Shen</item>
 		<item>Shopify</item>
 		<item>SilverStripe</item>
@@ -776,7 +761,9 @@
 		<item>Skype</item>
 		<item>Slack</item>
 		<item>SlackSites</item>
+		<item>Slim</item>
 		<item>Smali</item>
+		<item>Smalltalk</item>
 		<item>Smarty template</item>
 		<item>SnapForm</item>
 		<item>Snippets</item>
@@ -810,6 +797,7 @@
 		<item>Sublimetext</item>
 		<item>Subtitle</item>
 		<item>SugarSS</item>
+		<item>Swift</item>
 		<item>Switch HPTO</item>
 		<item>Syncthing ignore</item>
 		<item>Systemd</item>
@@ -847,6 +835,7 @@
 		<item>TestFile</item>
 		<item>Testing</item>
 		<item>Tests</item>
+		<item>Text</item>
 		<item>Text Plain</item>
 		<item>Text Template</item>
 		<item>Textile</item>
@@ -867,7 +856,10 @@
 		<item>Treetop</item>
 		<item>Trello</item>
 		<item>Troff Mandoc</item>
+		<item>Turing</item>
 		<item>Turtle</item>
+		<item>Twig</item>
+		<item>TypeScript</item>
 		<item>TypoScript</item>
 		<item>UI</item>
 		<item>UI/UX Testing</item>
@@ -886,6 +878,7 @@
 		<item>UrbiScript</item>
 		<item>VB</item>
 		<item>VB Script</item>
+		<item>VB.net</item>
 		<item>VB6</item>
 		<item>VB6 Form</item>
 		<item>VBA</item>
@@ -901,6 +894,7 @@
 		<item>Velocity/HTML</item>
 		<item>Videv Studios</item>
 		<item>Vim Snippets</item>
+		<item>VimL</item>
 		<item>Vimwiki Markdown</item>
 		<item>Visual FoxPro</item>
 		<item>Visualforce</item>
@@ -936,9 +930,11 @@
 		<item>WorkSites</item>
 		<item>Wren</item>
 		<item>XAF Model</item>
+		<item>XAML</item>
 		<item>XIB</item>
 		<item>XKeyMap</item>
 		<item>XLIFF</item>
+		<item>XML</item>
 		<item>XML Resource File</item>
 		<item>XOJO</item>
 		<item>XSLT</item>
@@ -952,6 +948,7 @@
 		<item>Xorg</item>
 		<item>Xresources</item>
 		<item>Xtend</item>
+		<item>YAML</item>
 		<item>YML</item>
 		<item>Yate</item>
 		<item>ZK</item>
@@ -1047,6 +1044,7 @@
 		<item>qf</item>
 		<item>quickrun</item>
 		<item>rc</item>
+		<item>reStructuredText</item>
 		<item>reg</item>
 		<item>rst</item>
 		<item>sbt</item>

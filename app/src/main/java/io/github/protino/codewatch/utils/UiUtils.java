@@ -35,4 +35,9 @@ public class UiUtils {
         }
         return 0;
     }
+
+    public static int getScreenHeight() {
+        DisplayMetrics displayMetrics = Resources.getSystem().getDisplayMetrics();
+        return displayMetrics.heightPixels;
+    }
 }

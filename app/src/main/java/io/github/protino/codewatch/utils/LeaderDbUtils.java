@@ -3,11 +3,9 @@ package io.github.protino.codewatch.utils;
 import android.content.ContentValues;
 import android.content.Context;
 
-import com.google.gson.Gson;
-import com.google.gson.reflect.TypeToken;
+import org.json.JSONException;
+import org.json.JSONObject;
 
-import java.lang.reflect.Type;
-import java.util.HashMap;
 import java.util.List;
 
 import io.github.protino.codewatch.data.LeaderContract;
@@ -23,29 +21,24 @@ import timber.log.Timber;
 
 public class LeaderDbUtils {
 
-    private final static Type typeHashMap = new TypeToken<HashMap<String, Integer>>() {
-    }.getType();
-
-    public static void store(Context context, List<LeadersData> dataList) {
+    public static void store(Context context, List<LeadersData> dataList) throws JSONException {
 
         ContentValues[] leaderValues = new ContentValues[dataList.size()];
         ContentValues values;
-        HashMap<String, Integer> languageMap;
         for (int i = 0; i < dataList.size(); i++) {
             values = new ContentValues();
-            languageMap = new HashMap<>();
             LeadersData leadersData = dataList.get(i);
             RunningTotal runningTotal = leadersData.getRunningTotal();
             values.put(LeaderContract.LeaderEntry.COLUMN_TOTAL_SECONDS, runningTotal.getTotalSeconds());
             values.put(LeaderContract.LeaderEntry.COLUMN_DAILY_AVERAGE, runningTotal.getDailyAverage());
 
-            //transform language list to languageMap and then to gsonString
+            //transform language list to languageMap and then to jsonString
             List<Language> languages = runningTotal.getLanguages();
+            JSONObject jsonObject = new JSONObject();
             for (Language language : languages) {
-                languageMap.put(language.getName(), language.getTotalSeconds());
+                jsonObject.put(language.getName(), language.getTotalSeconds());
             }
-            String languageMapString = new Gson().toJson(languageMap, typeHashMap);
-            values.put(LeaderContract.LeaderEntry.COLUMN_LANGUAGE_STATS, languageMapString);
+            values.put(LeaderContract.LeaderEntry.COLUMN_LANGUAGE_STATS, jsonObject.toString());
 
             User user = leadersData.getUser();
             values.put(LeaderContract.LeaderEntry.COLUMN_USER_ID, user.getId());

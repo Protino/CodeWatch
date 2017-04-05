@@ -37,15 +37,18 @@ public final class Constants {
     /*Projections */
     public static final int COL_LEADER_ID = 0;
     public static final int COL_USER_ID = 1;
-    public static final int COL_FULL_NAME = 2;
+    public static final int COL_DISPLAY_NAME = 2;
     public static final int COL_TOTAL_SECONDS = 3;
     public static final int COL_LANGUAGE_STATS = 4;
+    public static final int COL_PHOTO_URL = 5;
+
     public static final String[] LEADER_COLUMNS = {
             LeaderContract.LeaderEntry._ID,
             LeaderContract.LeaderEntry.COLUMN_USER_ID,
-            LeaderContract.LeaderEntry.COLUMN_USER_NAME,
+            LeaderContract.LeaderEntry.COLUMN_DISPLAY_NAME,
             LeaderContract.LeaderEntry.COLUMN_TOTAL_SECONDS,
-            LeaderContract.LeaderEntry.COLUMN_LANGUAGE_STATS
+            LeaderContract.LeaderEntry.COLUMN_LANGUAGE_STATS,
+            LeaderContract.LeaderEntry.COLUMN_PHOTO
     };
     public static final String LEADER_SORT_ORDER = LeaderContract.LeaderEntry.COLUMN_TOTAL_SECONDS + " DESC";
     /* Firebase Constants */

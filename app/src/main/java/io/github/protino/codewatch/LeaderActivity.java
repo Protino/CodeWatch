@@ -23,6 +23,8 @@ import android.widget.TextView;
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 
+import org.json.JSONException;
+
 import java.io.IOException;
 import java.lang.reflect.Type;
 import java.util.ArrayList;
@@ -167,6 +169,9 @@ public class LeaderActivity extends AppCompatActivity implements LoaderManager.L
             } catch (IOException e) {
                 e.printStackTrace();
                 return false;
+            } catch (JSONException e) {
+                e.printStackTrace();
+                return false;
             }
         }
 
@@ -187,12 +192,12 @@ public class LeaderActivity extends AppCompatActivity implements LoaderManager.L
 
         @Override
         public View newView(Context context, Cursor cursor, ViewGroup parent) {
-            return LayoutInflater.from(context).inflate(R.layout.leader_item, parent, false);
+            return LayoutInflater.from(context).inflate(R.layout.item_leaders, parent, false);
         }
 
         @Override
         public void bindView(View view, Context context, Cursor cursor) {
-            String name = cursor.getString(Constants.COL_FULL_NAME);
+            String name = cursor.getString(Constants.COL_DISPLAY_NAME);
             Integer totalSeconds = cursor.getInt(Constants.COL_TOTAL_SECONDS);
             ((TextView) view.findViewById(R.id.name)).setText(name);
             ((TextView) view.findViewById(R.id.total_seconds)).setText(String.valueOf(totalSeconds));

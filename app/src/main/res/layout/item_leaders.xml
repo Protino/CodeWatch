@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout
+	xmlns:android="http://schemas.android.com/apk/res/android"
+	xmlns:tools="http://schemas.android.com/tools"
+	android:id="@+id/item_leader_root"
+	android:layout_width="match_parent"
+	android:layout_height="wrap_content"
+	android:layout_marginEnd="16dp"
+	android:layout_marginStart="16dp"
+	android:gravity="center_vertical"
+	android:minHeight="?android:listPreferredItemHeight"
+	android:weightSum="10">
+
+	<TextView
+		android:id="@+id/rank"
+		style="@style/Base.TextAppearance.AppCompat.Caption"
+		android:layout_width="0dp"
+		android:layout_height="wrap_content"
+		android:layout_weight="1"
+		tools:text="3500"/>
+
+	<ImageView
+		android:id="@+id/avatar"
+		android:layout_width="0dp"
+		android:layout_height="match_parent"
+		android:layout_marginEnd="8dp"
+		android:layout_marginRight="8dp"
+		android:layout_weight="1"
+		android:adjustViewBounds="true"
+		tools:src="@drawable/profile_avatar_placeholder"/>
+
+	<TextView
+		android:id="@+id/name"
+		android:layout_width="0dp"
+		android:layout_height="wrap_content"
+		android:layout_marginEnd="8dp"
+		android:layout_marginRight="8dp"
+		android:layout_weight="6"
+		tools:text="Gurupad M Mamadapur"/>
+
+	<TextView
+		android:id="@+id/total_seconds"
+		android:layout_width="0dp"
+		android:layout_height="wrap_content"
+		android:layout_weight="2"
+		android:fontFamily="sans-serif-condensed"
+		android:gravity="end"
+		android:textSize="14sp"
+		tools:text="88 h 88 m"/>
+</LinearLayout>
