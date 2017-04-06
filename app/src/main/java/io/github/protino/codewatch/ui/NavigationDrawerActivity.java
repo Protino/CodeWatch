@@ -134,6 +134,7 @@ public class NavigationDrawerActivity extends AppCompatActivity implements
                 break;
             case R.id.projects:
                 text = "Projects";
+                replaceFragment(new ProjectsFragment(), text);
                 break;
             case R.id.settings:
                 text = "Settings";

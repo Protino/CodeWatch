@@ -138,7 +138,7 @@ public class GoalsDetailFragment extends DialogFragment {
                 dismiss();
             }
         });
-        toolbar.inflateMenu(R.menu.goal_detail);
+        toolbar.inflateMenu(R.menu.goal_detail_menu);
         toolbar.setOnMenuItemClickListener(new Toolbar.OnMenuItemClickListener() {
             @Override
             public boolean onMenuItemClick(MenuItem item) {

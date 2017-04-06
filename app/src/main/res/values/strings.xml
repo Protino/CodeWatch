@@ -98,6 +98,14 @@
 	<string name="_3">3</string>
 	<string name="_1">1</string>
 	<string name="_2">2</string>
-	<string name="empty_leaderboard">No users using - <xliff:g id="language">%s</xliff:g></string>
+	<string name="empty_leaderboard">No users using - <xliff:g id="language">%s</xliff:g>.</string>
+	<string name="empty_project_list">No projects found.</string>
+
+
 	<string name="not_found">Not found</string>
+	<string name="sort_by">Sort by</string>
+	<string name="menu_sort_by_time_title">By time spent</string>
+	<string name="menu_sort_by_name_title">By name</string>
+	<string name="menu_search_title">Search</string>
+	<string name="search_hint">Search by project name…</string>
 </resources>

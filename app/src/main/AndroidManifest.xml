@@ -35,8 +35,9 @@
 				android:value=".FirebaseTestActivity"
 				/>
 		</activity>
-		<activity android:name=".ui.NavigationDrawerActivity"
-		          android:theme="@style/AppTheme.Drawer">
+		<activity
+			android:name=".ui.NavigationDrawerActivity"
+			android:theme="@style/AppTheme.Drawer">
 			<intent-filter>
 				<action android:name="android.intent.action.MAIN"/>
 				<category android:name="android.intent.category.LAUNCHER"/>
