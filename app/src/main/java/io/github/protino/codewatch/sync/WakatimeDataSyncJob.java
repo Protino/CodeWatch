@@ -13,6 +13,7 @@ import java.util.concurrent.CountDownLatch;
 
 import io.github.protino.codewatch.model.WakatimeData;
 import io.github.protino.codewatch.model.firebase.User;
+import io.github.protino.codewatch.remote.FetchLeaderBoardData;
 import io.github.protino.codewatch.remote.FetchWakatimeData;
 import io.github.protino.codewatch.utils.CacheUtils;
 import io.github.protino.codewatch.utils.Constants;
@@ -114,12 +115,13 @@ public class WakatimeDataSyncJob extends JobService {
 
         @Override
         public void run() {
-            FetchWakatimeData fetchWakatimeData = new FetchWakatimeData(getApplicationContext());
+            FetchLeaderBoardData fetchLeaderBoardData = new FetchLeaderBoardData(getApplicationContext());
             try {
-                //List<LeadersData> dataList = fetchWakatimeData.fetchLeaders().getData();
-                Timber.d("Successfully download leadersData");
-                // LeaderDb.store(getApplicationContext(), dataList);
-                Timber.d("Successfully stored wakatimeData");
+                boolean result = fetchLeaderBoardData.execute();
+                if (!result) {
+                    Timber.e("LeaderboardSyncTask failed");
+                    needsReschedule = true;
+                }
             } catch (Exception e) {
                 Timber.d(e, "LeaderboardSyncTask failed");
                 needsReschedule = true;

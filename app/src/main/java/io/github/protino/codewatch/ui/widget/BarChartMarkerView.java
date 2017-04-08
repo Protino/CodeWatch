@@ -1,4 +1,4 @@
-package io.github.protino.codewatch.ui;
+package io.github.protino.codewatch.ui.widget;
 
 import android.content.Context;
 import android.widget.TextView;
@@ -19,7 +19,7 @@ import io.github.protino.codewatch.utils.FormatUtils;
  * @author Gurupad Mamadapur
  */
 
-public class CustomMarkerView extends MarkerView {
+public class BarChartMarkerView extends MarkerView {
 
     private final Context context;
     private final DateTime date;
@@ -33,7 +33,7 @@ public class CustomMarkerView extends MarkerView {
      * @param layoutResource the layout resource to use for the MarkerView.
      * @param referenceTime  additive value to each data value.
      */
-    public CustomMarkerView(Context context, int layoutResource, long referenceTime) {
+    public BarChartMarkerView(Context context, int layoutResource, long referenceTime) {
         super(context, layoutResource);
         this.context = context;
         textView = (TextView) findViewById(R.id.marker_text);

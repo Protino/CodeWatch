@@ -27,8 +27,6 @@ import com.github.mikephil.charting.formatter.IAxisValueFormatter;
 import com.google.gson.Gson;
 
 import org.joda.time.DateTime;
-import org.joda.time.format.DateTimeFormat;
-import org.joda.time.format.DateTimeFormatter;
 
 import java.util.ArrayList;
 import java.util.concurrent.TimeUnit;
@@ -39,6 +37,7 @@ import butterknife.ButterKnife;
 import io.github.protino.codewatch.R;
 import io.github.protino.codewatch.model.firebase.LanguageGoal;
 import io.github.protino.codewatch.model.firebase.ProjectGoal;
+import io.github.protino.codewatch.ui.widget.BarChartMarkerView;
 import io.github.protino.codewatch.ui.widget.PerformanceBarView;
 import io.github.protino.codewatch.utils.Constants;
 import io.github.protino.codewatch.utils.FormatUtils;
@@ -172,7 +171,7 @@ public class GoalsDetailFragment extends DialogFragment {
         xAxis.setPosition(XAxis.XAxisPosition.BOTTOM);
         xAxis.setDrawGridLines(false);
         xAxis.setGranularity(1f);
-        xAxis.setValueFormatter(new CustomXAxisValueFormatter(referenceTime));
+        xAxis.setValueFormatter(new FormatUtils().getBarXAxisValueFormatterInstance(referenceTime));
         //xAxis.setSpaceMin(36288f);
         //xAxis.setSpaceMax(36288f);
         xAxis.setAxisLineWidth(2f);
@@ -204,8 +203,8 @@ public class GoalsDetailFragment extends DialogFragment {
         leftAxis.setAxisMaximum(maximum * 60 * 60);
         leftAxis.setAxisMinimum(0f);
 
-        CustomMarkerView customMarkerView = new CustomMarkerView(context, R.layout.marker_view, referenceTime);
-        goalBarChart.setMarker(customMarkerView);
+        BarChartMarkerView barChartMarkerView = new BarChartMarkerView(context, R.layout.marker_view, referenceTime);
+        goalBarChart.setMarker(barChartMarkerView);
 
         goalBarChart.getAxisRight().setEnabled(false);
         goalBarChart.getLegend().setEnabled(false);
@@ -220,7 +219,7 @@ public class GoalsDetailFragment extends DialogFragment {
         goalBarChart.setDrawBorders(false);
         goalBarChart.setData(barData);
 
-        customMarkerView.setChartView(goalBarChart);
+        barChartMarkerView.setChartView(goalBarChart);
 
 
         goalBarChart.setVisibility(View.VISIBLE);
@@ -272,21 +271,5 @@ public class GoalsDetailFragment extends DialogFragment {
         //close the dialog
         dismiss();
 
-    }
-
-    private class CustomXAxisValueFormatter implements IAxisValueFormatter {
-
-        private final DateTimeFormatter dateFormat;
-        private final DateTime date;
-
-        public CustomXAxisValueFormatter(long referenceTime) {
-            dateFormat = DateTimeFormat.forPattern("d");
-            date = new DateTime(referenceTime);
-        }
-
-        @Override
-        public String getFormattedValue(float value, AxisBase axis) {
-            return dateFormat.print(date.plusDays((int) value));
-        }
     }
 }

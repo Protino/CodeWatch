@@ -29,11 +29,12 @@
 					android:scheme="@string/LOGIN_SCHEME"/>
 			</intent-filter>
 		</activity>
-		<activity android:name=".LeaderActivity">
+
+		<activity
+			android:name=".ui.ProjectDetailActivity">
 			<meta-data
 				android:name="android.support.PARENT_ACTIVITY"
-				android:value=".FirebaseTestActivity"
-				/>
+				android:value=".ui.NavigationDrawerActivity"/>
 		</activity>
 		<activity
 			android:name=".ui.NavigationDrawerActivity"
@@ -57,5 +58,4 @@
 		</service>
 
 	</application>
-
 </manifest>

@@ -4,11 +4,9 @@ import android.annotation.SuppressLint;
 import android.app.Dialog;
 import android.content.Context;
 import android.content.DialogInterface;
-import android.content.SharedPreferences;
 import android.database.Cursor;
 import android.os.AsyncTask;
 import android.os.Bundle;
-import android.preference.PreferenceManager;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.LoaderManager;
@@ -31,14 +29,9 @@ import android.widget.CompoundButton;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.google.gson.Gson;
-import com.google.gson.reflect.TypeToken;
-
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import java.io.IOException;
-import java.lang.reflect.Type;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
@@ -55,12 +48,10 @@ import io.github.protino.codewatch.R;
 import io.github.protino.codewatch.data.LeaderContract;
 import io.github.protino.codewatch.model.DefaultLeaderItem;
 import io.github.protino.codewatch.model.TopperItem;
-import io.github.protino.codewatch.model.leaders.LeadersData;
-import io.github.protino.codewatch.remote.FetchWakatimeData;
+import io.github.protino.codewatch.remote.FetchLeaderBoardData;
 import io.github.protino.codewatch.ui.adapter.LeadersAdapter;
 import io.github.protino.codewatch.utils.Constants;
 import io.github.protino.codewatch.utils.LanguageValidator;
-import io.github.protino.codewatch.utils.LeaderDbUtils;
 import io.github.protino.codewatch.utils.UiUtils;
 import timber.log.Timber;
 
@@ -92,6 +83,7 @@ public class LeaderboardFragment extends Fragment implements DialogInterface.OnS
     private Context context;
     private LeadersAdapter leadersAdapter;
     private FilterState filterState;
+
 
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
@@ -250,11 +242,11 @@ public class LeaderboardFragment extends Fragment implements DialogInterface.OnS
     }
 
     private void loadFilteredChanges() {
-        hideLoadingScreen(false);
+        hideProgressBar(false);
         if (filterState.getCurrentFilterLanguage().equals(FilterState.EMPTY)) {
             //change adapter data to use normal data
             leadersAdapter.swapData(buildDataItems(defaultLeaderItems));
-            hideLoadingScreen(true);
+            hideProgressBar(true);
             setActionBarTitle("Leaderboard");
             return;
         }
@@ -282,7 +274,7 @@ public class LeaderboardFragment extends Fragment implements DialogInterface.OnS
         filteredLeaderItems = new ArrayList<>();
     }
 
-    public void hideLoadingScreen(boolean hide) {
+    public void hideProgressBar(boolean hide) {
         recyclerView.setVisibility(hide ? View.VISIBLE : View.GONE);
         progressBarLayout.setVisibility(hide ? View.GONE : View.VISIBLE);
         errorText.setVisibility(View.GONE);
@@ -336,7 +328,7 @@ public class LeaderboardFragment extends Fragment implements DialogInterface.OnS
 
         @Override
         protected void onPreExecute() {
-            hideLoadingScreen(false);
+            hideProgressBar(false);
             super.onPreExecute();
         }
 
@@ -383,7 +375,7 @@ public class LeaderboardFragment extends Fragment implements DialogInterface.OnS
         protected void onPostExecute(List<Object> result) {
             //notify changes to the adapter
             leadersAdapter.swapData(result);
-            hideLoadingScreen(true);
+            hideProgressBar(true);
             setActionBarTitle("Leaderboard");
         }
     }
@@ -425,19 +417,14 @@ public class LeaderboardFragment extends Fragment implements DialogInterface.OnS
                 displayErrorText(context.getString(R.string.empty_leaderboard, filterLanguage));
             } else {
                 leadersAdapter.swapData(result);
-                hideLoadingScreen(true);
+                hideProgressBar(true);
                 recyclerView.scrollToPosition(0);
             }
         }
     }
 
     private class StoreToDbTask extends AsyncTask<Void, Void, Boolean> {
-        private final Type typeLeadersData = new TypeToken<List<LeadersData>>() {
-        }.getType();
         private Context context;
-        private List<LeadersData> dataList;
-        private String dataListString;
-
 
         public StoreToDbTask(Context context) {
             this.context = context;
@@ -446,40 +433,24 @@ public class LeaderboardFragment extends Fragment implements DialogInterface.OnS
         @Override
         protected void onPreExecute() {
             super.onPreExecute();
+            hideProgressBar(false);
         }
 
-        @SuppressLint("ApplySharedPref")
         @Override
         protected Boolean doInBackground(Void... params) {
-            FetchWakatimeData wakatimeData = new FetchWakatimeData(context);
-            try {
-                SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(context);
-                if (sharedPreferences.contains(Constants.PREF_LEADERBOARD_UPDATED)) {
-                    dataListString = sharedPreferences.getString(Constants.PREF_LEADERBOARD_UPDATED, null);
-                    dataList = new Gson().fromJson(dataListString, typeLeadersData);
-                } else {
-                    //Fetch data
-                    dataList = wakatimeData.fetchLeaders().getData();
-                    dataListString = new Gson().toJson(dataList, typeLeadersData);
-                    sharedPreferences.edit().putString(Constants.PREF_LEADERBOARD_UPDATED, dataListString).commit();
-                }
-                //store in cv
-                LeaderDbUtils.store(context, dataList);
-                return true;
-            } catch (IOException e) {
-                e.printStackTrace();
-                return false;
-            } catch (JSONException e) {
-                e.printStackTrace();
-                return false;
-            }
+            FetchLeaderBoardData fetchLeaderBoardData = new FetchLeaderBoardData(context);
+            return fetchLeaderBoardData.execute();
         }
 
+        // TODO: 08-04-2017 Change boolean result to an error code
         @Override
         protected void onPostExecute(Boolean result) {
             super.onPostExecute(result);
             if (result) {
                 loadResultsFromProvider();
+            } else {
+                hideProgressBar(true);
+                displayErrorText("Network error"); //Display message appropriate to the result code
             }
         }
     }

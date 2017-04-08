@@ -14,11 +14,8 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import io.github.protino.codewatch.remote.interfaces.ApiInterface;
-import io.github.protino.codewatch.remote.interfaces.PublicApiInterface;
 import io.github.protino.codewatch.model.AccessToken;
 import io.github.protino.codewatch.model.WakatimeData;
-import io.github.protino.codewatch.model.leaders.LeadersResponse;
 import io.github.protino.codewatch.model.project.ProjectsResponse;
 import io.github.protino.codewatch.model.project.summary.GenericSummaryData;
 import io.github.protino.codewatch.model.project.summary.GenericSummaryResponse;
@@ -26,20 +23,20 @@ import io.github.protino.codewatch.model.project.summary.Project;
 import io.github.protino.codewatch.model.project.summary.ProjectSummaryResponse;
 import io.github.protino.codewatch.model.statistics.StatsResponse;
 import io.github.protino.codewatch.model.user.UserResponse;
+import io.github.protino.codewatch.remote.interfaces.ApiInterface;
 import io.github.protino.codewatch.remote.retrofit.ServiceGenerator;
 import io.github.protino.codewatch.utils.Constants;
 
 import static io.github.protino.codewatch.utils.Constants.PREF_ACCESS_TOKEN;
 
 /**
- * Created by Gurupad Mamadapur on 10-03-2017.
+ * @author Gurupad Mamadapur
  */
 
 public class FetchWakatimeData {
 
     private final static String dateFormat = "yyyy-MM-dd";
     private ApiInterface apiInterface;
-    private PublicApiInterface publicApiInterface;
     private String startDate;
     private String endDate;
     private String yesterday;
@@ -53,7 +50,6 @@ public class FetchWakatimeData {
         Gson gson = new Gson();
         String accessToken = gson.fromJson(accessTokenJson, AccessToken.class).getAccessToken();
         apiInterface = ServiceGenerator.createService(ApiInterface.class, accessToken);
-        publicApiInterface = ServiceGenerator.createService(PublicApiInterface.class);
         setDates();
     }
 
@@ -117,12 +113,8 @@ public class FetchWakatimeData {
         return apiInterface.getUserProfileData().execute().body();
     }
 
-    public ProjectSummaryResponse fetchProjectSummary(String project_id) throws IOException {
-        return apiInterface.getProjectSummary(project_id, startDate, endDate).execute().body();
-    }
-
-    public LeadersResponse fetchLeaders() throws IOException {
-        return apiInterface.getLeaders().execute().body();
+    public ProjectSummaryResponse fetchProjectSummary(String projectName) throws IOException {
+        return apiInterface.getProjectSummary(projectName, startDate, endDate).execute().body();
     }
 
     public StatsResponse fetchStats() throws IOException {

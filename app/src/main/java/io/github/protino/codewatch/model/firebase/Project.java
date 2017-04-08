@@ -12,7 +12,7 @@ public class Project {
     private String id;
     private String name;
     private String publicUrl;
-    private List<Integer> timeSpent;
+    private List<Integer> timeSpent; // ending with user's current date, max is 7 days
     private Map<String, Integer> languageList;
     private Map<String, Integer> osPairList;
     private Map<String, Integer> editorPaiList;

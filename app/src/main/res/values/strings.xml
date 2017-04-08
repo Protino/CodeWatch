@@ -40,8 +40,10 @@
 		%% of your daily average.
 	</string>
 	<string name="todays_total_log_time">
-		You coded for <xliff:g example="7" id="hours">%1$d</xliff:g> h
-		<xliff:g example="10" id="minutes">%2$d</xliff:g> m today.
+		You coded for <xliff:g example="7 h 5 m" id="time">%s</xliff:g> today.
+	</string>
+	<string name="total_project_time">
+		You spent <xliff:g example="7 h 5 m" id="time">%s</xliff:g> on this project over a week.
 	</string>
 	<string name="card_languages_header">Languages</string>
 	<string name="card_editors_header">Editors</string>
@@ -108,4 +110,5 @@
 	<string name="menu_sort_by_name_title">By name</string>
 	<string name="menu_search_title">Search</string>
 	<string name="search_hint">Search by project name…</string>
+	<string name="seconds">%d s</string>
 </resources>

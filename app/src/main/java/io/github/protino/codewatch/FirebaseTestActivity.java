@@ -2,7 +2,6 @@ package io.github.protino.codewatch;
 
 import android.annotation.SuppressLint;
 import android.content.Context;
-import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.AsyncTask;
 import android.os.Bundle;
@@ -379,7 +378,7 @@ public class FirebaseTestActivity extends AppCompatActivity {
     }
 
     public void launchLeadersActivity(View view) {
-        startActivity(new Intent(this, LeaderActivity.class));
+        //startActivity(new Intent(this, LeaderActivity.class));
     }
 
     private class FetchWakatimeDataTask extends AsyncTask<Void, Void, Void> {

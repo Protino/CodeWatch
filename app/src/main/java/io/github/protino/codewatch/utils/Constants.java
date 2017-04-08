@@ -27,6 +27,8 @@ public final class Constants {
 
     /* API core constants */
     public static final String API_SUFFIX = "api/v1/users/current/";
+    public static final String WAKATIME_BASE_URL = "https://wakatime.com/";
+
     /* Cache constants */
     public static final String PREF_WAKATIME_DATA_UPDATED = "WAKATIME_DATA_PREF_KEY";
     public static final String PREF_FIREBASE_USER_DATA = "firebase_user_data_pref_key";

@@ -27,6 +27,8 @@ public class ProjectsAdapter extends RecyclerView.Adapter<ProjectsAdapter.Projec
     private final Context context;
     private List<ProjectItem> projectItemList;
     private List<ProjectItem> projectItemListCopy;
+    private OnItemSelectedListener onItemSelectedListener;
+
 
     public ProjectsAdapter(Context context, List<ProjectItem> items) {
         this.context = context;
@@ -89,6 +91,14 @@ public class ProjectsAdapter extends RecyclerView.Adapter<ProjectsAdapter.Projec
         return results;
     }
 
+    public void setOnItemSelectedListener(OnItemSelectedListener onItemSelectedListener) {
+        this.onItemSelectedListener = onItemSelectedListener;
+    }
+
+    public interface OnItemSelectedListener {
+        void onItemSelected(String projectName);
+    }
+
     public class ProjectViewHolder extends RecyclerView.ViewHolder {
 
         //@formatter:off
@@ -101,7 +111,10 @@ public class ProjectsAdapter extends RecyclerView.Adapter<ProjectsAdapter.Projec
             itemView.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    //display project id
+                    String projectName = projectItemList.get(getAdapterPosition()).getName();
+                    if (onItemSelectedListener != null) {
+                        onItemSelectedListener.onItemSelected(projectName);
+                    }
                 }
             });
         }

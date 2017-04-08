@@ -9,7 +9,6 @@ import android.support.v4.app.Fragment;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
-import android.util.Pair;
 import android.util.SparseBooleanArray;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -51,8 +50,6 @@ import io.github.protino.codewatch.ui.widget.PerformanceBarView;
 import io.github.protino.codewatch.utils.FormatUtils;
 import timber.log.Timber;
 
-import static io.github.protino.codewatch.utils.FormatUtils.getHoursAndMinutes;
-
 /**
  * @author Gurupad Mamadapur
  */
@@ -63,6 +60,7 @@ public class DashboardFragment extends Fragment {
     private static final int ACTIVITY_CHART_ID = 2;
     private static final int OS_CHART_ID = 3;
     private static final int EDITORS_CHART_ID = 4;
+
     //@formatter:off
     //activity
     @BindView(R.id.linechart_activity) public LineChart lineChart;
@@ -119,7 +117,6 @@ public class DashboardFragment extends Fragment {
         pieChartOs.setOnChartValueSelectedListener(new CustomOnValueSelectedListener(OS_CHART_ID));
     }
 
-
     private void setUpPerformanceBar() {
         //dummy data
         final float todaysTotalSeconds = 5 * 60 * 60f + 60 + 67;
@@ -145,10 +142,8 @@ public class DashboardFragment extends Fragment {
 
         todaysLogPercentText.setText(context.getString(R.string.todays_log_percent_text, todayLogPercent));
 
-        Pair<Integer, Integer> pair = getHoursAndMinutes((int) todaysTotalSeconds);
-        final int hours = pair.first;
-        final int minutes = pair.second;
-        todaysLogTimeText.setText(context.getString(R.string.todays_total_log_time, hours, minutes));
+        todaysLogTimeText.setText(context.getString(R.string.todays_total_log_time,
+                FormatUtils.getFormattedTime(context, (int) todaysTotalSeconds)));
     }
 
     private void setUpActivityChart() {
@@ -253,14 +248,6 @@ public class DashboardFragment extends Fragment {
         set.setCircleRadius(width + 2);
     }
 
-    private int[] getChartColors(int size) {
-        int[] result = new int[size];
-        for (int i = 0; i < size; i++) {
-            result[i] = chartColors[i % size];
-        }
-        return result;
-    }
-
     private void setUpOsChart() {
         formatPieChart(pieChartOs);
         formatPieChartLegend(pieChartOs.getLegend());
@@ -274,7 +261,6 @@ public class DashboardFragment extends Fragment {
         osListview.setAdapter(osListAdapter);
     }
 
-
     private void setUpEditorsChart() {
         formatPieChart(pieChartEditors);
         formatPieChartLegend(pieChartEditors.getLegend());
@@ -287,7 +273,6 @@ public class DashboardFragment extends Fragment {
         editorsListAdapter = new SimpleAdapter(context, editorDataItems, "");
         editorsListView.setAdapter(editorsListAdapter);
     }
-
 
     private void setUpLanguagesChart() {
         formatPieChart(pieChartLanguages);
@@ -328,7 +313,6 @@ public class DashboardFragment extends Fragment {
         }
         return percents;
     }
-
 
     private PieData generatePieData(List<PieChartItem> pieChartItems) {
 
@@ -412,7 +396,6 @@ public class DashboardFragment extends Fragment {
             }
         }
     }
-
 
     /*  notifyDataSetChanged didn't work. Somehow there were duplicate items selected.
         Hence resetting the adapter.

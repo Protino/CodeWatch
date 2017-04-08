@@ -1,4 +1,4 @@
-package io.github.protino.codewatch;
+package io.github.protino.codewatch.remote;
 
 import android.support.test.InstrumentationRegistry;
 import android.support.test.runner.AndroidJUnit4;
@@ -9,7 +9,6 @@ import org.junit.runner.RunWith;
 import java.io.IOException;
 import java.util.List;
 
-import io.github.protino.codewatch.remote.FetchWakatimeData;
 import io.github.protino.codewatch.model.WakatimeData;
 import io.github.protino.codewatch.model.project.summary.GenericSummaryData;
 import io.github.protino.codewatch.model.project.summary.GenericSummaryResponse;
@@ -53,11 +52,6 @@ public class FetchWakatimeDataTest {
     public void testProjectSummary() throws IOException {
         ProjectSummaryResponse response = fetchWakatimeData.fetchProjectSummary(CODEWATCH_ID);
         assertTrue(response.getData().get(0).getRange().getTimezone().equals(TIMEZONE));
-    }
-
-    @Test
-    public void testLeadersData() throws IOException {
-        assertNotNull(fetchWakatimeData.fetchLeaders());
     }
 
     @Test

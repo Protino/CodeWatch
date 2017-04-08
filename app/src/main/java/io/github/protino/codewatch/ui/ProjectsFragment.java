@@ -1,6 +1,7 @@
 package io.github.protino.codewatch.ui;
 
 import android.content.Context;
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
@@ -33,7 +34,7 @@ import io.github.protino.codewatch.ui.adapter.ProjectsAdapter;
  * @author Gurupad Mamadapur
  */
 
-public class ProjectsFragment extends Fragment implements SearchView.OnQueryTextListener {
+public class ProjectsFragment extends Fragment implements SearchView.OnQueryTextListener, ProjectsAdapter.OnItemSelectedListener {
 
     //@formatter:off
     @BindView(R.id.projects_list) RecyclerView recyclerView;
@@ -65,6 +66,8 @@ public class ProjectsFragment extends Fragment implements SearchView.OnQueryText
 
         DividerItemDecoration dividerItemDecoration = new DividerItemDecoration(context, DividerItemDecoration.VERTICAL);
         projectsAdapter = new ProjectsAdapter(context, projectItemList);
+        projectsAdapter.setOnItemSelectedListener(this);
+
         recyclerView.setLayoutManager(new LinearLayoutManager(context, LinearLayoutManager.VERTICAL, false));
         recyclerView.setAdapter(projectsAdapter);
         recyclerView.addItemDecoration(dividerItemDecoration);
@@ -135,12 +138,12 @@ public class ProjectsFragment extends Fragment implements SearchView.OnQueryText
     private void initializeData() {
         projectItemList = new ArrayList<>();
         projectItemList.add(new ProjectItem(UUID.randomUUID().toString(), "CodeWatch", 3665));
-        projectItemList.add(new ProjectItem(UUID.randomUUID().toString(), "Liza", 55678));
-        projectItemList.add(new ProjectItem(UUID.randomUUID().toString(), "Shreya", 36549));
-        projectItemList.add(new ProjectItem(UUID.randomUUID().toString(), "Mia", 354654));
-        projectItemList.add(new ProjectItem(UUID.randomUUID().toString(), "Asus", 23165));
-        projectItemList.add(new ProjectItem(UUID.randomUUID().toString(), "Lego", 987531));
-        projectItemList.add(new ProjectItem(UUID.randomUUID().toString(), "Skipy", 4568));
+        projectItemList.add(new ProjectItem(UUID.randomUUID().toString(), "Fad-Flicks", 55678));
+        projectItemList.add(new ProjectItem(UUID.randomUUID().toString(), "StockHawk", 36549));
+        projectItemList.add(new ProjectItem(UUID.randomUUID().toString(), "MPAndroidChart-Master", 354654));
+        projectItemList.add(new ProjectItem(UUID.randomUUID().toString(), "MaterialDrawer", 23165));
+        projectItemList.add(new ProjectItem(UUID.randomUUID().toString(), "Sunshine-V2", 987531));
+        projectItemList.add(new ProjectItem(UUID.randomUUID().toString(), "Quizzes", 4568));
     }
 
     private void hideProgressBar(boolean hide) {
@@ -154,6 +157,13 @@ public class ProjectsFragment extends Fragment implements SearchView.OnQueryText
         progressBarLayout.setVisibility(View.GONE);
         errorTextView.setText(text);
         errorTextView.setVisibility(View.VISIBLE);
+    }
+
+    @Override
+    public void onItemSelected(String projectName) {
+        Intent intent = new Intent(getActivity(), ProjectDetailActivity.class);
+        intent.putExtra(Intent.EXTRA_TEXT, projectName);
+        getActivity().startActivity(intent);
     }
 
     private class NameComparator implements Comparator<ProjectItem> {

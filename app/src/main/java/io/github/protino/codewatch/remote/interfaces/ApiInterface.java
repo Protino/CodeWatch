@@ -6,7 +6,6 @@ import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 
 import io.github.protino.codewatch.model.AccessToken;
-import io.github.protino.codewatch.model.leaders.LeadersResponse;
 import io.github.protino.codewatch.model.project.ProjectsResponse;
 import io.github.protino.codewatch.model.project.summary.GenericSummaryResponse;
 import io.github.protino.codewatch.model.project.summary.ProjectSummaryResponse;
@@ -83,14 +82,6 @@ public interface ApiInterface {
      */
     @GET(API_SUFFIX)
     Call<UserResponse> getUserProfileData();
-
-    /**
-     * Returns leaderboard data based on coding average
-     *
-     * @return {@link LeadersResponse}
-     */
-    @GET("api/v1/leaders")
-    Call<LeadersResponse> getLeaders();
 
     @Retention(RetentionPolicy.SOURCE)
     @StringDef({_7_DAYS, _30_DAYS, _6_MONTHS, _YEAR})
