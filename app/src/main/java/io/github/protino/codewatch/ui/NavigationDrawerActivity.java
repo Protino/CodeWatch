@@ -127,6 +127,7 @@ public class NavigationDrawerActivity extends AppCompatActivity implements
                 break;
             case R.id.achievements:
                 text = "Ach";
+                replaceFragment(new AchievementFragment(),text);
                 break;
             case R.id.leaderboards:
                 text = "Leaderboards";
