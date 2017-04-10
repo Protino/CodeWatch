@@ -2,16 +2,16 @@ package io.github.protino.codewatch.ui;
 
 import android.annotation.SuppressLint;
 import android.app.Dialog;
+import android.app.Fragment;
+import android.app.LoaderManager;
 import android.content.Context;
+import android.content.CursorLoader;
 import android.content.DialogInterface;
+import android.content.Loader;
 import android.database.Cursor;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
-import android.support.v4.app.Fragment;
-import android.support.v4.app.LoaderManager;
-import android.support.v4.content.CursorLoader;
-import android.support.v4.content.Loader;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -98,7 +98,7 @@ public class LeaderboardFragment extends Fragment implements DialogInterface.OnS
         rootView = inflater.inflate(R.layout.fragment_leaderboard, container, false);
         unbinder = ButterKnife.bind(this, rootView);
 
-        context = getContext();
+        context = getActivity();
         filterState = new FilterState();
 
         leadersAdapter = new LeadersAdapter(context, new ArrayList<>());
@@ -137,7 +137,7 @@ public class LeaderboardFragment extends Fragment implements DialogInterface.OnS
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
             case R.id.load:
-                new StoreToDbTask(getContext()).execute();
+                new StoreToDbTask(context).execute();
                 return true;
             case R.id.find_me:
                 //get current user id
@@ -194,7 +194,7 @@ public class LeaderboardFragment extends Fragment implements DialogInterface.OnS
 
     @Override
     public Loader<Cursor> onCreateLoader(int id, Bundle args) {
-        return new CursorLoader(getContext(),
+        return new CursorLoader(context,
                 LeaderContract.LeaderEntry.CONTENT_URI,
                 Constants.LEADER_COLUMNS,
                 null,
@@ -218,7 +218,7 @@ public class LeaderboardFragment extends Fragment implements DialogInterface.OnS
         autoCompleteTextView =
                 (AutoCompleteTextView) dialogView.findViewById(R.id.language_autocomplete);
         filteredCheckbox = (CheckBox) dialogView.findViewById(R.id.filter_rb);
-        validator = new LanguageValidator(getContext(), autoCompleteTextView, validLanguages);
+        validator = new LanguageValidator(context, autoCompleteTextView, validLanguages);
         autoCompleteTextView.setAdapter(new ArrayAdapter<>(
                 getActivity(), android.R.layout.simple_dropdown_item_1line, validLanguages));
         validator = new LanguageValidator(getActivity(), autoCompleteTextView, validLanguages);

@@ -1,5 +1,6 @@
 package io.github.protino.codewatch.ui;
 
+import android.app.Fragment;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.res.Configuration;
@@ -8,7 +9,6 @@ import android.preference.PreferenceManager;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.design.widget.NavigationView;
-import android.support.v4.app.Fragment;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AppCompatActivity;
@@ -127,7 +127,7 @@ public class NavigationDrawerActivity extends AppCompatActivity implements
                 break;
             case R.id.achievements:
                 text = "Ach";
-                replaceFragment(new AchievementFragment(),text);
+                replaceFragment(new AchievementFragment(), text);
                 break;
             case R.id.leaderboards:
                 text = "Leaderboards";
@@ -139,6 +139,7 @@ public class NavigationDrawerActivity extends AppCompatActivity implements
                 break;
             case R.id.settings:
                 text = "Settings";
+                getFragmentManager().beginTransaction().replace(R.id.container, new SettingsFragment()).commit();
                 break;
             default:
                 throw new UnsupportedOperationException("Invalid menu item");
@@ -151,7 +152,7 @@ public class NavigationDrawerActivity extends AppCompatActivity implements
         Bundle bundle = new Bundle();
         bundle.putString(Intent.EXTRA_TEXT, text);
         fragment.setArguments(bundle);
-        getSupportFragmentManager().beginTransaction().replace(R.id.container, fragment).commit();
+        getFragmentManager().beginTransaction().replace(R.id.container, fragment).commit();
     }
 
     @Override

@@ -3,7 +3,9 @@
 
 	<!-- Related to login-->
 	<string name="LOGIN_HOST">callback</string>
-	<string name="LOGIN_SCHEME">codewatch</string>
+	<string name="APP_SCHEME">codewatch</string>
+	<string name="PROFILE_HOST">profile</string>
+
 	<string name="drawer_close">Close drawer</string>
 	<string name="drawer_open">Open drawer</string>
 	<string name="dashboard">Dashboard</string>
@@ -111,4 +113,18 @@
 	<string name="menu_search_title">Search</string>
 	<string name="search_hint">Search by project name…</string>
 	<string name="seconds">%d s</string>
+	<string name="menu_sort_by_locked">By locked</string>
+	<string name="menu_sort_by_unlocked">By unlocked</string>
+	<string name="pref_notification_title">Notifications</string>
+	<string name="pref_goal_reminders_title">Goal reminders</string>
+	<string name="pref_leaderboard_changes">Leaderboard changes</string>
+	<string name="logout">Logout</string>
+	<string name="about">About</string>
+	<string name="developed_by">Developed %s</string>
+	<string name="powered_by">Powered by <a href="https://wakatime.com">WakaTime</a></string>
+	<string name="pref_about_key" translatable="false">about</string>
+	<string name="pref_logout_key" translatable="false">logout</string>
+
+	<string name="pref_goal_reminders_key">goal_reminder</string>
+	<string name="pref_leaderboard_changes_key">pref_leaderboard_changes_key</string>
 </resources>

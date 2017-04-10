@@ -26,12 +26,10 @@
 
 				<data
 					android:host="@string/LOGIN_HOST"
-					android:scheme="@string/LOGIN_SCHEME"/>
+					android:scheme="@string/APP_SCHEME"/>
 			</intent-filter>
 		</activity>
-
-		<activity
-			android:name=".ui.ProjectDetailActivity">
+		<activity android:name=".ui.ProjectDetailActivity">
 			<meta-data
 				android:name="android.support.PARENT_ACTIVITY"
 				android:value=".ui.NavigationDrawerActivity"/>
@@ -41,7 +39,20 @@
 			android:theme="@style/AppTheme.Drawer">
 			<intent-filter>
 				<action android:name="android.intent.action.MAIN"/>
+
 				<category android:name="android.intent.category.LAUNCHER"/>
+			</intent-filter>
+		</activity>
+
+		<activity android:name=".ui.AboutActivity"/>
+		<activity android:name=".ui.ProfileActivity">
+			<intent-filter>
+				<action android:name="android.intent.action.VIEW"/>
+				<category android:name="android.intent.category.DEFAULT"/>
+
+				<data
+					android:host="@string/PROFILE_HOST"
+					android:scheme="@string/APP_SCHEME"/>
 			</intent-filter>
 		</activity>
 
@@ -56,6 +67,6 @@
 				<action android:name="com.firebase.jobdispatcher.ACTION_EXECUTE"/>
 			</intent-filter>
 		</service>
-
 	</application>
+
 </manifest>

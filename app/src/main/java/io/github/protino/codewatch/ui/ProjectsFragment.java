@@ -1,10 +1,10 @@
 package io.github.protino.codewatch.ui;
 
+import android.app.Fragment;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
-import android.support.v4.app.Fragment;
 import android.support.v4.view.MenuItemCompat;
 import android.support.v7.widget.DividerItemDecoration;
 import android.support.v7.widget.LinearLayoutManager;
@@ -61,7 +61,7 @@ public class ProjectsFragment extends Fragment implements SearchView.OnQueryText
         View rootView = inflater.inflate(R.layout.fragment_projects, container, false);
         ButterKnife.bind(this, rootView);
 
-        context = getContext();
+        context = getActivity();
         initializeData();
 
         DividerItemDecoration dividerItemDecoration = new DividerItemDecoration(context, DividerItemDecoration.VERTICAL);

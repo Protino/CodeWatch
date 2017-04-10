@@ -1,11 +1,11 @@
 package io.github.protino.codewatch.ui;
 
+import android.app.Fragment;
+import android.app.FragmentTransaction;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
-import android.support.v4.app.Fragment;
-import android.support.v4.app.FragmentTransaction;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.helper.ItemTouchHelper;
@@ -79,7 +79,7 @@ public class GoalsFragment extends Fragment implements GoalsAdapter.OnGoalItemCl
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         rootView = inflater.inflate(R.layout.fragment_goals, container, false);
         ButterKnife.bind(this, rootView);
-        context = getContext();
+        context = getActivity();
 
         goalsAdapter = new GoalsAdapter(context, goalItemList, projectNameMap);
         goalsAdapter.setGoalItemClickListener(this);
@@ -163,7 +163,7 @@ public class GoalsFragment extends Fragment implements GoalsAdapter.OnGoalItemCl
         GoalsDetailFragment fragment = new GoalsDetailFragment();
         fragment.setArguments(bundle);
 
-        FragmentTransaction fragmentTransaction = getActivity().getSupportFragmentManager().beginTransaction();
+        FragmentTransaction fragmentTransaction = getActivity().getFragmentManager().beginTransaction();
         fragmentTransaction.setTransition(FragmentTransaction.TRANSIT_FRAGMENT_OPEN);
         fragmentTransaction.add(android.R.id.content, fragment).addToBackStack(null).commit();
 

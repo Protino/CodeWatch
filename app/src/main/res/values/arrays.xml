@@ -20,7 +20,84 @@
 		<item>@color/blue_grey_400</item>
 	</array>
 
+
+	<array name="badges">
+		<item>@array/gold_badges</item>
+		<item>@array/silver_badges</item>
+		<item>@array/bronze_badges</item>
+	</array>
+
+	<array name="gold_badges">
+		<item>@array/devoted</item>
+		<item>@array/insomniac</item>
+		<item>@array/leader</item>
+	</array>
+
+	<array name="silver_badges">
+		<item>@array/ardent</item>
+		<item>@array/hard_working</item>
+		<item>@array/master</item>
+	</array>
+
+	<array name="bronze_badges">
+		<item>@array/loyal</item>
+		<item>@array/competitor</item>
+		<item>@array/curious</item>
+		<item>@array/sane</item>
+		<item>@array/focused</item>
+	</array>
+
+
+	<array name="devoted">
+		<item>Devoted</item>
+		<item>Use CodeWatch for 30 days in a row</item>
+	</array>
+	<array name="insomniac">
+		<item>Insomniac</item>
+		<item>Daily average of 18 hrs</item>
+	</array>
+	<array name="leader">
+		<item>Leader</item>
+		<item>Top 10 in the leaderboard</item>
+	</array>
+
+	<array name="ardent">
+		<item>Ardent</item>
+		<item>Use CodeWatch for 15 days in a row</item>
+	</array>
+	<array name="hard_working">
+		<item>Hard Working</item>
+		<item>Daily average of 10 hrs</item>
+	</array>
+	<array name="master">
+		<item>Master</item>
+		<item>Top 50 in the leaderboard</item>
+	</array>
+
+
+	<array name="loyal">
+		<item>Loyal</item>
+		<item>Use CodeWatch for 7 days in a row</item>
+	</array>
+	<array name="sane">
+		<item>Sane</item>
+		<item>Daily average of 7 hrs</item>
+	</array>
+	<array name="competitor">
+		<item>Competitor</item>
+		<item>Top 100 in the leaderboard</item>
+	</array>
+	<array name="curious">
+		<item>Curious</item>
+		<item>Read about page</item>
+	</array>
+	<array name="focused">
+		<item>Focused</item>
+		<item>Set a goal</item>
+	</array>
+
 	<!-- This is sorted alphanumerically! -->
+	<!-- Translation not required -->
 	<string-array name="languages">
 		<item>.NET C#</item>
 		<item>.NET Config</item>

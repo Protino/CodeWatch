@@ -1,11 +1,11 @@
 package io.github.protino.codewatch.ui;
 
+import android.app.Fragment;
 import android.content.Context;
 import android.graphics.Color;
 import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
-import android.support.v4.app.Fragment;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -101,7 +101,7 @@ public class DashboardFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, Bundle savedInstanceState) {
         View rootView = inflater.inflate(R.layout.fragment_dashboard, container, false);
         ButterKnife.bind(this, rootView);
-        context = getContext();
+        context = getActivity();
         setUpActivityChart();
         setUpPerformanceBar();
         setUpLanguagesChart();
@@ -357,7 +357,7 @@ public class DashboardFragment extends Fragment {
     @OnClick({R.id.expand_piechart_editors, R.id.expand_piechart_language, R.id.expand_piechart_os})
     public void onExpand(View view) {
         boolean isExpanded = isExpandedMap.get(view.getId());
-        Drawable drawable = ContextCompat.getDrawable(getContext(),
+        Drawable drawable = ContextCompat.getDrawable(getActivity(),
                 isExpanded ? R.drawable.ic_expand_more_black_24dp : R.drawable.ic_expand_less_black_24dp);
         isExpandedMap.put(view.getId(), !isExpanded);
         switch (view.getId()) {

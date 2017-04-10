@@ -32,7 +32,7 @@ public class ProjectDetailActivity extends AppCompatActivity {
         Bundle bundle = new Bundle();
         bundle.putString(Intent.EXTRA_TEXT, projectName);
         fragment.setArguments(bundle);
-        getSupportFragmentManager().beginTransaction().replace(R.id.container, fragment).commit();
+        getFragmentManager().beginTransaction().replace(R.id.container, fragment).commit();
     }
 
     @Override

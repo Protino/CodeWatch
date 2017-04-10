@@ -1,8 +1,8 @@
 package io.github.protino.codewatch.ui;
 
+import android.app.Fragment;
 import android.content.Context;
 import android.graphics.Color;
-import android.support.v4.app.Fragment;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.View;

@@ -1,9 +1,12 @@
 package io.github.protino.codewatch.utils;
 
+import android.util.SparseIntArray;
+
+import io.github.protino.codewatch.R;
 import io.github.protino.codewatch.data.LeaderContract;
 
 /**
- * Created by Gurupad Mamadapur on 10-03-2017.
+ * @author Gurupad Mamadapur
  */
 
 public final class Constants {
@@ -19,6 +22,11 @@ public final class Constants {
     public static final String _30_DAYS = "last_30_days";
     public static final String _6_MONTHS = "last_6_months";
     public static final String _YEAR = "last_year";
+
+    /* Badge types */
+    public static final int GOLD_BADGE = 0;
+    public static final int SILVER_BADGE = 1;
+    public static final int BRONZE_BADGE = 2;
 
     /* Goal types */
     public static final int LANGUAGE_GOAL = 0;
@@ -62,4 +70,56 @@ public final class Constants {
     /* Goal Detail keys */
     public static final String GOAL_DATA_KEY = "goal_data_key";
     public static final String GOAL_TYPE_KEY = "goal_type_key";
+
+
+    /**
+     * ==========================
+     * Achievements Bit positions
+     * ==========================
+     * <pre>
+     *  20 bits for each badge type
+     *  0-19  -> gold
+     *  20-39 -> silver
+     *  40-59 -> bronze
+     * </pre>
+     * These are dependent on badges declared in {@link io.github.protino.codewatch.R.array}
+     */
+
+    //Gold badges
+    public static final int DEVOTED = 0;
+    public static final int INSOMNIAC = 1;
+    public static final int LEADER = 2;
+
+    //silver badges
+    public static final int ARDENT = 20;
+    public static final int HARD_WORKING = 21;
+    public static final int MASTER = 22;
+
+    //bronze badges
+    public static final int LOYAL = 40;
+    public static final int SANE = 41;
+    public static final int COMPETITOR = 42;
+    public static final int CURIOUS = 43;
+    public static final int FOCUSED = 44;
+
+    public static final SparseIntArray ACHIEVEMENTS_MAP;
+
+    static {
+        SparseIntArray sparseIntArray = new SparseIntArray();
+        sparseIntArray.put(R.array.devoted, DEVOTED);
+        sparseIntArray.put(R.array.insomniac, INSOMNIAC);
+        sparseIntArray.put(R.array.leader, LEADER);
+
+        sparseIntArray.put(R.array.ardent, ARDENT);
+        sparseIntArray.put(R.array.hard_working, HARD_WORKING);
+        sparseIntArray.put(R.array.master, MASTER);
+
+        sparseIntArray.put(R.array.loyal, LOYAL);
+        sparseIntArray.put(R.array.sane, SANE);
+        sparseIntArray.put(R.array.competitor, COMPETITOR);
+        sparseIntArray.put(R.array.curious, CURIOUS);
+        sparseIntArray.put(R.array.focused, FOCUSED);
+
+        ACHIEVEMENTS_MAP = sparseIntArray;
+    }
 }
