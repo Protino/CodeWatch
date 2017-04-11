@@ -14,8 +14,8 @@ public class DefaultLeaderItem {
     private String photoUrl;
 
     //stats
-    //private int dailyAverage; // not needed currently
-    private int totalSeconds; // not needed currently
+    private int dailyAverage;
+    private int totalSeconds;
     private Map<String,Integer> languageStats;
 
     public String getUserId() {
@@ -56,5 +56,13 @@ public class DefaultLeaderItem {
 
     public void setPhotoUrl(String photoUrl) {
         this.photoUrl = photoUrl;
+    }
+
+    public int getDailyAverage() {
+        return dailyAverage;
+    }
+
+    public void setDailyAverage(int dailyAverage) {
+        this.dailyAverage = dailyAverage;
     }
 }

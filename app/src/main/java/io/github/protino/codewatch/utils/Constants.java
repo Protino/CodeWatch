@@ -41,7 +41,9 @@ public final class Constants {
     public static final String PREF_WAKATIME_DATA_UPDATED = "WAKATIME_DATA_PREF_KEY";
     public static final String PREF_FIREBASE_USER_DATA = "firebase_user_data_pref_key";
     public static final String PREF_FIREBASE_USER_ID = "firebase_user_id_pref_key";
+    public static final String PREF_FIREBASE_SETUP = "firebase_setup_key";
     public static final String PREF_LEADERBOARD_UPDATED = "leaderboard_pref_key";
+    public static final String PREF_BASIC_USER_DETAILS = "pref_basic_user_detail_key";
     public static final String PREF_USER_LEARNED_DRAWER = "pref_user_learned_drawer";
 
     /*Projections */
@@ -51,6 +53,7 @@ public final class Constants {
     public static final int COL_TOTAL_SECONDS = 3;
     public static final int COL_LANGUAGE_STATS = 4;
     public static final int COL_PHOTO_URL = 5;
+    public static final int COL_DAILY_AVERAGE = 6;
 
     public static final String[] LEADER_COLUMNS = {
             LeaderContract.LeaderEntry._ID,
@@ -58,7 +61,8 @@ public final class Constants {
             LeaderContract.LeaderEntry.COLUMN_DISPLAY_NAME,
             LeaderContract.LeaderEntry.COLUMN_TOTAL_SECONDS,
             LeaderContract.LeaderEntry.COLUMN_LANGUAGE_STATS,
-            LeaderContract.LeaderEntry.COLUMN_PHOTO
+            LeaderContract.LeaderEntry.COLUMN_PHOTO,
+            LeaderContract.LeaderEntry.COLUMN_DAILY_AVERAGE
     };
     public static final String LEADER_SORT_ORDER = LeaderContract.LeaderEntry.COLUMN_TOTAL_SECONDS + " DESC";
     /* Firebase Constants */

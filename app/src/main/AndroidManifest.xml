@@ -43,11 +43,13 @@
 				<category android:name="android.intent.category.LAUNCHER"/>
 			</intent-filter>
 		</activity>
-
 		<activity android:name=".ui.AboutActivity"/>
-		<activity android:name=".ui.ProfileActivity">
+		<activity
+			android:name=".ui.ProfileActivity"
+			android:theme="@style/AppTheme.Drawer">
 			<intent-filter>
 				<action android:name="android.intent.action.VIEW"/>
+
 				<category android:name="android.intent.category.DEFAULT"/>
 
 				<data
@@ -67,6 +69,10 @@
 				<action android:name="com.firebase.jobdispatcher.ACTION_EXECUTE"/>
 			</intent-filter>
 		</service>
+
+		<activity
+			android:name=".OnBoardActivity">
+		</activity>
 	</application>
 
 </manifest>

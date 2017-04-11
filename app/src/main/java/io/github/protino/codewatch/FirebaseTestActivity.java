@@ -104,21 +104,6 @@ public class FirebaseTestActivity extends AppCompatActivity {
         //dispatcher.mustSchedule(synJob);
 
     }
-
-    private void signWithCustomToken(String token) {
-        firebaseAuth.signInWithCustomToken(token)
-                .addOnCompleteListener(new OnCompleteListener<AuthResult>() {
-                    @Override
-                    public void onComplete(@NonNull Task<AuthResult> task) {
-                        if (task.isSuccessful()) {
-                            Timber.d("User signed in");
-                        } else {
-                            Timber.d(task.getException());
-                        }
-                    }
-                });
-    }
-
     @Override
     protected void onResume() {
         super.onResume();

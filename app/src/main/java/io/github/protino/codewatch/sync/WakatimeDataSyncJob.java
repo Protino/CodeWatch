@@ -63,7 +63,7 @@ public class WakatimeDataSyncJob extends JobService {
         }
     }
 
-    private class FirebaseSyncTask extends Thread {
+    public class FirebaseSyncTask extends Thread {
 
         volatile boolean needsReschedule;
         private CountDownLatch countDownLatch;

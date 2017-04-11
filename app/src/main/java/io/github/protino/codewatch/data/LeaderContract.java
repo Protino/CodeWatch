@@ -48,6 +48,9 @@ public class LeaderContract {
         // User id as returned by API, to identify the user
         public static final String COLUMN_USER_ID = "user_id";
 
+        //unnecessary while displaying leaderboard, but required when displaying profile
+        public static final String COLUMN_RANK = "rank";
+
         // User coding activity
         public static final String COLUMN_DAILY_AVERAGE = "daily_average";
         public static final String COLUMN_TOTAL_SECONDS = "total_seconds";

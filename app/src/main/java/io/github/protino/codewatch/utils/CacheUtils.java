@@ -11,6 +11,8 @@ import io.github.protino.codewatch.model.AccessToken;
 import static io.github.protino.codewatch.utils.Constants.PREF_ACCESS_CODE;
 import static io.github.protino.codewatch.utils.Constants.PREF_ACCESS_TOKEN;
 import static io.github.protino.codewatch.utils.Constants.PREF_CODE_STATE;
+import static io.github.protino.codewatch.utils.Constants.PREF_FIREBASE_SETUP;
+import static io.github.protino.codewatch.utils.Constants.PREF_FIREBASE_USER_ID;
 
 /**
  * Created by Gurupad Mamadapur on 10-03-2017.
@@ -47,5 +49,13 @@ public class CacheUtils {
         long currentTime = (long) (System.currentTimeMillis() / 1e3);
         long expiryTime = accessToken.getRetrievalTime() + accessToken.getExpiresIn() - AccessToken.REFRESH_THRESHOLD;
         return currentTime < expiryTime;
+    }
+
+    public static boolean isFireBaseSetup(Context context) {
+        SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(context);
+        String uid = sharedPreferences.getString(PREF_FIREBASE_USER_ID, null);
+        boolean updated = sharedPreferences.getBoolean(PREF_FIREBASE_SETUP, false);
+
+        return uid != null & updated;
     }
 }

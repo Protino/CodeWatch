@@ -5,7 +5,7 @@
               android:orientation="vertical">
 
 	<android.support.v7.widget.RecyclerView
-		android:id="@+id/achievements_list"
+		android:id="@+id/list_achievements"
 		android:layout_width="match_parent"
 		android:layout_height="match_parent"/>
 </LinearLayout>

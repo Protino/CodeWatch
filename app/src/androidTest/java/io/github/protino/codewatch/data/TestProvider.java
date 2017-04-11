@@ -32,6 +32,7 @@ public class TestProvider extends AndroidTestCase {
                 null,
                 null
         );
+        assertNotNull(cursor);
         assertEquals("Error: Records not deleted from Leader table during delete", 0, cursor.getCount());
         cursor.close();
     }
@@ -80,6 +81,9 @@ public class TestProvider extends AndroidTestCase {
                 LeaderContract.LeaderEntry.CONTENT_ITEM_TYPE, type);
     }
 
+    public void testProfileQuery(){
+    }
+
     /*
         This test uses the database directly to insert and then uses the ContentProvider to
         read out the data.
@@ -92,7 +96,7 @@ public class TestProvider extends AndroidTestCase {
         ContentValues testValues = TestUtilities.createLeaderValues();
 
         long leaderRowId = db.insert(LeaderContract.LeaderEntry.TABLE_NAME, null, testValues);
-        assertTrue("Unable to Insert LeaderEntry into the Database", leaderRowId != -1);
+        assertTrue("Unable to insert LeaderEntry into the Database", leaderRowId != -1);
         db.close();
 
         // Test the basic content provider query

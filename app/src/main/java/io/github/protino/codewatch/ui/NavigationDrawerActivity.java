@@ -18,10 +18,21 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.TextView;
 
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
+import com.google.gson.Gson;
+
 import butterknife.BindView;
 import butterknife.ButterKnife;
+import io.github.protino.codewatch.OnBoardActivity;
 import io.github.protino.codewatch.R;
 import io.github.protino.codewatch.model.firebase.User;
+import io.github.protino.codewatch.model.user.ProfileData;
+import io.github.protino.codewatch.utils.AchievementsUtils;
+import io.github.protino.codewatch.utils.CacheUtils;
 import io.github.protino.codewatch.utils.Constants;
 
 /**
@@ -42,11 +53,19 @@ public class NavigationDrawerActivity extends AppCompatActivity implements
     private ActionBarDrawerToggle drawerToggler;
     private SharedPreferences sharedPreferences;
     private boolean hasUserLearntDrawer;
-
+    private String firebaseUid;
+    private DatabaseReference databaseReference;
+    private ProfileData basicUserData;
+    private int currentAchievements;
+    private ValueEventListener valueEventListener;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        if (!CacheUtils.isLoggedIn(this) || !CacheUtils.isFireBaseSetup(this)) {
+            startActivity(new Intent(this, OnBoardActivity.class));
+            finish();
+        }
         setContentView(R.layout.activity_navigation_drawer);
         ButterKnife.bind(this);
         sharedPreferences = PreferenceManager.getDefaultSharedPreferences(this);
@@ -56,6 +75,51 @@ public class NavigationDrawerActivity extends AppCompatActivity implements
             MenuItem item = navigationView.getMenu().findItem(R.id.dashboard);
             onNavigationItemSelected(item);
             item.setChecked(true);
+        }
+
+        firebaseUid = sharedPreferences.getString(Constants.PREF_FIREBASE_USER_ID, null);
+        String basicData = sharedPreferences.getString(Constants.PREF_BASIC_USER_DETAILS, null);
+        basicUserData = new Gson().fromJson(basicData, ProfileData.class);
+
+        FirebaseDatabase firebaseDatabase = FirebaseDatabase.getInstance();
+        databaseReference = firebaseDatabase.getReference().child("achv").child(firebaseUid);
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        attachValueEventListener();
+    }
+
+    @Override
+    protected void onPause() {
+        detachValueEventListener();
+        super.onPause();
+    }
+
+
+    private void attachValueEventListener() {
+        if (valueEventListener == null) {
+            valueEventListener = new ValueEventListener() {
+
+                @Override
+                public void onDataChange(DataSnapshot dataSnapshot) {
+                    currentAchievements = (int) dataSnapshot.child(basicUserData.getId()).getValue();
+                    setupHeader();
+                }
+
+                @Override
+                public void onCancelled(DatabaseError databaseError) {
+                }
+            };
+        }
+        databaseReference.addValueEventListener(valueEventListener);
+    }
+
+    private void detachValueEventListener() {
+        if (valueEventListener != null) {
+            databaseReference.removeEventListener(valueEventListener);
+            valueEventListener = null;
         }
     }
 
@@ -84,19 +148,22 @@ public class NavigationDrawerActivity extends AppCompatActivity implements
     }
 
     private void setupHeader() {
-        User user = new User()
-                .setDisplayName("Gurupad Mamadapur")
-                .setAchievements(0)
-                .setPhotoUrl(null);
 
         View navigationHeader = navigationView.inflateHeaderView(R.layout.navigation_header);
 
-        ((TextView) navigationHeader.findViewById(R.id.username)).setText(user.getDisplayName());
+        ((TextView) navigationHeader.findViewById(R.id.username)).setText(basicUserData.getDisplayName());
 
-        String ach = String.valueOf(user.getAchievements());
-        ((TextView) navigationHeader.findViewById(R.id.silver_badge_count)).setText(ach);
-        ((TextView) navigationHeader.findViewById(R.id.gold_badge_count)).setText(ach);
-        ((TextView) navigationHeader.findViewById(R.id.bronze_badge_count)).setText(ach);
+        String ach = String.valueOf(AchievementsUtils.getGoldBadgeCount(currentAchievements));
+        ((TextView) navigationHeader.findViewById(R.id.silver_badge_count)).setText(goldCount);
+        ((TextView) navigationHeader.findViewById(R.id.gold_badge_count)).setText(silverCount);
+        ((TextView) navigationHeader.findViewById(R.id.bronze_badge_count)).setText(bronzeCount);
+
+        navigationHeader.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                startActivity(new Intent(NavigationDrawerActivity.this, ProfileActivity.class));
+            }
+        });
     }
 
     @Override

@@ -19,13 +19,13 @@ import android.net.Uri;
 import android.test.AndroidTestCase;
 
 
-public class TestWeatherContract extends AndroidTestCase {
+public class TestLeaderContract extends AndroidTestCase {
 
     private static final String TEST_USER_ID = "/23g23fv23h4";
 
-    public void testBuildWeatherLocation() {
+    public void testBuildLeaderLocation() {
         Uri profileUri = LeaderContract.LeaderEntry.buildProfileUri(TEST_USER_ID);
-        assertNotNull("Error: Null Uri returned." + "WeatherContract.", profileUri);
+        assertNotNull("Error: Null Uri returned." + "LeaderContract.", profileUri);
         assertEquals("Error: user id not properly appended to the end of the Uri",
                 TEST_USER_ID, profileUri.getLastPathSegment());
         assertEquals("Error: Mismatch",

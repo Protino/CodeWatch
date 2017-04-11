@@ -45,7 +45,7 @@ import butterknife.ButterKnife;
 import butterknife.OnClick;
 import io.github.protino.codewatch.R;
 import io.github.protino.codewatch.model.PieChartItem;
-import io.github.protino.codewatch.ui.adapter.SimpleAdapter;
+import io.github.protino.codewatch.ui.adapter.StatsAdapter;
 import io.github.protino.codewatch.ui.widget.PerformanceBarView;
 import io.github.protino.codewatch.utils.FormatUtils;
 import timber.log.Timber;
@@ -90,9 +90,9 @@ public class DashboardFragment extends Fragment {
     private List<PieChartItem> editorDataItems = new ArrayList<>();
     private List<PieChartItem> osDataItems = new ArrayList<>();
 
-    private SimpleAdapter editorsListAdapter;
-    private SimpleAdapter languageListAdapter;
-    private SimpleAdapter osListAdapter;
+    private StatsAdapter editorsListAdapter;
+    private StatsAdapter languageListAdapter;
+    private StatsAdapter osListAdapter;
 
     private Context context;
 
@@ -257,7 +257,7 @@ public class DashboardFragment extends Fragment {
         pieChartOs.animateXY(1500, 1500);
 
         osListview.setLayoutManager(new LinearLayoutManager(context, LinearLayoutManager.VERTICAL, false));
-        osListAdapter = new SimpleAdapter(context, languageDataItems, "");
+        osListAdapter = new StatsAdapter(context, languageDataItems, "");
         osListview.setAdapter(osListAdapter);
     }
 
@@ -270,7 +270,7 @@ public class DashboardFragment extends Fragment {
         pieChartEditors.animateXY(1500, 1500);
 
         editorsListView.setLayoutManager(new LinearLayoutManager(context, LinearLayoutManager.VERTICAL, false));
-        editorsListAdapter = new SimpleAdapter(context, editorDataItems, "");
+        editorsListAdapter = new StatsAdapter(context, editorDataItems, "");
         editorsListView.setAdapter(editorsListAdapter);
     }
 
@@ -283,7 +283,7 @@ public class DashboardFragment extends Fragment {
         pieChartLanguages.animateXY(1500, 1500);
         languagesListview.setLayoutManager(new LinearLayoutManager(context, LinearLayoutManager.VERTICAL, false));
 
-        languageListAdapter = new SimpleAdapter(context, languageDataItems, "");
+        languageListAdapter = new StatsAdapter(context, languageDataItems, "");
         languagesListview.setAdapter(languageListAdapter);
     }
 
@@ -381,10 +381,10 @@ public class DashboardFragment extends Fragment {
         }
     }
 
-    private void toggleListViewVisibility(boolean expand, RecyclerView view, SimpleAdapter adapter) {
+    private void toggleListViewVisibility(boolean expand, RecyclerView view, StatsAdapter adapter) {
         view.setVisibility(expand ? View.VISIBLE : View.GONE);
         if (!expand) {
-            view.setAdapter(new SimpleAdapter(context, adapter.getItemList(), ""));
+            view.setAdapter(new StatsAdapter(context, adapter.getItemList(), ""));
         }
     }
 
@@ -401,8 +401,8 @@ public class DashboardFragment extends Fragment {
         Hence resetting the adapter.
         todo : Find a better way to reflect changes in the adapter
      */
-    private void resetAdapter(RecyclerView view, SimpleAdapter adapter, String label) {
-        adapter = new SimpleAdapter(context, adapter.getItemList(), label);
+    private void resetAdapter(RecyclerView view, StatsAdapter adapter, String label) {
+        adapter = new StatsAdapter(context, adapter.getItemList(), label);
         view.setAdapter(adapter);
     }
 

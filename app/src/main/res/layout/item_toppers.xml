@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+              xmlns:app="http://schemas.android.com/apk/res-auto"
               xmlns:tools="http://schemas.android.com/tools"
               android:layout_width="match_parent"
               android:layout_height="wrap_content"
-              xmlns:app="http://schemas.android.com/apk/res-auto"
               android:padding="16dp">
 
 	<RelativeLayout
@@ -20,16 +20,17 @@
 
 			<ImageView
 				android:id="@+id/imgAvatar2"
-				android:layout_width="80dp"
-				android:layout_height="80dp"
+				android:layout_width="90dp"
+				android:layout_height="90dp"
 				android:layout_gravity="center"
+				android:padding="8dp"
 				android:src="@drawable/profile_avatar_placeholder"/>
 
 			<android.support.v7.widget.CardView
 				android:layout_width="22dp"
 				android:layout_height="22dp"
-				app:cardBackgroundColor="@color/silver"
-				android:layout_gravity="center|bottom">
+				android:layout_gravity="center|bottom"
+				app:cardBackgroundColor="@color/silver">
 
 				<!-- Purposefully setting the text size in dp instead of sp-->
 				<TextView
@@ -81,13 +82,14 @@
 				android:layout_width="100dp"
 				android:layout_height="100dp"
 				android:layout_gravity="center"
+				android:padding="8dp"
 				android:src="@drawable/profile_avatar_placeholder"/>
 
 			<android.support.v7.widget.CardView
 				android:layout_width="24dp"
 				android:layout_height="24dp"
-				app:cardBackgroundColor="@color/gold"
-				android:layout_gravity="center|bottom">
+				android:layout_gravity="center|bottom"
+				app:cardBackgroundColor="@color/gold">
 
 				<!-- Purposefully setting the text size in dp instead of sp-->
 				<TextView
@@ -137,16 +139,17 @@
 
 			<ImageView
 				android:id="@+id/imgAvatar3"
-				android:layout_width="80dp"
-				android:layout_height="80dp"
+				android:layout_width="90dp"
+				android:layout_height="90dp"
 				android:layout_gravity="center"
+				android:padding="8dp"
 				android:src="@drawable/profile_avatar_placeholder"/>
 
 			<android.support.v7.widget.CardView
 				android:layout_width="22dp"
-				app:cardBackgroundColor="@color/bronze"
 				android:layout_height="22dp"
-				android:layout_gravity="center|bottom">
+				android:layout_gravity="center|bottom"
+				app:cardBackgroundColor="@color/bronze">
 
 				<!-- Purposefully setting the text size in dp instead of sp-->
 				<TextView

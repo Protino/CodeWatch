@@ -1,11 +1,8 @@
 package io.github.protino.codewatch.ui;
 
-import android.annotation.SuppressLint;
 import android.app.Fragment;
 import android.content.Context;
-import android.content.res.TypedArray;
 import android.os.Bundle;
-import android.support.annotation.ArrayRes;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v7.widget.DividerItemDecoration;
@@ -30,7 +27,6 @@ import com.google.firebase.database.ValueEventListener;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -41,11 +37,9 @@ import io.github.protino.codewatch.model.BadgeItem;
 import io.github.protino.codewatch.ui.adapter.AchievementsAdapter;
 import timber.log.Timber;
 
-import static io.github.protino.codewatch.utils.Constants.ACHIEVEMENTS_MAP;
-import static io.github.protino.codewatch.utils.Constants.BRONZE_BADGE;
-import static io.github.protino.codewatch.utils.Constants.GOLD_BADGE;
-import static io.github.protino.codewatch.utils.Constants.LOYAL;
-import static io.github.protino.codewatch.utils.Constants.SILVER_BADGE;
+import static io.github.protino.codewatch.utils.AchievementsUtils.createBadgeItems;
+import static io.github.protino.codewatch.utils.AchievementsUtils.getUnlockedAchievements;
+import static io.github.protino.codewatch.utils.AchievementsUtils.obtainBadgeMap;
 
 /**
  * @author Gurupad Mamadapur
@@ -54,7 +48,7 @@ import static io.github.protino.codewatch.utils.Constants.SILVER_BADGE;
 public class AchievementFragment extends Fragment {
 
     //@formatter:off
-    @BindView(R.id.achievements_list) RecyclerView recyclerView;
+    @BindView(R.id.list_achievements) RecyclerView recyclerView;
     //@formatter:on
 
     private Context context;
@@ -145,11 +139,6 @@ public class AchievementFragment extends Fragment {
                 sortByLocked(false);
                 achievementsAdapter.swapData(badgeItemList);
                 sortByLocked.setChecked(true);
-
-                //testing
-
-                currentAchievements |= (1L << LOYAL);
-                achievementsDatabase.child(userId).child("data").setValue(currentAchievements);
                 return true;
             case R.id.menu_sort_by_unlocked:
                 sortByLocked(true);
@@ -175,7 +164,7 @@ public class AchievementFragment extends Fragment {
                 public void onDataChange(DataSnapshot dataSnapshot) {
                     currentAchievements = (long) dataSnapshot.getValue();
                     unlockedAchievementsList = getUnlockedAchievements(currentAchievements);
-                    loadData();
+                    badgeItemList = loadData();
                     achievementsAdapter.swapData(badgeItemList);
                     Timber.d(unlockedAchievementsList.toString());
                 }
@@ -214,69 +203,16 @@ public class AchievementFragment extends Fragment {
     private void setUpBadgeItemData() {
         badgeItemList = new ArrayList<>();
         unlockedAchievementsList = new ArrayList<>();
-        goldBadges = obtainBadgeMap(R.array.gold_badges);
-        silverBadges = obtainBadgeMap(R.array.silver_badges);
-        bronzeBadges = obtainBadgeMap(R.array.bronze_badges);
+        goldBadges = obtainBadgeMap(context, R.array.gold_badges);
+        silverBadges = obtainBadgeMap(context, R.array.silver_badges);
+        bronzeBadges = obtainBadgeMap(context, R.array.bronze_badges);
     }
 
-    private void loadData() {
+    private List<BadgeItem> loadData() {
         badgeItemList = new ArrayList<>();
-        for (Map.Entry<Integer, Pair<String, String>> entry : goldBadges.entrySet()) {
-            BadgeItem badgeItem = new BadgeItem(GOLD_BADGE);
-            badgeItem.setName(entry.getValue().first);
-            badgeItem.setRequirement(entry.getValue().second);
-            badgeItem.setIsUnlocked(unlockedAchievementsList.contains(entry.getKey()));
-            badgeItemList.add(badgeItem);
-        }
-        for (Map.Entry<Integer, Pair<String, String>> entry : silverBadges.entrySet()) {
-            BadgeItem badgeItem = new BadgeItem(SILVER_BADGE);
-            badgeItem.setName(entry.getValue().first);
-            badgeItem.setRequirement(entry.getValue().second);
-            badgeItem.setIsUnlocked(unlockedAchievementsList.contains(entry.getKey()));
-            badgeItemList.add(badgeItem);
-        }
-        for (Map.Entry<Integer, Pair<String, String>> entry : bronzeBadges.entrySet()) {
-            BadgeItem badgeItem = new BadgeItem(BRONZE_BADGE);
-            badgeItem.setName(entry.getValue().first);
-            badgeItem.setRequirement(entry.getValue().second);
-            badgeItem.setIsUnlocked(unlockedAchievementsList.contains(entry.getKey()));
-            badgeItemList.add(badgeItem);
-        }
-    }
-
-    @SuppressLint("UseSparseArrays")
-    @SuppressWarnings("ResourceType")
-    private Map<Integer, Pair<String, String>> obtainBadgeMap(@ArrayRes int id) {
-
-        TypedArray badgeArray = context.getResources().obtainTypedArray(id);
-
-        Map<Integer, Pair<String, String>> badgeMap = new HashMap<>();
-        for (int i = 0; i < badgeArray.length(); i++) {
-            int resId = badgeArray.getResourceId(i, -1);
-            if (resId != -1) {
-                TypedArray array = context.getResources().obtainTypedArray(resId);
-                badgeMap.put(resId, new Pair<>(array.getString(0), array.getString(1)));
-                array.recycle();
-            }
-        }
-        badgeArray.recycle();
-        return badgeMap;
-    }
-
-    /**
-     * @param achievements long data representing set and unset badges
-     * @return list of resource id of badges that are unlocked
-     */
-    public List<Integer> getUnlockedAchievements(long achievements) {
-        List<Integer> array = new ArrayList<>();
-        for (int i = 0; i < ACHIEVEMENTS_MAP.size(); i++) {
-            int id = ACHIEVEMENTS_MAP.keyAt(i);
-            int position = ACHIEVEMENTS_MAP.get(id);
-
-            if ((achievements & (1L << position)) != 0) {
-                array.add(id);
-            }
-        }
-        return array;
+        badgeItemList.addAll(createBadgeItems(goldBadges, unlockedAchievementsList));
+        badgeItemList.addAll(createBadgeItems(silverBadges, unlockedAchievementsList));
+        badgeItemList.addAll(createBadgeItems(bronzeBadges, unlockedAchievementsList));
+        return badgeItemList;
     }
 }

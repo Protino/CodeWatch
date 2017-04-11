@@ -67,6 +67,7 @@ public class TestDb extends AndroidTestCase {
         leaderColumnHashSet.add(LeaderContract.LeaderEntry.COLUMN_DISPLAY_NAME);
         leaderColumnHashSet.add(LeaderContract.LeaderEntry.COLUMN_USER_ID);
         leaderColumnHashSet.add(LeaderContract.LeaderEntry.COLUMN_USER_NAME);
+        leaderColumnHashSet.add(LeaderContract.LeaderEntry.COLUMN_RANK);
         leaderColumnHashSet.add(LeaderContract.LeaderEntry.COLUMN_WEBSITE);
         leaderColumnHashSet.add(LeaderContract.LeaderEntry.COLUMN_LOCATION);
 

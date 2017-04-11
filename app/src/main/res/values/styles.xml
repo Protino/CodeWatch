@@ -1,7 +1,7 @@
 <resources>
 
 	<!-- Base theme -->
-	<style name="BaseTheme" parent="Theme.AppCompat.Light.NoActionBar"/>
+	<style name="BaseTheme" parent="Theme.AppCompat.NoActionBar"/>
 
 	<!-- Base application theme. -->
 	<style name="AppTheme" parent="BaseTheme">
@@ -16,7 +16,11 @@
 
 	<style name="DefaultToolbarStyle" parent="">
 		<item name="popupTheme">@style/ThemeOverlay.AppCompat.Light</item>
-		<item name="theme">@style/ThemeOverlay.AppCompat.Dark.ActionBar</item>
+		<item name="theme">@style/ThemeOverlay.AppCompat.ActionBar</item>
+	</style>
+
+	<style name="CollapsedAppBarTextStyle" parent="@android:style/TextAppearance.Small">
+		<item name="android:textSize">0sp</item>
 	</style>
 
 </resources>

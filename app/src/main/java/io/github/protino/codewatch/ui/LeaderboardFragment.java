@@ -7,6 +7,7 @@ import android.app.LoaderManager;
 import android.content.Context;
 import android.content.CursorLoader;
 import android.content.DialogInterface;
+import android.content.Intent;
 import android.content.Loader;
 import android.database.Cursor;
 import android.os.AsyncTask;
@@ -60,7 +61,7 @@ import timber.log.Timber;
  */
 
 public class LeaderboardFragment extends Fragment implements DialogInterface.OnShowListener,
-        LoaderManager.LoaderCallbacks<Cursor> {
+        LoaderManager.LoaderCallbacks<Cursor>, LeadersAdapter.OnItemSelectedListener {
 
 
     private static final int LOADER_ID = 100;
@@ -102,6 +103,7 @@ public class LeaderboardFragment extends Fragment implements DialogInterface.OnS
         filterState = new FilterState();
 
         leadersAdapter = new LeadersAdapter(context, new ArrayList<>());
+        leadersAdapter.setOnItemSelectedListener(this);
 
         //recyclerView setup
         recyclerView.setLayoutManager(new LinearLayoutManager(context, LinearLayoutManager.VERTICAL, false));
@@ -212,6 +214,9 @@ public class LeaderboardFragment extends Fragment implements DialogInterface.OnS
     @Override
     public void onLoaderReset(Loader<Cursor> loader) {
         //invalidate data and the adapter
+        leadersAdapter.swapData(new ArrayList<>());
+        defaultLeaderItems = new ArrayList<>();
+        filteredLeaderItems = new ArrayList<>();
     }
 
     private void createLeaderDialog() {
@@ -291,6 +296,13 @@ public class LeaderboardFragment extends Fragment implements DialogInterface.OnS
         ((NavigationDrawerActivity) getActivity()).getSupportActionBar().setTitle(title);
     }
 
+    @Override
+    public void onItemSelected(String userId) {
+        Intent intent = new Intent(context, ProfileActivity.class);
+        intent.putExtra(Intent.EXTRA_TEXT, userId);
+        startActivity(intent);
+    }
+
     private class FilterState {
 
         public static final String EMPTY = "";
@@ -346,6 +358,7 @@ public class LeaderboardFragment extends Fragment implements DialogInterface.OnS
                 defaultLeaderItem.setUserId(data.getString(Constants.COL_USER_ID));
                 defaultLeaderItem.setDisplayName(data.getString(Constants.COL_DISPLAY_NAME));
                 defaultLeaderItem.setTotalSeconds(data.getInt(Constants.COL_TOTAL_SECONDS));
+                defaultLeaderItem.setDailyAverage(data.getInt(Constants.COL_DAILY_AVERAGE));
 
                 languageMap = new HashMap<>();
                 String jsonData = data.getString(Constants.COL_LANGUAGE_STATS);

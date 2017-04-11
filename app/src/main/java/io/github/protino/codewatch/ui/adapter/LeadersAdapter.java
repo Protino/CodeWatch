@@ -23,7 +23,6 @@ import io.github.protino.codewatch.R;
 import io.github.protino.codewatch.model.DefaultLeaderItem;
 import io.github.protino.codewatch.model.TopperItem;
 import io.github.protino.codewatch.utils.FormatUtils;
-import timber.log.Timber;
 
 /**
  * @author Gurupad Mamadapur
@@ -38,6 +37,7 @@ public class LeadersAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder
     private List<Object> dataList;
     private boolean isTopperViewNeeded;
     private int rankOffset;
+    private OnItemSelectedListener onItemSelectedListener;
 
     public LeadersAdapter(Context context, List<Object> dataList) {
         this.context = context;
@@ -117,10 +117,6 @@ public class LeadersAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder
                         avatar.setImageDrawable(drawable);
                     }
                 });
-//        Glide.with(context)
-//                .load(photoUrl)
-//                .asBitmap()
-//                .into(avatar);
     }
 
     @Override
@@ -133,10 +129,6 @@ public class LeadersAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder
         isTopperViewNeeded = dataList.size() >= TOPPER_VIEW_THRESHOLD;
         rankOffset = (isTopperViewNeeded) ? 3 : 0;
         notifyDataSetChanged();
-    }
-
-    private void openProfileFragment(String userId) {
-        Timber.d("User selected- " + userId);
     }
 
     public int getItemPositionById(String keyId) {
@@ -156,6 +148,14 @@ public class LeadersAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder
             }
         }
         return -1;
+    }
+
+    public void setOnItemSelectedListener(OnItemSelectedListener onItemSelectedListener) {
+        this.onItemSelectedListener = onItemSelectedListener;
+    }
+
+    public interface OnItemSelectedListener {
+        void onItemSelected(String userId);
     }
 
     public class TopperViewHolder extends RecyclerView.ViewHolder {
@@ -181,21 +181,23 @@ public class LeadersAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder
         public void onProfileClick(View view) {
             TopperItem topperItem = (TopperItem) dataList.get(0);
             List<DefaultLeaderItem> leaderItems = topperItem.getDefaultLeaderItems();
-            String userId = null;
+            DefaultLeaderItem leaderItem = null;
             switch (view.getId()) {
                 case R.id.first:
-                    userId = leaderItems.get(0).getUserId();
+                    leaderItem = leaderItems.get(0);
                     break;
                 case R.id.second:
-                    userId = leaderItems.get(1).getUserId();
+                    leaderItem = leaderItems.get(1);
                     break;
                 case R.id.third:
-                    userId = leaderItems.get(2).getUserId();
+                    leaderItem = leaderItems.get(2);
                     break;
                 default:
                     break;
             }
-            openProfileFragment(userId);
+            if(onItemSelectedListener!=null){
+                onItemSelectedListener.onItemSelected(leaderItem.getUserId());
+            }
         }
     }
 
@@ -217,7 +219,9 @@ public class LeadersAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder
         @OnClick(R.id.item_leader_root)
         public void onClick() {
             DefaultLeaderItem leaderItem = (DefaultLeaderItem) dataList.get(getAdapterPosition());
-            openProfileFragment(leaderItem.getUserId());
+            if(onItemSelectedListener!=null){
+                onItemSelectedListener.onItemSelected(leaderItem.getUserId());
+            }
         }
     }
 }

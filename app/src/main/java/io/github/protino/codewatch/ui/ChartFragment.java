@@ -25,7 +25,7 @@ import java.util.List;
 import java.util.Map;
 
 import io.github.protino.codewatch.model.PieChartItem;
-import io.github.protino.codewatch.ui.adapter.SimpleAdapter;
+import io.github.protino.codewatch.ui.adapter.StatsAdapter;
 
 /**
  * @author Gurupad Mamadapur
@@ -38,9 +38,9 @@ public abstract class ChartFragment extends Fragment {
     public static final int ACTIVITY_CHART_ID = 2;
     public static final int OS_CHART_ID = 3;
     public static final int EDITORS_CHART_ID = 4;
-    protected SimpleAdapter editorsListAdapter;
-    protected SimpleAdapter languageListAdapter;
-    protected SimpleAdapter osListAdapter;
+    protected StatsAdapter editorsListAdapter;
+    protected StatsAdapter languageListAdapter;
+    protected StatsAdapter osListAdapter;
     private int[] chartColors;
     private Context context;
     private List<PieChartItem> languageDataItems = new ArrayList<>();
@@ -74,15 +74,15 @@ public abstract class ChartFragment extends Fragment {
 
         switch (chartType) {
             case LANGUAGE_CHART_ID:
-                languageListAdapter = new SimpleAdapter(context, languageDataItems, "");
+                languageListAdapter = new StatsAdapter(context, languageDataItems, "");
                 recyclerView.setAdapter(languageListAdapter);
                 break;
             case EDITORS_CHART_ID:
-                editorsListAdapter = new SimpleAdapter(context, editorDataItems, "");
+                editorsListAdapter = new StatsAdapter(context, editorDataItems, "");
                 recyclerView.setAdapter(editorsListAdapter);
                 break;
             case OS_CHART_ID:
-                osListAdapter = new SimpleAdapter(context, osDataItems, "");
+                osListAdapter = new StatsAdapter(context, osDataItems, "");
                 recyclerView.setAdapter(osListAdapter);
                 break;
             default:
@@ -163,7 +163,7 @@ public abstract class ChartFragment extends Fragment {
     }
 
     protected void toggleListViewVisibility(boolean expand, RecyclerView view, int chartType) {
-        SimpleAdapter adapter = new SimpleAdapter(context, new ArrayList<PieChartItem>(), "");
+        StatsAdapter adapter = new StatsAdapter(context, new ArrayList<PieChartItem>(), "");
 
         switch (chartType) {
             case LANGUAGE_CHART_ID:
@@ -181,7 +181,7 @@ public abstract class ChartFragment extends Fragment {
 
         view.setVisibility(expand ? View.VISIBLE : View.GONE);
         if (!expand) {
-            view.setAdapter(new SimpleAdapter(context, adapter.getItemList(), ""));
+            view.setAdapter(new StatsAdapter(context, adapter.getItemList(), ""));
         }
     }
 
@@ -198,8 +198,8 @@ public abstract class ChartFragment extends Fragment {
         Hence resetting the adapter.
         todo : Find a better way to reflect changes in the adapter
      */
-    protected void resetAdapter(RecyclerView view, SimpleAdapter adapter, String label) {
-        adapter = new SimpleAdapter(context, adapter.getItemList(), label);
+    protected void resetAdapter(RecyclerView view, StatsAdapter adapter, String label) {
+        adapter = new StatsAdapter(context, adapter.getItemList(), label);
         view.setAdapter(adapter);
     }
 

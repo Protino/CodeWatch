@@ -20,13 +20,13 @@ import io.github.protino.codewatch.utils.FormatUtils;
  * @author Gurupad Mamadapur
  */
 
-public class SimpleAdapter extends RecyclerView.Adapter<SimpleAdapter.ViewHolder> {
+public class StatsAdapter extends RecyclerView.Adapter<StatsAdapter.ViewHolder> {
 
     private Context context;
     private List<PieChartItem> itemList;
     private String highlightedName;
 
-    public SimpleAdapter(Context context, List<PieChartItem> itemList, String highlightedName) {
+    public StatsAdapter(Context context, List<PieChartItem> itemList, String highlightedName) {
         this.context = context;
         this.itemList = itemList;
         this.highlightedName = highlightedName;

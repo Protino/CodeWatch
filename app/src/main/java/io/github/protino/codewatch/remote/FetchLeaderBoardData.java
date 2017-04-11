@@ -42,6 +42,7 @@ public class FetchLeaderBoardData {
 
     /**
      * todo : Change boolean result to an error code
+     *
      * @return true, on successful completion else false
      */
     public boolean execute() {
@@ -126,6 +127,7 @@ public class FetchLeaderBoardData {
         final long start = System.currentTimeMillis();
 
         final String ROOT_DATA = "data";
+        final String RANK = "rank";
         final String ROOT_USER_DATA = "user";
         final String ROOT_STATS = "running_total";
 
@@ -157,6 +159,8 @@ public class FetchLeaderBoardData {
             values = new ContentValues();
 
             JSONObject rootUserData = dataArray.getJSONObject(i);
+
+            values.put(LeaderContract.LeaderEntry.COLUMN_RANK, rootUserData.getInt(RANK));
 
             /* User stats*/
             JSONObject runningTotal = rootUserData.getJSONObject(ROOT_STATS);

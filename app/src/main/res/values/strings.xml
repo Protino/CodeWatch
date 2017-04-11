@@ -127,4 +127,10 @@
 
 	<string name="pref_goal_reminders_key">goal_reminder</string>
 	<string name="pref_leaderboard_changes_key">pref_leaderboard_changes_key</string>
+	<string name="login_text">Log in to Wakatime.com to track your coding activity</string>
+	<string name="login">Login</string>
+	<string name="login_failed">Login failed</string>
+	<string name="retry">Retry</string>
+	<string name="setting_up">Setting up CodeWatch</string>
+	<string name="internet_error_message">Please check your internet connection</string>
 </resources>

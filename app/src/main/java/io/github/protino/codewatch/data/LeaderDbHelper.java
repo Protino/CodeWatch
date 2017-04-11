@@ -26,7 +26,7 @@ public class LeaderDbHelper extends SQLiteOpenHelper {
 
     static final String DATABASE_NAME = "leader.db";
     // Database version
-    private static final int DATABASE_VERSION = 3;
+    private static final int DATABASE_VERSION = 4;
 
     public LeaderDbHelper(Context context) {
         super(context, DATABASE_NAME, null, DATABASE_VERSION);
@@ -37,6 +37,7 @@ public class LeaderDbHelper extends SQLiteOpenHelper {
     public void onCreate(SQLiteDatabase sqLiteDatabase) {
         final String SQL_CREATE_LEADER_TABLE = "CREATE TABLE " + LeaderContract.LeaderEntry.TABLE_NAME + " ("
                 + LeaderContract.LeaderEntry._ID + " INTEGER PRIMARY KEY AUTOINCREMENT,"
+                + LeaderContract.LeaderEntry.COLUMN_RANK + " INTEGER NOT NULL,"
                 + LeaderContract.LeaderEntry.COLUMN_USER_ID + " TEXT NOT NULL,"
                 + LeaderContract.LeaderEntry.COLUMN_USER_NAME + " TEXT,"
                 + LeaderContract.LeaderEntry.COLUMN_DISPLAY_NAME + " TEXT,"

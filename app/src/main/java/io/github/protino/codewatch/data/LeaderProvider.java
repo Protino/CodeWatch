@@ -26,8 +26,8 @@ import android.support.annotation.NonNull;
 
 public class LeaderProvider extends ContentProvider {
 
-    static final int LEADER = 100;
-    static final int PROFILE = 101;
+    protected static final int LEADER = 100;
+    protected static final int PROFILE = 101;
 
     private static final UriMatcher URI_MATCHER = buildUriMatcher();
     private static final SQLiteQueryBuilder profileQueryBuilder;
@@ -59,7 +59,7 @@ public class LeaderProvider extends ContentProvider {
         leaderDbHelper = new LeaderDbHelper(getContext());
         return true;
     }
-//Lifecycle end
+    //Lifecycle end
 
 
     private Cursor getProfileByUserId(Uri uri, String[] projection, String sortOrder) {

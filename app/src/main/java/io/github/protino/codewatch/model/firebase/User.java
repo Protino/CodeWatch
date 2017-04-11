@@ -28,8 +28,6 @@ public class User {
     /* Projects */
     private Map<String, Project> projects;
 
-    private Integer achievements;
-
     public String getUserId() {
         return userId;
     }
@@ -127,14 +125,5 @@ public class User {
 
     public void setProjects(Map<String, Project> projects) {
         this.projects = projects;
-    }
-
-    public Integer getAchievements() {
-        return achievements;
-    }
-
-    public User setAchievements(Integer achievements) {
-        this.achievements = achievements;
-        return this;
     }
 }

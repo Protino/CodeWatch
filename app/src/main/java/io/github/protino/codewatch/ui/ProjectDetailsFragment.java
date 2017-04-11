@@ -104,7 +104,7 @@ public class ProjectDetailsFragment extends ChartFragment {
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View rootView = inflater.inflate(R.layout.fragment_project_detail, container, false);
         ButterKnife.bind(this, rootView);
-        context = getContext();
+        context = getActivity();
         if (project == null) {
             new FetchProjectDetails().execute(projectName);
         }
