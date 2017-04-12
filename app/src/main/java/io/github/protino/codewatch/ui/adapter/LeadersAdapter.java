@@ -106,7 +106,7 @@ public class LeadersAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder
         Glide.with(context)
                 .load(photoUrl)
                 .asBitmap()
-                .placeholder(R.drawable.profile_avatar_placeholder)
+                .placeholder(R.drawable.ic_account_circle_white_24dp)
                 .into(new BitmapImageViewTarget(avatar) {
                     @Override
                     protected void setResource(Bitmap resource) {
@@ -161,7 +161,7 @@ public class LeadersAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder
     public class TopperViewHolder extends RecyclerView.ViewHolder {
 
         //@formatter:off
-        @BindView(R.id.imgAvatar) public ImageView imageView1;
+        @BindView(R.id.avatar) public ImageView imageView1;
         @BindView(R.id.imgAvatar2) public ImageView imageView2;
         @BindView(R.id.imgAvatar3) public ImageView imageView3;
         @BindView(R.id.total_seconds) public TextView totalSeconds1;

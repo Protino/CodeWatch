@@ -26,7 +26,14 @@ public class User {
     private Stats stats;
 
     /* Projects */
+    /*
+    IMPORTANT! - For some reason wakatime doesn't actually respect the project id
+    It very irrelevant in the API.
+    */
     private Map<String, Project> projects;
+
+    //Duplication for faster loading
+    private Map<String,Integer> timeSpentOnProjects; // project name and time spent on it over a week
 
     public String getUserId() {
         return userId;
@@ -125,5 +132,13 @@ public class User {
 
     public void setProjects(Map<String, Project> projects) {
         this.projects = projects;
+    }
+
+    public Map<String, Integer> getTimeSpentOnProjects() {
+        return timeSpentOnProjects;
+    }
+
+    public void setTimeSpentOnProjects(Map<String, Integer> timeSpentOnProjects) {
+        this.timeSpentOnProjects = timeSpentOnProjects;
     }
 }

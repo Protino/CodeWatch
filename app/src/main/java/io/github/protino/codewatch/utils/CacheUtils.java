@@ -56,6 +56,10 @@ public class CacheUtils {
         String uid = sharedPreferences.getString(PREF_FIREBASE_USER_ID, null);
         boolean updated = sharedPreferences.getBoolean(PREF_FIREBASE_SETUP, false);
 
-        return uid != null & updated;
+        return uid != null && updated;
+    }
+
+    public static String getFirebaseUserId(Context context) {
+        return PreferenceManager.getDefaultSharedPreferences(context).getString(PREF_FIREBASE_USER_ID,null);
     }
 }

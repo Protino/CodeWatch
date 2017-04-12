@@ -21,7 +21,7 @@ public class BadgeItem {
     private String requirement;
     private boolean isUnlocked;
 
-    public BadgeItem(int type) {
+    public BadgeItem(@BadgeType int type) {
         this.type = type;
     }
 
@@ -65,6 +65,5 @@ public class BadgeItem {
 
     @Retention(RetentionPolicy.SOURCE)
     @IntDef({GOLD_BADGE, SILVER_BADGE, BRONZE_BADGE})
-    @interface BadgeType {
-    }
+    public @interface BadgeType {}
 }

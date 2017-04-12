@@ -37,7 +37,7 @@ import butterknife.ButterKnife;
 import io.github.protino.codewatch.R;
 import io.github.protino.codewatch.model.firebase.LanguageGoal;
 import io.github.protino.codewatch.model.firebase.ProjectGoal;
-import io.github.protino.codewatch.ui.widget.BarChartMarkerView;
+import io.github.protino.codewatch.ui.widget.CustomMarkerView;
 import io.github.protino.codewatch.ui.widget.PerformanceBarView;
 import io.github.protino.codewatch.utils.Constants;
 import io.github.protino.codewatch.utils.FormatUtils;
@@ -203,8 +203,8 @@ public class GoalsDetailFragment extends DialogFragment {
         leftAxis.setAxisMaximum(maximum * 60 * 60);
         leftAxis.setAxisMinimum(0f);
 
-        BarChartMarkerView barChartMarkerView = new BarChartMarkerView(context, R.layout.marker_view, referenceTime);
-        goalBarChart.setMarker(barChartMarkerView);
+        CustomMarkerView customMarkerView = new CustomMarkerView(context, R.layout.marker_view, referenceTime);
+        goalBarChart.setMarker(customMarkerView);
 
         goalBarChart.getAxisRight().setEnabled(false);
         goalBarChart.getLegend().setEnabled(false);
@@ -219,7 +219,7 @@ public class GoalsDetailFragment extends DialogFragment {
         goalBarChart.setDrawBorders(false);
         goalBarChart.setData(barData);
 
-        barChartMarkerView.setChartView(goalBarChart);
+        customMarkerView.setChartView(goalBarChart);
 
 
         goalBarChart.setVisibility(View.VISIBLE);

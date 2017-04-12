@@ -1,13 +1,16 @@
 package io.github.protino.codewatch.ui;
 
-import android.app.Fragment;
 import android.content.Context;
+import android.graphics.Bitmap;
 import android.graphics.Color;
 import android.graphics.drawable.Drawable;
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
+import android.support.annotation.StringRes;
+import android.support.design.widget.Snackbar;
 import android.support.v4.content.ContextCompat;
-import android.support.v7.widget.LinearLayoutManager;
+import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.widget.RecyclerView;
 import android.util.SparseBooleanArray;
 import android.view.LayoutInflater;
@@ -15,6 +18,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.github.mikephil.charting.animation.Easing;
 import com.github.mikephil.charting.charts.LineChart;
@@ -26,35 +30,55 @@ import com.github.mikephil.charting.components.YAxis;
 import com.github.mikephil.charting.data.Entry;
 import com.github.mikephil.charting.data.LineData;
 import com.github.mikephil.charting.data.LineDataSet;
-import com.github.mikephil.charting.data.PieData;
-import com.github.mikephil.charting.data.PieDataSet;
 import com.github.mikephil.charting.data.PieEntry;
 import com.github.mikephil.charting.formatter.IAxisValueFormatter;
-import com.github.mikephil.charting.formatter.PercentFormatter;
 import com.github.mikephil.charting.highlight.Highlight;
 import com.github.mikephil.charting.listener.OnChartValueSelectedListener;
-import com.github.mikephil.charting.utils.ViewPortHandler;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
 
+import org.joda.time.DateTime;
+
+import java.io.IOException;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
-import java.util.Random;
+import java.util.Map;
 
 import butterknife.BindArray;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
 import io.github.protino.codewatch.R;
-import io.github.protino.codewatch.model.PieChartItem;
+import io.github.protino.codewatch.model.WakatimeData;
+import io.github.protino.codewatch.model.firebase.Stats;
+import io.github.protino.codewatch.model.firebase.User;
+import io.github.protino.codewatch.remote.FetchWakatimeData;
 import io.github.protino.codewatch.ui.adapter.StatsAdapter;
+import io.github.protino.codewatch.ui.widget.CustomMarkerView;
 import io.github.protino.codewatch.ui.widget.PerformanceBarView;
+import io.github.protino.codewatch.utils.CacheUtils;
+import io.github.protino.codewatch.utils.Constants;
+import io.github.protino.codewatch.utils.FileProviderUtils;
 import io.github.protino.codewatch.utils.FormatUtils;
+import io.github.protino.codewatch.utils.NetworkUtils;
+import io.github.protino.codewatch.utils.TransformUtils;
+import io.github.protino.codewatch.utils.UiUtils;
 import timber.log.Timber;
+
+import static io.github.protino.codewatch.utils.Constants.INTERNET_OFF;
+import static io.github.protino.codewatch.utils.Constants.NONE;
+import static io.github.protino.codewatch.utils.Constants.STATS_UPDATING;
+import static io.github.protino.codewatch.utils.Constants.UNKNOWN_ERROR;
 
 /**
  * @author Gurupad Mamadapur
  */
 
-public class DashboardFragment extends Fragment {
+public class DashboardFragment extends ChartFragment implements SwipeRefreshLayout.OnRefreshListener {
 
     private static final int LANGUAGE_CHART_ID = 1;
     private static final int ACTIVITY_CHART_ID = 2;
@@ -68,7 +92,6 @@ public class DashboardFragment extends Fragment {
     //performance
     @BindView(R.id.performance_bar)public PerformanceBarView performanceBarView;
     @BindView(R.id.daily_average_text)public TextView dailyAverageText;
-    @BindView(R.id.change_in_daily_average_text) public TextView percentChangeText;
     @BindView(R.id.today_log_percent_text) public TextView todaysLogPercentText;
     //languages
     @BindView(R.id.piechart_languages) public PieChart pieChartLanguages;
@@ -83,84 +106,136 @@ public class DashboardFragment extends Fragment {
     @BindView(R.id.expand_piechart_os) public ImageView expandOs;
     @BindView(R.id.list_os) public RecyclerView osListview;
 
+    @BindView(R.id.swipe_refresh) public SwipeRefreshLayout swipeRefreshLayout;
     @BindArray(R.array.chart_colors) public int[] chartColors;
+
     //@formatter:on
     private SparseBooleanArray isExpandedMap = new SparseBooleanArray();
-    private List<PieChartItem> languageDataItems = new ArrayList<>();
-    private List<PieChartItem> editorDataItems = new ArrayList<>();
-    private List<PieChartItem> osDataItems = new ArrayList<>();
-
-    private StatsAdapter editorsListAdapter;
-    private StatsAdapter languageListAdapter;
-    private StatsAdapter osListAdapter;
 
     private Context context;
+
+    //firebase data
+    private Stats stats;
+    private DatabaseReference statsDatabaseRef;
+    private DatabaseReference projectsDatabaseRef;
+    private ValueEventListener statsValueEventListener;
+    private Snackbar snackbar;
+    private View rootView;
 
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, Bundle savedInstanceState) {
-        View rootView = inflater.inflate(R.layout.fragment_dashboard, container, false);
+        rootView = inflater.inflate(R.layout.fragment_dashboard, container, false);
         ButterKnife.bind(this, rootView);
         context = getActivity();
+        setContext(context);
+        setChartColors(chartColors);
+
+        String firebaseUid = CacheUtils.getFirebaseUserId(context);
+        FirebaseDatabase firebaseDatabase = FirebaseDatabase.getInstance();
+        statsDatabaseRef = firebaseDatabase.getReference().child("users").child(firebaseUid).child("stats");
+        projectsDatabaseRef = firebaseDatabase.getReference().child("users").child(firebaseUid).child("timeSpentOnProjects");
+
         setUpActivityChart();
-        setUpPerformanceBar();
-        setUpLanguagesChart();
-        setUpEditorsChart();
-        setUpOsChart();
         setListeners();
+        swipeRefreshLayout.setRefreshing(true);
         return rootView;
     }
 
-    private void setListeners() {
-        pieChartLanguages.setOnChartValueSelectedListener(new CustomOnValueSelectedListener(LANGUAGE_CHART_ID));
-        pieChartEditors.setOnChartValueSelectedListener(new CustomOnValueSelectedListener(EDITORS_CHART_ID));
-        pieChartOs.setOnChartValueSelectedListener(new CustomOnValueSelectedListener(OS_CHART_ID));
+    @Override
+    public void onResume() {
+        super.onResume();
+        attachValueEventListener();
+    }
+
+    @Override
+    public void onDestroyView() {
+        detachValueEventListener();
+        super.onDestroyView();
+    }
+
+    @OnClick({R.id.share_activity_chart, R.id.share_editors_chart, R.id.share_language_chart, R.id.share_os_chart})
+    public void onShareClick(View view) {
+        Bitmap bitmap = null;
+        switch (view.getId()) {
+            case R.id.share_activity_chart:
+                bitmap = lineChart.getChartBitmap();
+                break;
+            case R.id.share_editors_chart:
+                bitmap = pieChartEditors.getChartBitmap();
+                break;
+            case R.id.share_language_chart:
+                bitmap = pieChartLanguages.getChartBitmap();
+                break;
+            case R.id.share_os_chart:
+                bitmap = pieChartOs.getChartBitmap();
+                break;
+            default:
+                break;
+        }
+        if (bitmap != null) {
+            try {
+                FileProviderUtils.shareBitmap(context, bitmap);
+            } catch (IOException e) {
+                Timber.d(e, "IO Error while saving image");
+                Toast.makeText(context, R.string.share_error, Toast.LENGTH_SHORT).show();
+            }
+        }
+    }
+
+    private void attachValueEventListener() {
+        if (statsValueEventListener == null) {
+            statsValueEventListener = new ValueEventListener() {
+                @Override
+                public void onDataChange(DataSnapshot dataSnapshot) {
+                    stats = dataSnapshot.getValue(Stats.class);
+                    bindViews();
+                }
+
+                @Override
+                public void onCancelled(DatabaseError databaseError) {
+
+                }
+            };
+        }
+        statsDatabaseRef.addValueEventListener(statsValueEventListener);
+    }
+
+    private void detachValueEventListener() {
+        if (statsValueEventListener != null) {
+            statsDatabaseRef.removeEventListener(statsValueEventListener);
+            statsValueEventListener = null;
+        }
     }
 
     private void setUpPerformanceBar() {
-        //dummy data
-        final float todaysTotalSeconds = 5 * 60 * 60f + 60 + 67;
-        final float currentDailyAverage = 8 * 60 * 60f + 60 + 60 + 45;
-        final float previousDailyAverage = 4 * 60 * 60f + 4561;
-        String result = context.getString(R.string.result_increase);
-        float changeInAveragePercent = ((currentDailyAverage - previousDailyAverage) / previousDailyAverage) * 100f;
-        if (changeInAveragePercent < 0) {
-            changeInAveragePercent *= -1;
-            result = getString(R.string.result_decreased);
-        }
+        final float todaysTotalSeconds = stats.getTodaysTotalSeconds();
+        final float currentDailyAverage = stats.getDailyAverageSeconds();
+
         final float todayLogPercent = (todaysTotalSeconds / currentDailyAverage) * 100f;
 
         performanceBarView.setGoal(currentDailyAverage);
         performanceBarView.setProgress(todaysTotalSeconds);
 
-        percentChangeText.setText(context.getString(R.string.percent_change_in_daily_avg,
-                changeInAveragePercent, result));
-
-
         dailyAverageText.setText(context.getString(R.string.daily_average_format,
                 FormatUtils.getFormattedTime(context, (int) currentDailyAverage)));
-
         todaysLogPercentText.setText(context.getString(R.string.todays_log_percent_text, todayLogPercent));
-
         todaysLogTimeText.setText(context.getString(R.string.todays_total_log_time,
                 FormatUtils.getFormattedTime(context, (int) todaysTotalSeconds)));
     }
 
     private void setUpActivityChart() {
 
-        LineData data = generateActivityLineData();
-        data.setHighlightEnabled(false);
-
         Legend l = lineChart.getLegend();
-        l.setWordWrapEnabled(true);
-        l.setFormSize(12f);
-        l.setFormToTextSpace(4f);
-        l.setXEntrySpace(8f);
         l.setVerticalAlignment(Legend.LegendVerticalAlignment.BOTTOM);
         l.setHorizontalAlignment(Legend.LegendHorizontalAlignment.CENTER);
         l.setOrientation(Legend.LegendOrientation.HORIZONTAL);
         l.setDrawInside(false);
-        l.setYOffset(8f);
+        l.setTextColor(Color.WHITE);
+        l.setTextSize(12);
+        l.setWordWrapEnabled(true);
+        l.setXEntrySpace(UiUtils.dpToPx(4));
+        l.setYEntrySpace(UiUtils.dpToPx(4));
 
         YAxis rightAxis = lineChart.getAxisRight();
         rightAxis.setEnabled(false);
@@ -171,70 +246,124 @@ public class DashboardFragment extends Fragment {
         leftAxis.setValueFormatter(new IAxisValueFormatter() {
             @Override
             public String getFormattedValue(float value, AxisBase axis) {
-                return value == 0 ? "" : String.valueOf(value);
+                return value == 0 ? "" : String.valueOf(FormatUtils.getFormattedTime(context, (int) value));
             }
         });
-        leftAxis.setGranularity(1f);
+        leftAxis.setGranularityEnabled(true);
+        leftAxis.setGranularity(3600f); // FIXME: 12-04-2017 granularity not respected
         leftAxis.setAxisLineWidth(2f);
+        leftAxis.setTextColor(Color.WHITE);
+        leftAxis.setAxisLineColor(Color.WHITE);
 
+        //-7 because x entry starts from 1 and not 0
+        long referenceTime = new DateTime().plusDays(-7).getMillis();
         XAxis xAxis = lineChart.getXAxis();
         xAxis.setPosition(XAxis.XAxisPosition.BOTTOM);
-        xAxis.setValueFormatter(new IAxisValueFormatter() {
-            @Override
-            public String getFormattedValue(float value, AxisBase axis) {
-                return String.valueOf((int) value);
-            }
-        });
+        xAxis.setValueFormatter(new FormatUtils().getBarXAxisValueFormatterInstance(referenceTime));
         xAxis.setDrawGridLines(false);
+        xAxis.setTextColor(Color.WHITE);
         xAxis.setSpaceMin(0.5f);
         xAxis.setSpaceMax(0.5f);
+        xAxis.setYOffset(UiUtils.dpToPx(4));
         xAxis.setAxisLineWidth(2f);
+        xAxis.setAxisLineColor(Color.WHITE);
 
 
+        CustomMarkerView customMarkerView = new CustomMarkerView(context, R.layout.marker_view, referenceTime);
+        lineChart.setMarker(customMarkerView);
         lineChart.getDescription().setEnabled(false);
-        lineChart.setBackgroundColor(Color.WHITE);
         lineChart.setDrawGridBackground(false);
+        lineChart.setBackground(context.getResources().getDrawable(R.color.colorPrimaryDark));
         lineChart.setDragEnabled(false);
         lineChart.setScaleEnabled(false);
         lineChart.setDragDecelerationEnabled(false);
         lineChart.setPinchZoom(false);
         lineChart.setDoubleTapToZoomEnabled(false);
         lineChart.setDrawBorders(false);
-        lineChart.setData(data);
+
+        customMarkerView.setChartView(lineChart);
+    }
+
+    private void bindViews() {
+        bindActivityChart();
+        setUpPerformanceBar();
+        bindPieCharts();
+        swipeRefreshLayout.setRefreshing(false);
+    }
+
+    private void bindPieCharts() {
+
+        setUpPieChart(pieChartLanguages, stats.getLanguagesMap(), LANGUAGE_CHART_ID);
+        setUpPieChart(pieChartEditors, stats.getEditorsMap(), EDITORS_CHART_ID);
+        setUpPieChart(pieChartOs, stats.getOsMap(), OS_CHART_ID);
+
+        setUpOnExpandRecyclerView(languagesListview, LANGUAGE_CHART_ID);
+        setUpOnExpandRecyclerView(editorsListView, EDITORS_CHART_ID);
+        setUpOnExpandRecyclerView(osListview, OS_CHART_ID);
+
+        pieChartLanguages.animateXY(1500, 1500);
+        pieChartEditors.animateXY(1500, 1500);
+        pieChartOs.animateXY(1500, 1500);
+
+        setListeners();
+    }
+
+    private void bindActivityChart() {
+        LineData lineData = generateActivityLineData();
+        lineChart.setData(lineData);
+        int maxYData = (int) (Math.ceil(lineData.getYMax()) + 7200);
+        lineChart.getAxisLeft().setAxisMaximum(maxYData);
+
         lineChart.animateX(1500, Easing.EasingOption.Linear);
     }
 
+    private void setListeners() {
+        pieChartLanguages.setOnChartValueSelectedListener(new CustomOnValueSelectedListener(LANGUAGE_CHART_ID));
+        pieChartEditors.setOnChartValueSelectedListener(new CustomOnValueSelectedListener(EDITORS_CHART_ID));
+        pieChartOs.setOnChartValueSelectedListener(new CustomOnValueSelectedListener(OS_CHART_ID));
+
+        swipeRefreshLayout.setOnRefreshListener(this);
+    }
+
     private LineData generateActivityLineData() {
+        LineData lineData = new LineData();
+        List<Map<String, Integer>> pairList = stats.getProjectPairList();
+        Map<String, List<Entry>> projectsData = transformProjectData(pairList);
 
-        Random random = new Random();
-        LineData d = new LineData();
-
-        ArrayList<Entry> entries = new ArrayList<>();
-        ArrayList<Entry> entries2 = new ArrayList<>();
-        ArrayList<Entry> entries3 = new ArrayList<>();
-
-        for (int index = 0; index < 7; index++) {
-            entries.add(new Entry(index, random.nextInt(20)));
-            entries2.add(new Entry(index, random.nextInt(20)));
-            entries3.add(new Entry(index, random.nextInt(20)));
+        int index = 0;
+        for (Map.Entry<String, List<Entry>> entries : projectsData.entrySet()) {
+            LineDataSet set = new LineDataSet(entries.getValue(), entries.getKey());
+            formatLineDataSet(set, chartColors[index++], 3);
+            lineData.addDataSet(set);
         }
-        entries.remove(4);
-        entries.remove(4);
-        entries.remove(4);
+        return lineData;
+    }
 
+    private Map<String, List<Entry>> transformProjectData(List<Map<String, Integer>> pairList) {
+        Map<String, List<Entry>> listMap = new HashMap<>();
+        Map<String, Integer> timeSpentMap = new HashMap<>();
+        for (int i = 0; i < pairList.size(); i++) {
+            Map<String, Integer> map = pairList.get(i);
+            for (Map.Entry<String, Integer> entry : map.entrySet()) {
+                List<Entry> totalSeconds = listMap.get(entry.getKey());
+                if (totalSeconds != null) {
+                    totalSeconds.add(new Entry(i, entry.getValue()));
+                } else {
+                    totalSeconds = new ArrayList<>();
+                }
+                listMap.put(entry.getKey(), totalSeconds);
+            }
+        }
 
-        LineDataSet set = new LineDataSet(entries, "Go");
-        formatLineDataSet(set, chartColors[0], 3);
-
-        LineDataSet set2 = new LineDataSet(entries2, "Wac");
-        formatLineDataSet(set2, chartColors[1], 3);
-
-        LineDataSet set3 = new LineDataSet(entries3, "AWD");
-        formatLineDataSet(set3, chartColors[2], 3);
-        d.addDataSet(set);
-        d.addDataSet(set2);
-        d.addDataSet(set3);
-        return d;
+        for (Map.Entry<String, List<Entry>> entry : listMap.entrySet()) {
+            int total = 0;
+            for (Entry subEntry : entry.getValue()) {
+                total += subEntry.getY();
+            }
+            timeSpentMap.put(entry.getKey(), total);
+        }
+        projectsDatabaseRef.setValue(timeSpentMap);
+        return listMap;
     }
 
     private void formatLineDataSet(LineDataSet set, int color, int width) {
@@ -248,117 +377,11 @@ public class DashboardFragment extends Fragment {
         set.setCircleRadius(width + 2);
     }
 
-    private void setUpOsChart() {
-        formatPieChart(pieChartOs);
-        formatPieChartLegend(pieChartOs.getLegend());
-        setUpData(osDataItems);
-        pieChartOs.setData(generatePieData(osDataItems));
-        pieChartOs.highlightValues(null);
-        pieChartOs.animateXY(1500, 1500);
-
-        osListview.setLayoutManager(new LinearLayoutManager(context, LinearLayoutManager.VERTICAL, false));
-        osListAdapter = new StatsAdapter(context, languageDataItems, "");
-        osListview.setAdapter(osListAdapter);
-    }
-
-    private void setUpEditorsChart() {
-        formatPieChart(pieChartEditors);
-        formatPieChartLegend(pieChartEditors.getLegend());
-        setUpData(editorDataItems);
-        pieChartEditors.setData(generatePieData(editorDataItems));
-        pieChartEditors.highlightValues(null);
-        pieChartEditors.animateXY(1500, 1500);
-
-        editorsListView.setLayoutManager(new LinearLayoutManager(context, LinearLayoutManager.VERTICAL, false));
-        editorsListAdapter = new StatsAdapter(context, editorDataItems, "");
-        editorsListView.setAdapter(editorsListAdapter);
-    }
-
-    private void setUpLanguagesChart() {
-        formatPieChart(pieChartLanguages);
-        formatPieChartLegend(pieChartLanguages.getLegend());
-        setUpData(languageDataItems);
-        pieChartLanguages.setData(generatePieData(languageDataItems));
-        pieChartLanguages.highlightValues(null);
-        pieChartLanguages.animateXY(1500, 1500);
-        languagesListview.setLayoutManager(new LinearLayoutManager(context, LinearLayoutManager.VERTICAL, false));
-
-        languageListAdapter = new StatsAdapter(context, languageDataItems, "");
-        languagesListview.setAdapter(languageListAdapter);
-    }
-
-    private void setUpData(List<PieChartItem> itemList) {
-        String[] labels = new String[]{"CodeWatch", "Sunshine", "Stock Hawk", "Hacker", "Docker", "Chalk", "Lego", "Thirsty"};
-        int[] time = new int[]{513221, 65412, 3512, 44561, 10005, 21511, 2333, 888888};
-        float[] percent = calculatePercents(time);
-
-        PieChartItem item;
-        for (int i = 0; i < labels.length; i++) {
-            item = new PieChartItem();
-            item.setName(labels[i]);
-            item.setPercent(percent[i]);
-            item.setTime(time[i]);
-            itemList.add(i, item);
-        }
-    }
-
-    private float[] calculatePercents(int[] list) {
-        float totalSum = 0;
-        float[] percents = new float[list.length];
-        for (int item : list) {
-            totalSum += item;
-        }
-        for (int i = 0; i < list.length; i++) {
-            percents[i] = (list[i] / totalSum) * 100;
-        }
-        return percents;
-    }
-
-    private PieData generatePieData(List<PieChartItem> pieChartItems) {
-
-        ArrayList<PieEntry> entries = new ArrayList<>();
-        for (PieChartItem item : pieChartItems) {
-            entries.add(new PieEntry(item.getTime(), item.getName(), item.getPercent()));
-        }
-
-        PieDataSet pieDataSet = new PieDataSet(entries, "");
-        pieDataSet.setAutomaticallyDisableSliceSpacing(true);
-
-        pieDataSet.setColors(chartColors);
-
-        PieData pieData = new PieData(pieDataSet);
-        pieData.setValueFormatter(new CustomPercentFormatter());
-        pieData.setValueTextColor(Color.WHITE);
-        return pieData;
-    }
-
-    private void formatPieChart(PieChart pieChart) {
-        pieChart.setUsePercentValues(true);
-        pieChart.getDescription().setEnabled(false);
-        pieChart.setDrawHoleEnabled(true);
-        pieChart.setHoleColor(Color.WHITE);
-        pieChart.setTransparentCircleColor(Color.WHITE);
-        pieChart.setTransparentCircleAlpha(110);
-
-        pieChart.setRotationAngle(0);
-        pieChart.setRotationEnabled(true);
-        pieChart.setHighlightPerTapEnabled(true);
-
-        pieChart.setEntryLabelColor(Color.WHITE);
-        pieChart.setDrawEntryLabels(false);
-    }
-
-    private void formatPieChartLegend(Legend legend) {
-        legend.setVerticalAlignment(Legend.LegendVerticalAlignment.BOTTOM);
-        legend.setHorizontalAlignment(Legend.LegendHorizontalAlignment.CENTER);
-        legend.setDrawInside(false);
-    }
-
     @OnClick({R.id.expand_piechart_editors, R.id.expand_piechart_language, R.id.expand_piechart_os})
     public void onExpand(View view) {
         boolean isExpanded = isExpandedMap.get(view.getId());
         Drawable drawable = ContextCompat.getDrawable(getActivity(),
-                isExpanded ? R.drawable.ic_expand_more_black_24dp : R.drawable.ic_expand_less_black_24dp);
+                isExpanded ? R.drawable.ic_expand_more_white_24dp : R.drawable.ic_expand_less_white_24dp);
         isExpandedMap.put(view.getId(), !isExpanded);
         switch (view.getId()) {
             case R.id.expand_piechart_language:
@@ -388,42 +411,31 @@ public class DashboardFragment extends Fragment {
         }
     }
 
-    private void handleHighlights(PieChart pieChart, boolean isExpanded) {
-        if (isExpanded) {
-            Highlight[] highlights = pieChart.getHighlighted();
-            if (highlights != null && highlights.length != 0) {
-                pieChart.highlightValues(null);
-            }
+    @Override
+    public void onRefresh() {
+        if (NetworkUtils.isNetworkUp(context)) {
+            new StatsFetchAsyncTask().execute();
+            swipeRefreshLayout.setRefreshing(true);
+        } else {
+            swipeRefreshLayout.setRefreshing(false);
+            showSnackBar(R.string.internet_error_message);
         }
     }
 
-    /*  notifyDataSetChanged didn't work. Somehow there were duplicate items selected.
-        Hence resetting the adapter.
-        todo : Find a better way to reflect changes in the adapter
-     */
-    private void resetAdapter(RecyclerView view, StatsAdapter adapter, String label) {
-        adapter = new StatsAdapter(context, adapter.getItemList(), label);
-        view.setAdapter(adapter);
-    }
-
-    private class CustomPercentFormatter extends PercentFormatter {
-        @Override
-        public String getFormattedValue(float value, AxisBase axis) {
-            if (value > 3) {
-                return super.getFormattedValue(value, axis);
-            } else {
-                return "";
+    private void showSnackBar(@StringRes final int resId) {
+        snackbar = Snackbar.make(rootView,
+                getString(resId),
+                Snackbar.LENGTH_INDEFINITE);
+        snackbar.setAction(getString(R.string.retry), new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                onRefresh();
+                if (!NetworkUtils.isNetworkUp(context)) {
+                    showSnackBar(resId);
+                }
             }
-        }
-
-        @Override
-        public String getFormattedValue(float value, Entry entry, int dataSetIndex, ViewPortHandler viewPortHandler) {
-            if (value > 3) {
-                return super.getFormattedValue(value, entry, dataSetIndex, viewPortHandler);
-            } else {
-                return "";
-            }
-        }
+        });
+        snackbar.show();
     }
 
     private class CustomOnValueSelectedListener implements OnChartValueSelectedListener {
@@ -475,6 +487,49 @@ public class DashboardFragment extends Fragment {
                     break;
                 case EDITORS_CHART_ID:
                     onExpand(expandEditors);
+                    break;
+                default:
+                    break;
+            }
+        }
+    }
+
+    private class StatsFetchAsyncTask extends AsyncTask<Void, Void, Integer> {
+
+        @Override
+        protected
+        @Constants.ErrorCodes
+        Integer doInBackground(Void... params) {
+            FetchWakatimeData fetchWakatimeData = new FetchWakatimeData(context);
+            try {
+                WakatimeData wakatimeData = new WakatimeData();
+                fetchWakatimeData.fetchStatsOnly(wakatimeData);
+                TransformUtils transformUtils = new TransformUtils(wakatimeData, new User());
+                stats = transformUtils.transformStats().getStats();
+                statsDatabaseRef.setValue(stats);
+                return NONE;
+            } catch (IOException e) {
+                Timber.e(e);
+                return INTERNET_OFF;
+            } catch (NullPointerException e) {
+                return STATS_UPDATING;
+            } catch (Exception e) {
+                return UNKNOWN_ERROR;
+            }
+        }
+
+        @Override
+        protected void onPostExecute(@Constants.ErrorCodes Integer result) {
+            swipeRefreshLayout.setRefreshing(false);
+            switch (result) {
+                case INTERNET_OFF:
+                    showSnackBar(R.string.internet_error_message);
+                    break;
+                case STATS_UPDATING:
+                    showSnackBar(R.string.stats_updating_error_message);
+                    break;
+                case UNKNOWN_ERROR:
+                    // report crash
                     break;
                 default:
                     break;

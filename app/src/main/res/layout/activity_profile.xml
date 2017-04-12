@@ -40,12 +40,12 @@
 					android:paddingTop="75dp">
 
 					<ImageView
-						android:id="@+id/imgAvatar"
+						android:id="@+id/avatar"
 						android:layout_width="150dp"
 						android:layout_height="150dp"
 						android:layout_gravity="center"
 						android:padding="16dp"
-						android:src="@drawable/profile_avatar_placeholder"/>
+						android:src="@drawable/ic_account_circle_white_24dp"/>
 
 					<android.support.v7.widget.CardView
 						android:layout_width="24dp"

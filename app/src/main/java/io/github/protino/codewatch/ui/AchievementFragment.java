@@ -3,7 +3,6 @@ package io.github.protino.codewatch.ui;
 import android.app.Fragment;
 import android.content.Context;
 import android.os.Bundle;
-import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v7.widget.DividerItemDecoration;
 import android.support.v7.widget.LinearLayoutManager;
@@ -17,7 +16,6 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import com.google.firebase.auth.FirebaseAuth;
-import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
@@ -35,11 +33,15 @@ import butterknife.ButterKnife;
 import io.github.protino.codewatch.R;
 import io.github.protino.codewatch.model.BadgeItem;
 import io.github.protino.codewatch.ui.adapter.AchievementsAdapter;
+import io.github.protino.codewatch.utils.CacheUtils;
 import timber.log.Timber;
 
 import static io.github.protino.codewatch.utils.AchievementsUtils.createBadgeItems;
 import static io.github.protino.codewatch.utils.AchievementsUtils.getUnlockedAchievements;
 import static io.github.protino.codewatch.utils.AchievementsUtils.obtainBadgeMap;
+import static io.github.protino.codewatch.utils.Constants.BRONZE_BADGE;
+import static io.github.protino.codewatch.utils.Constants.GOLD_BADGE;
+import static io.github.protino.codewatch.utils.Constants.SILVER_BADGE;
 
 /**
  * @author Gurupad Mamadapur
@@ -63,8 +65,6 @@ public class AchievementFragment extends Fragment {
 
     private DatabaseReference achievementsDatabase;
     private FirebaseAuth firebaseAuth;
-    private String userId;
-    private FirebaseAuth.AuthStateListener authStateListener;
     private ValueEventListener achievementsChildListener;
 
     private Map<Integer, Pair<String, String>> bronzeBadges;
@@ -75,36 +75,26 @@ public class AchievementFragment extends Fragment {
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setHasOptionsMenu(true);
+        String firebaseUserId = CacheUtils.getFirebaseUserId(getActivity());
 
+        // TODO: 13-04-2017 Do all database reading in the activity and read from there
+        String uid = ((NavigationDrawerActivity) getActivity()).getWakatimeUid();
         FirebaseDatabase firebaseDatabase = FirebaseDatabase.getInstance();
         firebaseAuth = FirebaseAuth.getInstance();
-        achievementsDatabase = firebaseDatabase.getReference().child("achv");
-        authStateListener = new FirebaseAuth.AuthStateListener() {
-            @Override
-            public void onAuthStateChanged(@NonNull FirebaseAuth firebaseAuth) {
-                FirebaseUser firebaseUser = firebaseAuth.getCurrentUser();
-                if (firebaseUser != null) {
-                    onSignedInInitialize(firebaseUser.getUid());
-                }
-            }
-        };
+        achievementsDatabase = firebaseDatabase.getReference().child("achv").child(firebaseUserId).child(uid);
     }
 
     @Override
     public void onResume() {
         super.onResume();
-        firebaseAuth.addAuthStateListener(authStateListener);
+        attachDataBaseListener();
     }
 
     @Override
     public void onPause() {
-        if (authStateListener != null) {
-            firebaseAuth.removeAuthStateListener(authStateListener);
-        }
         detachDatabaseListeners();
         super.onPause();
     }
-
 
     @Nullable
     @Override
@@ -150,16 +140,11 @@ public class AchievementFragment extends Fragment {
         }
     }
 
-
-    private void onSignedInInitialize(String uid) {
-        userId = uid;
-        attachDataBaseListener();
-    }
-
     private void attachDataBaseListener() {
         if (achievementsChildListener == null) {
             achievementsChildListener = new ValueEventListener() {
 
+                @SuppressWarnings("unchecked")
                 @Override
                 public void onDataChange(DataSnapshot dataSnapshot) {
                     currentAchievements = (long) dataSnapshot.getValue();
@@ -174,8 +159,7 @@ public class AchievementFragment extends Fragment {
 
                 }
             };
-            achievementsDatabase.child(userId).child("data")
-                    .addValueEventListener(achievementsChildListener);
+            achievementsDatabase.addValueEventListener(achievementsChildListener);
         }
     }
 
@@ -210,9 +194,9 @@ public class AchievementFragment extends Fragment {
 
     private List<BadgeItem> loadData() {
         badgeItemList = new ArrayList<>();
-        badgeItemList.addAll(createBadgeItems(goldBadges, unlockedAchievementsList));
-        badgeItemList.addAll(createBadgeItems(silverBadges, unlockedAchievementsList));
-        badgeItemList.addAll(createBadgeItems(bronzeBadges, unlockedAchievementsList));
+        badgeItemList.addAll(createBadgeItems(goldBadges, unlockedAchievementsList, GOLD_BADGE));
+        badgeItemList.addAll(createBadgeItems(silverBadges, unlockedAchievementsList, SILVER_BADGE));
+        badgeItemList.addAll(createBadgeItems(bronzeBadges, unlockedAchievementsList, BRONZE_BADGE));
         return badgeItemList;
     }
 }

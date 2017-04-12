@@ -64,7 +64,7 @@ public class ProfileActivity extends AppCompatActivity implements LoaderManager.
 
     private static final int LOADER_ID = 101;
     //@formatter:off
-    @BindView(R.id.imgAvatar) ImageView avatar;
+    @BindView(R.id.avatar) ImageView avatar;
     @BindView(R.id.username) TextView userName;
     @BindView(R.id.rank) TextView rank;
     @BindView(R.id.daily_average_text) TextView dailyAverage;
@@ -209,7 +209,7 @@ public class ProfileActivity extends AppCompatActivity implements LoaderManager.
         Glide.with(this)
                 .load(profileItem.getPhotoUrl())
                 .asBitmap()
-                .placeholder(R.drawable.profile_avatar_placeholder)
+                .placeholder(R.drawable.ic_account_circle_white_24dp)
                 .into(new BitmapImageViewTarget(avatar) {
                     @Override
                     protected void setResource(Bitmap resource) {

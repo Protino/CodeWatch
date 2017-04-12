@@ -15,8 +15,7 @@ import static io.github.protino.codewatch.utils.Constants.PROJECT_DEADLINE_GOAL;
 
 public class GoalItem {
     private String id;
-    @GoalType
-    private int type;
+    @GoalType private int type;
     private long data; //depends on type
 
     public GoalItem(String id, int type, long data) {

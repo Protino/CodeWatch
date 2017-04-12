@@ -41,8 +41,6 @@ public class FetchWakatimeDataTest {
         //check stats
         assertTrue(wakatimeData.getStatsResponse().getStatsData().getUsername().equals(USERNAME));
         assertNotNull(wakatimeData.getProjectStatsList());
-        assertNotNull(wakatimeData.getChangeInTotalSeconds());
-
         //check user data
         assertTrue(wakatimeData.getUserResponse().getProfileData().getFullName().equals(FULL_NAME));
 

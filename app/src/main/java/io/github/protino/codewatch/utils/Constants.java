@@ -1,6 +1,10 @@
 package io.github.protino.codewatch.utils;
 
+import android.support.annotation.IntDef;
 import android.util.SparseIntArray;
+
+import java.lang.annotation.Retention;
+import java.lang.annotation.RetentionPolicy;
 
 import io.github.protino.codewatch.R;
 import io.github.protino.codewatch.data.LeaderContract;
@@ -46,6 +50,14 @@ public final class Constants {
     public static final String PREF_BASIC_USER_DETAILS = "pref_basic_user_detail_key";
     public static final String PREF_USER_LEARNED_DRAWER = "pref_user_learned_drawer";
 
+    /* Error Codes */
+    public static final int NONE = -1;
+    public static final int STATS_UPDATING = 0;
+    public static final int INTERNET_OFF = 1;
+    public static final int SERVER_DOWN = 2;
+    public static final int EMAIL_UNCONFIRMED = 3;
+    public static final int UNKNOWN_ERROR = 4;
+
     /*Projections */
     public static final int COL_LEADER_ID = 0;
     public static final int COL_USER_ID = 1;
@@ -89,6 +101,7 @@ public final class Constants {
      * These are dependent on badges declared in {@link io.github.protino.codewatch.R.array}
      */
 
+
     //Gold badges
     public static final int DEVOTED = 0;
     public static final int INSOMNIAC = 1;
@@ -108,6 +121,11 @@ public final class Constants {
 
     public static final SparseIntArray ACHIEVEMENTS_MAP;
 
+    public static final int[] GOLD_BADGES = new int[]{DEVOTED, INSOMNIAC, LEADER};
+    public static final int[] SILVER_BADGES = new int[]{ARDENT, HARD_WORKING, MASTER};
+    public static final int[] BRONZE_BADGES = new int[]{COMPETITOR, SANE, LOYAL, CURIOUS, FOCUSED};
+
+
     static {
         SparseIntArray sparseIntArray = new SparseIntArray();
         sparseIntArray.put(R.array.devoted, DEVOTED);
@@ -126,4 +144,10 @@ public final class Constants {
 
         ACHIEVEMENTS_MAP = sparseIntArray;
     }
+
+    @Retention(RetentionPolicy.SOURCE)
+    @IntDef({NONE, STATS_UPDATING, SERVER_DOWN, INTERNET_OFF, UNKNOWN_ERROR, EMAIL_UNCONFIRMED})
+    public @interface ErrorCodes {
+    }
 }
+

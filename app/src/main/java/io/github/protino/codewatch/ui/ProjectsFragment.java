@@ -18,17 +18,26 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
+
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
+import java.util.HashMap;
 import java.util.List;
-import java.util.UUID;
+import java.util.concurrent.atomic.AtomicInteger;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import io.github.protino.codewatch.R;
 import io.github.protino.codewatch.model.ProjectItem;
+import io.github.protino.codewatch.model.firebase.Project;
 import io.github.protino.codewatch.ui.adapter.ProjectsAdapter;
+import io.github.protino.codewatch.utils.CacheUtils;
 
 /**
  * @author Gurupad Mamadapur
@@ -45,9 +54,16 @@ public class ProjectsFragment extends Fragment implements SearchView.OnQueryText
     private Context context;
     private ProjectsAdapter projectsAdapter;
     private List<ProjectItem> projectItemList;
+    private AtomicInteger latchCount = new AtomicInteger(); //naive synchronization
 
     private MenuItem sortByTimeSpent;
     private MenuItem sortByName;
+
+    private DatabaseReference projectsDatabaseRef;
+    private DatabaseReference projectTimeSpentRef;
+    private ValueEventListener projectValueEventListener;
+    private ValueEventListener timeSpentValueEventListner;
+    private HashMap<String, Long> timeSpentMap;
 
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
@@ -60,28 +76,29 @@ public class ProjectsFragment extends Fragment implements SearchView.OnQueryText
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View rootView = inflater.inflate(R.layout.fragment_projects, container, false);
         ButterKnife.bind(this, rootView);
-
+        hideProgressBar(false);
         context = getActivity();
-        initializeData();
+        String firebaseUid = CacheUtils.getFirebaseUserId(context);
+        FirebaseDatabase firebaseDatabase = FirebaseDatabase.getInstance();
+        projectsDatabaseRef = firebaseDatabase.getReference()
+                .child("users").child(firebaseUid).child("projects");
 
+        projectTimeSpentRef = firebaseDatabase.getReference()
+                .child("users").child(firebaseUid).child("timeSpentOnProjects"); // case
+
+        initializeData();
         DividerItemDecoration dividerItemDecoration = new DividerItemDecoration(context, DividerItemDecoration.VERTICAL);
         projectsAdapter = new ProjectsAdapter(context, projectItemList);
         projectsAdapter.setOnItemSelectedListener(this);
-
         recyclerView.setLayoutManager(new LinearLayoutManager(context, LinearLayoutManager.VERTICAL, false));
         recyclerView.setAdapter(projectsAdapter);
         recyclerView.addItemDecoration(dividerItemDecoration);
-
         return rootView;
     }
 
     @Override
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
-        hideProgressBar(true);
-        if (projectItemList.isEmpty()) {
-            displayErrorText(context.getString(R.string.empty_project_list));
-        }
     }
 
     @Override
@@ -98,6 +115,19 @@ public class ProjectsFragment extends Fragment implements SearchView.OnQueryText
         final SearchView searchView = (SearchView) MenuItemCompat.getActionView(searchItem);
         searchView.setQueryHint(context.getString(R.string.search_hint));
         searchView.setOnQueryTextListener(this);
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+        attachValueEventListener();
+    }
+
+
+    @Override
+    public void onDestroyView() {
+        detachValueEventListener();
+        super.onDestroyView();
     }
 
     @Override
@@ -129,6 +159,78 @@ public class ProjectsFragment extends Fragment implements SearchView.OnQueryText
         return false;
     }
 
+    private void attachValueEventListener() {
+        if (projectValueEventListener == null) {
+            projectValueEventListener = new ValueEventListener() {
+
+                @Override
+                public void onDataChange(DataSnapshot dataSnapshot) {
+                    projectItemList = new ArrayList<>();
+                    for (DataSnapshot snapshot : dataSnapshot.getChildren()) {
+                        Project project = snapshot.getValue(Project.class);
+                        projectItemList.add(new ProjectItem(project.getId(), project.getName(), 0));
+                    }
+                    latchCount.incrementAndGet();
+                    onDownloadComplete();
+                }
+
+                @Override
+                public void onCancelled(DatabaseError databaseError) {
+
+                }
+            };
+        }
+        if (timeSpentValueEventListner == null) {
+            timeSpentValueEventListner = new ValueEventListener() {
+
+                @SuppressWarnings("unchecked")
+                @Override
+                public void onDataChange(DataSnapshot dataSnapshot) {
+                    timeSpentMap = (HashMap<String, Long>) dataSnapshot.getValue();
+                    latchCount.incrementAndGet();
+                    onDownloadComplete();
+                }
+
+                @Override
+                public void onCancelled(DatabaseError databaseError) {
+
+                }
+            };
+        }
+        projectTimeSpentRef.addValueEventListener(timeSpentValueEventListner);
+        projectsDatabaseRef.addValueEventListener(projectValueEventListener);
+
+    }
+
+    private void onDownloadComplete() {
+        if (latchCount.get() == 2) {
+            for (ProjectItem item : projectItemList) {
+                Long totalSeconds = timeSpentMap.get(item.getName());
+                if (totalSeconds != null) {
+                    item.setTotalSeconds(totalSeconds.intValue());
+                }
+            }
+            sortData();
+            projectsAdapter.swapData(projectItemList);
+            hideProgressBar(true);
+            if (projectItemList.isEmpty()) {
+                displayErrorText(context.getString(R.string.empty_project_list));
+            }
+        }
+    }
+
+    private void detachValueEventListener() {
+        if (projectValueEventListener != null) {
+            projectsDatabaseRef.removeEventListener(projectValueEventListener);
+            projectValueEventListener = null;
+        }
+        if (timeSpentValueEventListner != null) {
+            projectTimeSpentRef.removeEventListener(timeSpentValueEventListner);
+            timeSpentValueEventListner = null;
+        }
+    }
+
+
     public void sortData() {
         Collections.sort(projectItemList,
                 sortByName.isChecked() ? new NameComparator() : new TimeComparator());
@@ -137,13 +239,7 @@ public class ProjectsFragment extends Fragment implements SearchView.OnQueryText
 
     private void initializeData() {
         projectItemList = new ArrayList<>();
-        projectItemList.add(new ProjectItem(UUID.randomUUID().toString(), "CodeWatch", 3665));
-        projectItemList.add(new ProjectItem(UUID.randomUUID().toString(), "Fad-Flicks", 55678));
-        projectItemList.add(new ProjectItem(UUID.randomUUID().toString(), "StockHawk", 36549));
-        projectItemList.add(new ProjectItem(UUID.randomUUID().toString(), "MPAndroidChart-Master", 354654));
-        projectItemList.add(new ProjectItem(UUID.randomUUID().toString(), "MaterialDrawer", 23165));
-        projectItemList.add(new ProjectItem(UUID.randomUUID().toString(), "Sunshine-V2", 987531));
-        projectItemList.add(new ProjectItem(UUID.randomUUID().toString(), "Quizzes", 4568));
+        timeSpentMap = new HashMap<>();
     }
 
     private void hideProgressBar(boolean hide) {

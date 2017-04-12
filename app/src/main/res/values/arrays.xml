@@ -1,15 +1,15 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
 	<array name="chart_colors">
-		<item>@color/red_400</item>
 		<item>@color/blue_400</item>
+		<item>@color/red_400</item>
 		<item>@color/yellow_400</item>
 		<item>@color/green_400</item>
+		<item>@color/brown_400</item>
+		<item>@color/cyan_400</item>
 		<item>@color/orange_400</item>
 		<item>@color/indigo_400</item>
 		<item>@color/pink_400</item>
-		<item>@color/cyan_400</item>
-		<item>@color/brown_400</item>
 		<item>@color/teal_400</item>
 		<item>@color/light_blue_400</item>
 		<item>@color/deep_orange_400</item>

@@ -4,11 +4,14 @@ import android.app.Fragment;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.res.Configuration;
+import android.graphics.Bitmap;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.design.widget.NavigationView;
+import android.support.v4.graphics.drawable.RoundedBitmapDrawable;
+import android.support.v4.graphics.drawable.RoundedBitmapDrawableFactory;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AppCompatActivity;
@@ -16,8 +19,11 @@ import android.support.v7.widget.Toolbar;
 import android.view.Gravity;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.bumptech.glide.Glide;
+import com.bumptech.glide.request.target.BitmapImageViewTarget;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
@@ -29,11 +35,14 @@ import butterknife.BindView;
 import butterknife.ButterKnife;
 import io.github.protino.codewatch.OnBoardActivity;
 import io.github.protino.codewatch.R;
-import io.github.protino.codewatch.model.firebase.User;
 import io.github.protino.codewatch.model.user.ProfileData;
 import io.github.protino.codewatch.utils.AchievementsUtils;
 import io.github.protino.codewatch.utils.CacheUtils;
 import io.github.protino.codewatch.utils.Constants;
+
+import static io.github.protino.codewatch.utils.Constants.BRONZE_BADGE;
+import static io.github.protino.codewatch.utils.Constants.GOLD_BADGE;
+import static io.github.protino.codewatch.utils.Constants.SILVER_BADGE;
 
 /**
  * This activity handles setting up the navigation drawer
@@ -56,19 +65,33 @@ public class NavigationDrawerActivity extends AppCompatActivity implements
     private String firebaseUid;
     private DatabaseReference databaseReference;
     private ProfileData basicUserData;
-    private int currentAchievements;
+    private long currentAchievements;
     private ValueEventListener valueEventListener;
+
+    private TextView username;
+    private TextView silverBadgeCounts;
+    private TextView goldBadgeCounts;
+    private TextView bronzeBadgeCounts;
+    private ImageView avatar;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         if (!CacheUtils.isLoggedIn(this) || !CacheUtils.isFireBaseSetup(this)) {
-            startActivity(new Intent(this, OnBoardActivity.class));
+            Intent intent = new Intent(this, OnBoardActivity.class);
+            intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+            startActivity(intent);
             finish();
+            return;
         }
         setContentView(R.layout.activity_navigation_drawer);
         ButterKnife.bind(this);
+
         sharedPreferences = PreferenceManager.getDefaultSharedPreferences(this);
+        firebaseUid = sharedPreferences.getString(Constants.PREF_FIREBASE_USER_ID, null);
+        String basicData = sharedPreferences.getString(Constants.PREF_BASIC_USER_DETAILS, null);
+        basicUserData = new Gson().fromJson(basicData, ProfileData.class);
+
         setSupportActionBar(toolbar);
         setupDrawer();
         if (savedInstanceState == null) {
@@ -76,10 +99,6 @@ public class NavigationDrawerActivity extends AppCompatActivity implements
             onNavigationItemSelected(item);
             item.setChecked(true);
         }
-
-        firebaseUid = sharedPreferences.getString(Constants.PREF_FIREBASE_USER_ID, null);
-        String basicData = sharedPreferences.getString(Constants.PREF_BASIC_USER_DETAILS, null);
-        basicUserData = new Gson().fromJson(basicData, ProfileData.class);
 
         FirebaseDatabase firebaseDatabase = FirebaseDatabase.getInstance();
         databaseReference = firebaseDatabase.getReference().child("achv").child(firebaseUid);
@@ -104,8 +123,8 @@ public class NavigationDrawerActivity extends AppCompatActivity implements
 
                 @Override
                 public void onDataChange(DataSnapshot dataSnapshot) {
-                    currentAchievements = (int) dataSnapshot.child(basicUserData.getId()).getValue();
-                    setupHeader();
+                    currentAchievements = (long) dataSnapshot.child(basicUserData.getId()).getValue();
+                    bindHeaderViews();
                 }
 
                 @Override
@@ -151,12 +170,13 @@ public class NavigationDrawerActivity extends AppCompatActivity implements
 
         View navigationHeader = navigationView.inflateHeaderView(R.layout.navigation_header);
 
-        ((TextView) navigationHeader.findViewById(R.id.username)).setText(basicUserData.getDisplayName());
+        username = (TextView) navigationHeader.findViewById(R.id.username);
+        avatar = (ImageView) navigationHeader.findViewById(R.id.avatar);
 
-        String ach = String.valueOf(AchievementsUtils.getGoldBadgeCount(currentAchievements));
-        ((TextView) navigationHeader.findViewById(R.id.silver_badge_count)).setText(goldCount);
-        ((TextView) navigationHeader.findViewById(R.id.gold_badge_count)).setText(silverCount);
-        ((TextView) navigationHeader.findViewById(R.id.bronze_badge_count)).setText(bronzeCount);
+        silverBadgeCounts = (TextView) navigationHeader.findViewById(R.id.silver_badge_count);
+        goldBadgeCounts = (TextView) navigationHeader.findViewById(R.id.gold_badge_count);
+        bronzeBadgeCounts = (TextView) navigationHeader.findViewById(R.id.bronze_badge_count);
+
 
         navigationHeader.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -164,6 +184,32 @@ public class NavigationDrawerActivity extends AppCompatActivity implements
                 startActivity(new Intent(NavigationDrawerActivity.this, ProfileActivity.class));
             }
         });
+    }
+
+    private void bindHeaderViews() {
+        username.setText(basicUserData.getDisplayName());
+        Glide.with(this)
+                .load(basicUserData.getPhoto())
+                .asBitmap()
+                .placeholder(R.drawable.ic_account_circle_white_24dp)
+                .into(new BitmapImageViewTarget(avatar) {
+                    @Override
+                    protected void setResource(Bitmap resource) {
+
+                        RoundedBitmapDrawable drawable =
+                                RoundedBitmapDrawableFactory.create(getResources(), resource);
+                        drawable.setCircular(true);
+                        avatar.setImageDrawable(drawable);
+                    }
+                });
+
+        String goldCount = String.valueOf(AchievementsUtils.getBadgeCount(currentAchievements, GOLD_BADGE));
+        String silverCount = String.valueOf(AchievementsUtils.getBadgeCount(currentAchievements, SILVER_BADGE));
+        String bronzeCount = String.valueOf(AchievementsUtils.getBadgeCount(currentAchievements, BRONZE_BADGE));
+
+        goldBadgeCounts.setText(goldCount);
+        silverBadgeCounts.setText(silverCount);
+        bronzeBadgeCounts.setText(bronzeCount);
     }
 
     @Override
@@ -193,7 +239,7 @@ public class NavigationDrawerActivity extends AppCompatActivity implements
                 replaceFragment(new GoalsFragment(), text);
                 break;
             case R.id.achievements:
-                text = "Ach";
+                text = "Achievements";
                 replaceFragment(new AchievementFragment(), text);
                 break;
             case R.id.leaderboards:
@@ -206,7 +252,7 @@ public class NavigationDrawerActivity extends AppCompatActivity implements
                 break;
             case R.id.settings:
                 text = "Settings";
-                getFragmentManager().beginTransaction().replace(R.id.container, new SettingsFragment()).commit();
+                replaceFragment(new SettingsFragment(), text);
                 break;
             default:
                 throw new UnsupportedOperationException("Invalid menu item");
@@ -216,9 +262,7 @@ public class NavigationDrawerActivity extends AppCompatActivity implements
     }
 
     private void replaceFragment(Fragment fragment, String text) {
-        Bundle bundle = new Bundle();
-        bundle.putString(Intent.EXTRA_TEXT, text);
-        fragment.setArguments(bundle);
+        getSupportActionBar().setTitle(text);
         getFragmentManager().beginTransaction().replace(R.id.container, fragment).commit();
     }
 
@@ -229,5 +273,9 @@ public class NavigationDrawerActivity extends AppCompatActivity implements
         } else {
             super.onBackPressed();
         }
+    }
+
+    public String getWakatimeUid() {
+        return basicUserData.getId();
     }
 }

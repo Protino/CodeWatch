@@ -74,22 +74,24 @@ public class FetchWakatimeData {
         }
         WakatimeData wakatimeData = new WakatimeData();
 
-        StatsResponse statsResponse = fetchStats();
-        wakatimeData.setStatsResponse(statsResponse);
-
-        /*
-        // TODO: 12-03-2017 Seperate this task from here
-        HashMap<String, ProjectSummaryResponse> summaryResponseMap = new HashMap<>();
-        ProjectSummaryResponse projectSummaryResponse;
-        for (ProjectsData projectsData : projectsResponse.getProjectsList()) {
-            String projectName = projectsData.getName();
-            projectSummaryResponse = apiInterface.getProjectSummary(projectName, startDate, endDate).execute().body();
-            summaryResponseMap.put(projectName, projectSummaryResponse);
-        }
-        wakatimeData.setSummaryResponse(summaryResponseMap);*/
-
+        //User details
         UserResponse userResponse = fetchUserDetails();
         wakatimeData.setUserResponse(userResponse);
+
+        //Stats
+        fetchStatsOnly(wakatimeData);
+
+        //Projects
+        wakatimeData.setProjectsResponse(fetchProjectsList());
+        return wakatimeData;
+    }
+
+    public void fetchStatsOnly(WakatimeData wakatimeData) throws IOException {
+        if (apiInterface == null) {
+            return;
+        }
+        StatsResponse statsResponse = fetchStats();
+        wakatimeData.setStatsResponse(statsResponse);
 
         GenericSummaryResponse genericSummaryResponse = fetchGenericSummaryResponse();
         Map<String, Integer> projectStats;
@@ -103,10 +105,7 @@ public class FetchWakatimeData {
         }
         wakatimeData.setProjectStatsList(projectStatsList);
 
-        wakatimeData.setChangeInTotalSeconds(getChangeInTotalSeconds());
-
-        wakatimeData.setProjectsResponse(fetchProjectsList());
-        return wakatimeData;
+        wakatimeData.setTodaysTotalSeconds(getTodaysTotalSeconds());
     }
 
     public UserResponse fetchUserDetails() throws IOException {
@@ -125,13 +124,10 @@ public class FetchWakatimeData {
         return apiInterface.getProjects().execute().body();
     }
 
-    public int getChangeInTotalSeconds() throws IOException {
+    public Integer getTodaysTotalSeconds() throws IOException {
         GenericSummaryResponse response = apiInterface.getSummary(yesterday, endDate).execute().body();
-
-        int yesterdaysTotalSeconds = response.getData().get(0).getGrandTotal().getTotalSeconds();
         int todaysTotalSeconds = response.getData().get(1).getGrandTotal().getTotalSeconds();
-
-        return todaysTotalSeconds - yesterdaysTotalSeconds;
+        return todaysTotalSeconds;
     }
 
     /*

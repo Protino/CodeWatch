@@ -210,7 +210,7 @@ public class FirebaseTestActivity extends AppCompatActivity {
         ProfileData profileData = wakatimeData.getUserResponse().getProfileData();
         user.setEmail(profileData.getEmail());
         user.setDisplayName(profileData.getFullName());
-        user.setAchievements(0); // TODO: 16-03-2017 Store as achievements as auth data
+        //user.setAchievements(0); // TODO: 16-03-2017 Store as achievements as auth data
         user.setCurrentPlan(profileData.getPlan());
         user.setIsEmailConfirmed(profileData.getIsEmailConfirmed());
         user.setUserId(profileData.getId());
@@ -229,7 +229,6 @@ public class FirebaseTestActivity extends AppCompatActivity {
         stats.setBestDaySeconds(statsData.getBestDay().getTotalSeconds());
         stats.setDailyAverageSeconds(statsData.getDailyAverage());
         stats.setTotalSeconds(statsData.getTotalSeconds());
-        stats.setChangeInTotalSeconds(0);
 
         // TODO: 12-03-2017 separate call to fetch projects data
         stats.setProjectPairList(null);

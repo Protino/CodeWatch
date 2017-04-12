@@ -3,6 +3,7 @@
           package="io.github.protino.codewatch">
 
 	<uses-permission android:name="android.permission.INTERNET"/>
+	<uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE"/>
 
 	<application
 		android:name=".App"
@@ -61,6 +62,16 @@
 		<provider
 			android:name=".data.LeaderProvider"
 			android:authorities="io.github.protino.codewatch.app"/>
+		<provider
+			android:name="android.support.v4.content.FileProvider"
+			android:authorities="io.github.protino.codewatch.fileprovider"
+			android:exported="false"
+			android:grantUriPermissions="true">
+			<meta-data
+				android:name="android.support.FILE_PROVIDER_PATHS"
+				android:resource="@xml/file_paths"
+				/>
+		</provider>
 
 		<service
 			android:name=".sync.WakatimeDataSyncJob"

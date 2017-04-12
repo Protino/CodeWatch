@@ -95,6 +95,12 @@ public class ProjectsAdapter extends RecyclerView.Adapter<ProjectsAdapter.Projec
         this.onItemSelectedListener = onItemSelectedListener;
     }
 
+    public void swapData(List<ProjectItem> projectItemList) {
+        this.projectItemList = projectItemList;
+        this.projectItemListCopy = projectItemList;
+        notifyDataSetChanged();
+    }
+
     public interface OnItemSelectedListener {
         void onItemSelected(String projectName);
     }

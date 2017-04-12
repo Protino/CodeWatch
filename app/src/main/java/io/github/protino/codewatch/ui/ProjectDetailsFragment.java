@@ -2,6 +2,7 @@ package io.github.protino.codewatch.ui;
 
 import android.content.Context;
 import android.content.Intent;
+import android.graphics.Bitmap;
 import android.graphics.Color;
 import android.graphics.drawable.Drawable;
 import android.os.AsyncTask;
@@ -15,6 +16,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.github.mikephil.charting.animation.Easing;
 import com.github.mikephil.charting.charts.BarChart;
@@ -52,7 +54,8 @@ import io.github.protino.codewatch.model.project.summary.Language;
 import io.github.protino.codewatch.model.project.summary.OperatingSystem;
 import io.github.protino.codewatch.model.project.summary.ProjectSummaryData;
 import io.github.protino.codewatch.remote.FetchWakatimeData;
-import io.github.protino.codewatch.ui.widget.BarChartMarkerView;
+import io.github.protino.codewatch.ui.widget.CustomMarkerView;
+import io.github.protino.codewatch.utils.FileProviderUtils;
 import io.github.protino.codewatch.utils.FormatUtils;
 import timber.log.Timber;
 
@@ -120,6 +123,7 @@ public class ProjectDetailsFragment extends ChartFragment {
 
     private void displayData() {
         setUpBarChart();
+
         setUpPieChart(pieChartLanguages, project.getLanguageList(), LANGUAGE_CHART_ID);
         setUpPieChart(pieChartEditors, project.getEditorPaiList(), EDITORS_CHART_ID);
         setUpPieChart(pieChartOs, project.getOsPairList(), OS_CHART_ID);
@@ -140,6 +144,8 @@ public class ProjectDetailsFragment extends ChartFragment {
 
         XAxis xAxis = barChart.getXAxis();
         xAxis.setPosition(XAxis.XAxisPosition.BOTTOM);
+        xAxis.setAxisLineColor(Color.WHITE);
+        xAxis.setTextColor(Color.WHITE);
         xAxis.setDrawGridLines(false);
         xAxis.setGranularity(1f);
         xAxis.setValueFormatter(new FormatUtils().getBarXAxisValueFormatterInstance(referenceTime));
@@ -148,6 +154,8 @@ public class ProjectDetailsFragment extends ChartFragment {
         YAxis leftAxis = barChart.getAxisLeft();
         leftAxis.removeAllLimitLines();
         leftAxis.setDrawGridLines(false);
+        leftAxis.setAxisLineColor(Color.WHITE);
+        leftAxis.setTextColor(Color.WHITE);
         leftAxis.setGranularity(60 * 60);
         leftAxis.setValueFormatter(new IAxisValueFormatter() {
             @Override
@@ -166,13 +174,13 @@ public class ProjectDetailsFragment extends ChartFragment {
         leftAxis.setAxisMaximum(maxYData);
         leftAxis.setAxisMinimum(0f);
 
-        BarChartMarkerView barChartMarkerView = new BarChartMarkerView(context, R.layout.marker_view, referenceTime);
-        barChart.setMarker(barChartMarkerView);
+        CustomMarkerView customMarkerView = new CustomMarkerView(context, R.layout.marker_view, referenceTime);
+        barChart.setMarker(customMarkerView);
 
         barChart.getAxisRight().setEnabled(false);
         barChart.getLegend().setEnabled(false);
         barChart.getDescription().setEnabled(false);
-        barChart.setBackgroundColor(Color.WHITE);
+        barChart.setBackground(context.getResources().getDrawable(R.color.colorPrimaryDark));
         barChart.setDrawGridBackground(false);
         barChart.setDragEnabled(false);
         barChart.setScaleEnabled(false);
@@ -182,7 +190,7 @@ public class ProjectDetailsFragment extends ChartFragment {
         barChart.setDrawBorders(false);
         barChart.setData(barData);
 
-        barChartMarkerView.setChartView(barChart);
+        customMarkerView.setChartView(barChart);
 
         barChart.setVisibility(View.VISIBLE);
         barChart.animateY(1500, Easing.EasingOption.Linear);
@@ -214,7 +222,6 @@ public class ProjectDetailsFragment extends ChartFragment {
         return barData;
     }
 
-
     private void setListeners() {
         pieChartLanguages.setOnChartValueSelectedListener(new CustomOnValueSelectedListener(LANGUAGE_CHART_ID));
         pieChartEditors.setOnChartValueSelectedListener(new CustomOnValueSelectedListener(EDITORS_CHART_ID));
@@ -224,8 +231,8 @@ public class ProjectDetailsFragment extends ChartFragment {
     @OnClick({R.id.expand_piechart_editors, R.id.expand_piechart_language, R.id.expand_piechart_os})
     public void onExpand(View view) {
         boolean isExpanded = isExpandedMap.get(view.getId());
-        Drawable drawable = ContextCompat.getDrawable(getContext(),
-                isExpanded ? R.drawable.ic_expand_more_black_24dp : R.drawable.ic_expand_less_black_24dp);
+        Drawable drawable = ContextCompat.getDrawable(context,
+                isExpanded ? R.drawable.ic_expand_more_white_24dp : R.drawable.ic_expand_less_white_24dp);
         isExpandedMap.put(view.getId(), !isExpanded);
         switch (view.getId()) {
             case R.id.expand_piechart_language:
@@ -245,6 +252,35 @@ public class ProjectDetailsFragment extends ChartFragment {
                 break;
             default://ignore
                 break;
+        }
+    }
+
+    @OnClick({R.id.share_activity_chart, R.id.share_editors_chart, R.id.share_language_chart, R.id.share_os_chart})
+    public void onShareClick(View view) {
+        Bitmap bitmap = null;
+        switch (view.getId()) {
+            case R.id.share_activity_chart:
+                bitmap = barChart.getChartBitmap();
+                break;
+            case R.id.share_editors_chart:
+                bitmap = pieChartEditors.getChartBitmap();
+                break;
+            case R.id.share_language_chart:
+                bitmap = pieChartLanguages.getChartBitmap();
+                break;
+            case R.id.share_os_chart:
+                bitmap = pieChartOs.getChartBitmap();
+                break;
+            default:
+                break;
+        }
+        if (bitmap != null) {
+            try {
+                FileProviderUtils.shareBitmap(context, bitmap);
+            } catch (IOException e) {
+                Timber.d(e, "IO Error while saving image");
+                Toast.makeText(context, R.string.share_error, Toast.LENGTH_SHORT).show();
+            }
         }
     }
 
@@ -310,8 +346,6 @@ public class ProjectDetailsFragment extends ChartFragment {
                 project.setLanguageList(languageStats);
                 project.setEditorPaiList(editorStats);
                 project.setOsPairList(osStats);
-                project.setId(SAMPLE_PROJECT_ID);
-
                 Timber.d("Parse time " + String.valueOf(System.currentTimeMillis() - start));
 
             } catch (IOException e) {

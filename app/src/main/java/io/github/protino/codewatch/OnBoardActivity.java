@@ -85,7 +85,7 @@ public class OnBoardActivity extends AppCompatActivity {
         startActivity(new Intent(this, LoginActivity.class));
     }
 
-    @Subscribe(sticky = true, threadMode = ThreadMode.BACKGROUND)
+    @Subscribe(sticky = true, threadMode = ThreadMode.MAIN)
     public void onLogin(final LoginEvent loginEvent) {
         if (loginEvent.isLoginSuccess()) {
             setUpForFirstTimeUse();
@@ -129,11 +129,9 @@ public class OnBoardActivity extends AppCompatActivity {
     private void onSignedInInitialize(String uid, String id) {
         sharedPreferences.edit().putString(Constants.PREF_FIREBASE_USER_ID, uid).commit();
         FirebaseDatabase firebaseDatabase = FirebaseDatabase.getInstance();
-
         //initialize achv
         firebaseDatabase.getReference().child("achv").child(uid).child(id).setValue(0);
-
-
+        new FetchWakatimeDataTask(this,uid).execute();
     }
 
     /**

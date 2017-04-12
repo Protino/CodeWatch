@@ -6,6 +6,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
+import android.support.design.widget.FloatingActionButton;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.helper.ItemTouchHelper;
@@ -51,6 +52,8 @@ public class GoalsFragment extends Fragment implements GoalsAdapter.OnGoalItemCl
     private static final String GD_TAG = "GOAL_DETAIL_TAG";
     //@formatter:off
     @BindView(R.id.goals_list) RecyclerView recyclerView;
+    @BindView(R.id.progressBar) View progressBar;
+    @BindView(R.id.add_goal) FloatingActionButton fab;
     //@formatter:on
 
     private View rootView;
@@ -79,13 +82,13 @@ public class GoalsFragment extends Fragment implements GoalsAdapter.OnGoalItemCl
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         rootView = inflater.inflate(R.layout.fragment_goals, container, false);
         ButterKnife.bind(this, rootView);
+        hideProgressBar(false);
         context = getActivity();
 
         goalsAdapter = new GoalsAdapter(context, goalItemList, projectNameMap);
         goalsAdapter.setGoalItemClickListener(this);
         recyclerView.setLayoutManager(new LinearLayoutManager(context, LinearLayoutManager.VERTICAL, false));
         recyclerView.setAdapter(goalsAdapter);
-
         setUpSwipeToDelete();
         return rootView;
     }
@@ -185,5 +188,11 @@ public class GoalsFragment extends Fragment implements GoalsAdapter.OnGoalItemCl
     public void onPause() {
         EventBus.getDefault().unregister(this);
         super.onPause();
+    }
+
+    private void hideProgressBar(Boolean hide) {
+        progressBar.setVisibility(hide ? View.INVISIBLE : View.VISIBLE);
+        fab.setVisibility(hide ? View.VISIBLE : View.INVISIBLE);
+        recyclerView.setVisibility(hide ? View.VISIBLE : View.INVISIBLE);
     }
 }

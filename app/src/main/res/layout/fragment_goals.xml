@@ -5,12 +5,19 @@
 	android:layout_width="match_parent"
 	android:layout_height="match_parent">
 
+	<ProgressBar
+		android:id="@+id/progressBar"
+		android:layout_width="wrap_content"
+		android:layout_height="wrap_content"
+		android:layout_gravity="center"/>
+
 	<android.support.v7.widget.RecyclerView
 		android:id="@+id/goals_list"
 		android:layout_width="match_parent"
 		android:layout_height="match_parent"
 		android:paddingEnd="16dp"
-		android:paddingStart="16dp"/>
+		android:paddingStart="16dp"
+		android:visibility="invisible"/>
 
 	<android.support.design.widget.FloatingActionButton
 		android:id="@+id/add_goal"
@@ -19,5 +26,6 @@
 		android:layout_gravity="bottom|end"
 		android:layout_margin="16dp"
 		android:src="@drawable/ic_add_white_24dp"
+		android:visibility="invisible"
 		app:fabSize="normal"/>
 </FrameLayout>

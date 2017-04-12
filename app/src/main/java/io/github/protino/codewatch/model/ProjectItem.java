@@ -5,7 +5,7 @@ package io.github.protino.codewatch.model;
  */
 
 public class ProjectItem {
-    private String id;
+    private String id; //irrelevant
     private String name;
     private int totalSeconds;
 

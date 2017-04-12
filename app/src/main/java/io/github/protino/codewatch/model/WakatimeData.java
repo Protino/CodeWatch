@@ -15,7 +15,8 @@ public class WakatimeData {
 
     private UserResponse userResponse;
     private StatsResponse statsResponse;
-    private Integer changeInTotalSeconds;
+    private Integer todaysTotalSeconds;
+    //private Integer previousDailyAverage; //Not supported by api
     private List<Map<String, Integer>> projectStatsList;
     private ProjectsResponse projectsResponse;
 
@@ -46,19 +47,19 @@ public class WakatimeData {
         this.projectStatsList = projectStats;
     }
 
-    public Integer getChangeInTotalSeconds() {
-        return changeInTotalSeconds;
-    }
-
-    public void setChangeInTotalSeconds(Integer changeInTotalSeconds) {
-        this.changeInTotalSeconds = changeInTotalSeconds;
-    }
-
     public ProjectsResponse getProjectsResponse() {
         return projectsResponse;
     }
 
     public void setProjectsResponse(ProjectsResponse projectsResponse) {
         this.projectsResponse = projectsResponse;
+    }
+
+    public Integer getTodaysTotalSeconds() {
+        return todaysTotalSeconds;
+    }
+
+    public void setTodaysTotalSeconds(Integer todaysTotalSeconds) {
+        this.todaysTotalSeconds = todaysTotalSeconds;
     }
 }

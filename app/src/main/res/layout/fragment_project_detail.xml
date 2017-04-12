@@ -64,7 +64,7 @@
 						android:background="?attr/selectableItemBackgroundBorderless"
 						android:clickable="true"
 						android:padding="8dp"
-						android:src="@drawable/ic_share_black_24dp"/>
+						android:src="@drawable/ic_share_white_24dp"/>
 
 					<com.github.mikephil.charting.charts.BarChart
 						android:id="@+id/barchart"
@@ -78,6 +78,7 @@
 						android:layout_height="wrap_content"
 						android:layout_below="@id/barchart"
 						android:gravity="center"
+						android:paddingTop="8dp"
 						tools:text="Coded 45 hrs in total this week"/>
 				</RelativeLayout>
 			</android.support.v7.widget.CardView>
@@ -116,7 +117,7 @@
 						android:background="?attr/selectableItemBackgroundBorderless"
 						android:clickable="true"
 						android:padding="8dp"
-						android:src="@drawable/ic_share_black_24dp"/>
+						android:src="@drawable/ic_share_white_24dp"/>
 
 					<com.github.mikephil.charting.charts.PieChart
 						android:id="@+id/piechart_languages"
@@ -138,7 +139,7 @@
 							android:layout_gravity="center"
 							android:background="?attr/selectableItemBackgroundBorderless"
 							android:clickable="true"
-							android:src="@drawable/ic_expand_more_black_24dp"/>
+							android:src="@drawable/ic_expand_more_white_24dp"/>
 
 						<android.support.v7.widget.RecyclerView
 							android:id="@+id/list_languages"
@@ -183,7 +184,7 @@
 						android:background="?attr/selectableItemBackgroundBorderless"
 						android:clickable="true"
 						android:padding="8dp"
-						android:src="@drawable/ic_share_black_24dp"/>
+						android:src="@drawable/ic_expand_more_white_24dp"/>
 
 					<com.github.mikephil.charting.charts.PieChart
 						android:id="@+id/piechart_editors"
@@ -206,7 +207,7 @@
 							android:layout_gravity="center"
 							android:background="?attr/selectableItemBackgroundBorderless"
 							android:clickable="true"
-							android:src="@drawable/ic_expand_more_black_24dp"/>
+							android:src="@drawable/ic_expand_more_white_24dp"/>
 
 						<android.support.v7.widget.RecyclerView
 							android:id="@+id/list_editors"
@@ -256,7 +257,7 @@
 						android:paddingRight="0dp"
 						android:paddingStart="8dp"
 						android:paddingTop="8dp"
-						android:src="@drawable/ic_share_black_24dp"/>
+						android:src="@drawable/ic_expand_more_white_24dp"/>
 
 					<com.github.mikephil.charting.charts.PieChart
 						android:id="@+id/piechart_os"
@@ -279,7 +280,7 @@
 
 							android:background="?attr/selectableItemBackgroundBorderless"
 							android:clickable="true"
-							android:src="@drawable/ic_expand_more_black_24dp"/>
+							android:src="@drawable/ic_expand_more_white_24dp"/>
 
 						<android.support.v7.widget.RecyclerView
 							android:id="@+id/list_os"

@@ -24,6 +24,7 @@ import java.util.Comparator;
 import java.util.List;
 import java.util.Map;
 
+import io.github.protino.codewatch.R;
 import io.github.protino.codewatch.model.PieChartItem;
 import io.github.protino.codewatch.ui.adapter.StatsAdapter;
 
@@ -144,8 +145,8 @@ public abstract class ChartFragment extends Fragment {
         pieChart.setUsePercentValues(true);
         pieChart.getDescription().setEnabled(false);
         pieChart.setDrawHoleEnabled(true);
-        pieChart.setHoleColor(Color.WHITE);
-        pieChart.setTransparentCircleColor(Color.WHITE);
+        pieChart.setHoleColor(context.getResources().getColor(R.color.colorPrimaryDark));
+        pieChart.setTransparentCircleColor(Color.GRAY);
         pieChart.setTransparentCircleAlpha(110);
 
         pieChart.setRotationAngle(0);
@@ -154,11 +155,13 @@ public abstract class ChartFragment extends Fragment {
 
         pieChart.setEntryLabelColor(Color.WHITE);
         pieChart.setDrawEntryLabels(false);
+        pieChart.setBackground(context.getResources().getDrawable(R.color.colorPrimaryDark));
     }
 
     private void formatPieChartLegend(Legend legend) {
         legend.setVerticalAlignment(Legend.LegendVerticalAlignment.BOTTOM);
         legend.setHorizontalAlignment(Legend.LegendHorizontalAlignment.CENTER);
+        legend.setTextColor(Color.WHITE);
         legend.setDrawInside(false);
     }
 
@@ -178,7 +181,6 @@ public abstract class ChartFragment extends Fragment {
             default:
                 break;
         }
-
         view.setVisibility(expand ? View.VISIBLE : View.GONE);
         if (!expand) {
             view.setAdapter(new StatsAdapter(context, adapter.getItemList(), ""));

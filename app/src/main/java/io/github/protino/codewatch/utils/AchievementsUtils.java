@@ -14,7 +14,12 @@ import java.util.Map;
 import io.github.protino.codewatch.model.BadgeItem;
 
 import static io.github.protino.codewatch.utils.Constants.ACHIEVEMENTS_MAP;
+import static io.github.protino.codewatch.utils.Constants.BRONZE_BADGE;
+import static io.github.protino.codewatch.utils.Constants.BRONZE_BADGES;
 import static io.github.protino.codewatch.utils.Constants.GOLD_BADGE;
+import static io.github.protino.codewatch.utils.Constants.GOLD_BADGES;
+import static io.github.protino.codewatch.utils.Constants.SILVER_BADGE;
+import static io.github.protino.codewatch.utils.Constants.SILVER_BADGES;
 
 /**
  * @author Gurupad Mamadapur
@@ -58,15 +63,41 @@ public class AchievementsUtils {
         return badgeMap;
     }
 
-    public static List<BadgeItem> createBadgeItems(Map<Integer, Pair<String, String>> badgeMap, List<Integer> list) {
+    public static List<BadgeItem> createBadgeItems(
+            Map<Integer, Pair<String, String>> badgeMap, List<Integer> list, @BadgeItem.BadgeType int badgeType) {
+
         List<BadgeItem> badgeItems = new ArrayList<>();
         for (Map.Entry<Integer, Pair<String, String>> entry : badgeMap.entrySet()) {
-            BadgeItem badgeItem = new BadgeItem(GOLD_BADGE);
+            BadgeItem badgeItem = new BadgeItem(badgeType);
             badgeItem.setName(entry.getValue().first);
             badgeItem.setRequirement(entry.getValue().second);
             badgeItem.setIsUnlocked(list.contains(entry.getKey()));
             badgeItems.add(badgeItem);
         }
         return badgeItems;
+    }
+
+    public static int getBadgeCount(long currentAchievements, @BadgeItem.BadgeType int badgeType) {
+        int count = 0;
+        int[] positions;
+        switch (badgeType) {
+            case GOLD_BADGE:
+                positions = GOLD_BADGES;
+                break;
+            case SILVER_BADGE:
+                positions = SILVER_BADGES;
+                break;
+            case BRONZE_BADGE:
+                positions = BRONZE_BADGES;
+                break;
+            default:
+                throw new UnsupportedOperationException("Invalid badge");
+        }
+        for (int i = 0; i < positions.length; i++) {
+            if ((currentAchievements & (1L << positions[i])) != 0) {
+                count++;
+            }
+        }
+        return count;
     }
 }

@@ -57,7 +57,7 @@ public class TransformUtils {
         return user;
     }
 
-    private User transformStats() {
+    public User transformStats() throws NullPointerException{
         Stats stats = new Stats();
         StatsData statsData = wakatimeData.getStatsResponse().getStatsData();
         stats.setUpToDate(statsData.getIsUpToDate());
@@ -67,7 +67,7 @@ public class TransformUtils {
         stats.setBestDaySeconds(statsData.getBestDay().getTotalSeconds());
         stats.setDailyAverageSeconds(statsData.getDailyAverage());
         stats.setTotalSeconds(statsData.getTotalSeconds());
-        stats.setChangeInTotalSeconds(wakatimeData.getChangeInTotalSeconds());
+        stats.setTodaysTotalSeconds(wakatimeData.getTodaysTotalSeconds());
 
         stats.setProjectPairList(wakatimeData.getProjectStatsList());
 
@@ -99,7 +99,6 @@ public class TransformUtils {
         ProfileData profileData = wakatimeData.getUserResponse().getProfileData();
         user.setEmail(profileData.getEmail());
         user.setDisplayName(profileData.getDisplayName());
-        user.setAchievements(0); // TODO: 16-03-2017 Store as achievements as auth data
         user.setCurrentPlan(profileData.getPlan());
         user.setIsEmailConfirmed(profileData.getIsEmailConfirmed());
         user.setUserId(profileData.getId());

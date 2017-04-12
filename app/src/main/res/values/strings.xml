@@ -21,12 +21,6 @@
 		<xliff:g example="2" id="quantity">%.2f</xliff:g>%% of your daily average.
 	</string>
 	<string name="performance_title">Performance</string>
-	<string name="percent_change_in_daily_avg">
-		<xliff:g example="7.2" id="quantity">%1$.2f</xliff:g>%%
-		<xliff:g example="increase/decrease">%2$s</xliff:g> in daily average.
-	</string>
-	<string name="result_decreased">decrease</string>
-	<string name="result_increase">increase</string>
 	<string name="default_time_format">
 		<xliff:g example="7" id="hours">%1$d</xliff:g> h
 		<xliff:g example="10" id="minutes">%2$d</xliff:g> m
@@ -133,4 +127,7 @@
 	<string name="retry">Retry</string>
 	<string name="setting_up">Setting up CodeWatch</string>
 	<string name="internet_error_message">Please check your internet connection</string>
+	<string name="choose_app">Choose an app</string>
+	<string name="share_error">Sorry couldn\'t share the image</string>
+	<string name="stats_updating_error_message">Your stats are being calculated</string>
 </resources>

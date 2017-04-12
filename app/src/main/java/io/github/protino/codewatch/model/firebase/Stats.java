@@ -18,7 +18,6 @@ public class Stats {
     private Integer dailyAverageSeconds;
     private Integer totalSeconds;
     private Integer todaysTotalSeconds;
-    private Integer changeInTotalSeconds;
     private List<Map<String, Integer>> projectPairList;
     private Map<String, Integer> languagesMap;
     private Map<String, Integer> osMap;
@@ -89,14 +88,6 @@ public class Stats {
 
     public void setTodaysTotalSeconds(Integer todaysTotalSeconds) {
         this.todaysTotalSeconds = todaysTotalSeconds;
-    }
-
-    public Integer getChangeInTotalSeconds() {
-        return changeInTotalSeconds;
-    }
-
-    public void setChangeInTotalSeconds(Integer changeInTotalSeconds) {
-        this.changeInTotalSeconds = changeInTotalSeconds;
     }
 
     public List<Map<String, Integer>> getProjectPairList() {
