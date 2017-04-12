@@ -1,0 +1,147 @@
+<?xml version="1.0" encoding="utf-8"?>
+<android.support.design.widget.CoordinatorLayout
+	xmlns:android="http://schemas.android.com/apk/res/android"
+	xmlns:app="http://schemas.android.com/apk/res-auto"
+	xmlns:tools="http://schemas.android.com/tools"
+	android:layout_width="match_parent"
+	android:layout_height="match_parent"
+	android:fitsSystemWindows="true">
+
+	<android.support.design.widget.AppBarLayout
+		android:id="@+id/app_bar_layout"
+		android:layout_width="match_parent"
+		android:layout_height="wrap_content"
+		android:fitsSystemWindows="true"
+		android:theme="@style/ThemeOverlay.AppCompat.Dark">
+
+		<android.support.design.widget.CollapsingToolbarLayout
+			android:id="@+id/collapsing_toolbar"
+			android:layout_width="match_parent"
+			android:layout_height="match_parent"
+			android:fitsSystemWindows="true"
+			app:contentScrim="?attr/colorPrimary"
+			app:expandedTitleTextAppearance="@style/CollapsedAppBarTextStyle"
+			app:layout_scrollFlags="scroll|exitUntilCollapsed">
+
+			<LinearLayout
+				android:id="@+id/userDetailsContainer"
+				android:layout_width="match_parent"
+				android:layout_height="wrap_content"
+				android:layout_marginBottom="16dp"
+				android:gravity="center"
+				android:orientation="vertical"
+				android:paddingBottom="16dp"
+				app:layout_collapseMode="parallax">
+
+				<FrameLayout
+					android:layout_width="wrap_content"
+					android:layout_height="wrap_content"
+					android:layout_gravity="center"
+					android:paddingTop="75dp">
+
+					<ImageView
+						android:id="@+id/avatar"
+						android:layout_width="150dp"
+						android:layout_height="150dp"
+						android:layout_gravity="center"
+						android:padding="16dp"
+						android:src="@drawable/ic_account_circle_white_24dp"/>
+
+					<android.support.v7.widget.CardView
+						android:layout_width="24dp"
+						android:layout_height="24dp"
+						android:layout_gravity="center|bottom"
+						app:cardBackgroundColor="@color/white_1000">
+
+						<!-- Purposefully setting the text size in dp instead of sp-->
+						<TextView
+							android:id="@+id/rank"
+							android:layout_width="match_parent"
+							android:layout_height="match_parent"
+							android:gravity="center"
+							android:padding="2dp"
+							android:text="@string/_2"
+							android:textColor="@color/black_1000"
+							android:textSize="12dp"
+							android:textStyle="bold"
+							tools:ignore="SpUsage"/>
+					</android.support.v7.widget.CardView>
+				</FrameLayout>
+
+				<TextView
+					android:id="@+id/username"
+					style="@style/Base.TextAppearance.AppCompat.Headline"
+					android:layout_width="match_parent"
+					android:layout_height="wrap_content"
+					android:gravity="center"
+					android:paddingTop="16dp"
+					tools:text="Gurupad Mamadapur"/>
+
+				<TextView
+					android:id="@+id/daily_average_text"
+					style="@style/Base.TextAppearance.AppCompat.Subhead"
+					android:layout_width="wrap_content"
+					android:layout_height="wrap_content"
+					android:fontFamily="sans-serif-condensed"
+					android:gravity="center"
+					android:paddingTop="8dp"
+					tools:text="Daily average - 3 hrs 5 m"/>
+
+				<LinearLayout
+					android:layout_width="wrap_content"
+					android:layout_height="wrap_content"
+					android:orientation="vertical"
+					android:paddingTop="16dp">
+
+					<TextView
+						android:id="@+id/email"
+						android:layout_width="wrap_content"
+						android:layout_height="wrap_content"
+						android:drawableLeft="@drawable/ic_email_white_18dp"
+						android:drawablePadding="8dp"
+						android:drawableStart="@drawable/ic_email_white_18dp"
+						android:padding="8dp"
+						tools:text="gurupadmadapur@gmail.com"/>
+
+					<TextView
+						android:id="@+id/location"
+						android:layout_width="wrap_content"
+						android:layout_height="wrap_content"
+						android:drawableLeft="@drawable/ic_location_on_white_18dp"
+						android:drawablePadding="8dp"
+						android:drawableStart="@drawable/ic_location_on_white_18dp"
+						android:padding="8dp"
+						tools:text="Bangalore, India"/>
+
+
+					<TextView
+						android:id="@+id/website"
+						android:layout_width="wrap_content"
+						android:layout_height="wrap_content"
+						android:drawableLeft="@drawable/ic_link_white_18dp"
+						android:drawablePadding="8dp"
+						android:drawableStart="@drawable/ic_link_white_18dp"
+						android:padding="8dp"
+						tools:text="github.com/protino"/>
+				</LinearLayout>
+			</LinearLayout>
+
+			<android.support.v7.widget.Toolbar
+				android:id="@+id/toolbar"
+				style="@style/DefaultToolbarStyle"
+				android:layout_width="match_parent"
+				android:layout_height="?attr/actionBarSize"
+				app:layout_collapseMode="pin"/>
+		</android.support.design.widget.CollapsingToolbarLayout>
+	</android.support.design.widget.AppBarLayout>
+
+	<android.support.v4.widget.NestedScrollView
+		android:id="@+id/nestedScrollView"
+		android:layout_width="match_parent"
+		android:layout_height="match_parent"
+		app:layout_behavior="@string/appbar_scrolling_view_behavior">
+
+		<include layout="@layout/profile_detail"/>
+	</android.support.v4.widget.NestedScrollView>
+
+</android.support.design.widget.CoordinatorLayout>

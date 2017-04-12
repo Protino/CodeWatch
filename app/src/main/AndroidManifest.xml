@@ -3,6 +3,7 @@
           package="io.github.protino.codewatch">
 
 	<uses-permission android:name="android.permission.INTERNET"/>
+	<uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE"/>
 
 	<application
 		android:name=".App"
@@ -12,12 +13,7 @@
 		android:roundIcon="@mipmap/ic_launcher_round"
 		android:supportsRtl="true"
 		android:theme="@style/AppTheme">
-		<activity android:name=".MainActivity">
-			<intent-filter>
-				<action android:name="android.intent.action.MAIN"/>
-
-				<category android:name="android.intent.category.LAUNCHER"/>
-			</intent-filter>
+		<activity android:name=".FirebaseTestActivity">
 		</activity>
 		<activity
 			android:name=".ui.LoginActivity"
@@ -31,19 +27,51 @@
 
 				<data
 					android:host="@string/LOGIN_HOST"
-					android:scheme="@string/LOGIN_SCHEME"/>
+					android:scheme="@string/APP_SCHEME"/>
 			</intent-filter>
 		</activity>
-		<activity android:name=".LeaderActivity">
+		<activity android:name=".ui.ProjectDetailActivity">
 			<meta-data
 				android:name="android.support.PARENT_ACTIVITY"
-				android:value=".MainActivity"
-				/>
+				android:value=".ui.NavigationDrawerActivity"/>
+		</activity>
+		<activity
+			android:name=".ui.NavigationDrawerActivity"
+			android:theme="@style/AppTheme.Drawer">
+			<intent-filter>
+				<action android:name="android.intent.action.MAIN"/>
+
+				<category android:name="android.intent.category.LAUNCHER"/>
+			</intent-filter>
+		</activity>
+		<activity android:name=".ui.AboutActivity"/>
+		<activity
+			android:name=".ui.ProfileActivity"
+			android:theme="@style/AppTheme.Drawer">
+			<intent-filter>
+				<action android:name="android.intent.action.VIEW"/>
+
+				<category android:name="android.intent.category.DEFAULT"/>
+
+				<data
+					android:host="@string/PROFILE_HOST"
+					android:scheme="@string/APP_SCHEME"/>
+			</intent-filter>
 		</activity>
 
 		<provider
 			android:name=".data.LeaderProvider"
 			android:authorities="io.github.protino.codewatch.app"/>
+		<provider
+			android:name="android.support.v4.content.FileProvider"
+			android:authorities="io.github.protino.codewatch.fileprovider"
+			android:exported="false"
+			android:grantUriPermissions="true">
+			<meta-data
+				android:name="android.support.FILE_PROVIDER_PATHS"
+				android:resource="@xml/file_paths"
+				/>
+		</provider>
 
 		<service
 			android:name=".sync.WakatimeDataSyncJob"
@@ -53,6 +81,9 @@
 			</intent-filter>
 		</service>
 
+		<activity
+			android:name=".OnBoardActivity">
+		</activity>
 	</application>
 
 </manifest>

@@ -22,17 +22,17 @@ import io.github.protino.codewatch.BuildConfig;
 import io.github.protino.codewatch.R;
 import io.github.protino.codewatch.event.LoginEvent;
 import io.github.protino.codewatch.remote.interfaces.ApiInterface;
-import io.github.protino.codewatch.remote.model.AccessToken;
 import io.github.protino.codewatch.remote.retrofit.ServiceGenerator;
+import io.github.protino.codewatch.model.AccessToken;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
 
-import static io.github.protino.codewatch.utils.Constants.ACCESS_CODE_PREF_KEY;
-import static io.github.protino.codewatch.utils.Constants.ACCESS_TOKEN_PREF_KEY;
+import static io.github.protino.codewatch.utils.Constants.PREF_ACCESS_CODE;
+import static io.github.protino.codewatch.utils.Constants.PREF_ACCESS_TOKEN;
 import static io.github.protino.codewatch.utils.Constants.REDIRECT_URI;
 import static io.github.protino.codewatch.utils.Constants.SCHEME;
-import static io.github.protino.codewatch.utils.Constants.STATE_PREF_KEY;
+import static io.github.protino.codewatch.utils.Constants.PREF_CODE_STATE;
 
 public class LoginActivity extends AppCompatActivity {
 
@@ -76,7 +76,7 @@ public class LoginActivity extends AppCompatActivity {
 
             /*Store state to verify later*/
             SharedPreferences.Editor sharedPreferencesEditor = sharedPreferences.edit();
-            sharedPreferencesEditor.putString(STATE_PREF_KEY, originalHashState);
+            sharedPreferencesEditor.putString(PREF_CODE_STATE, originalHashState);
             sharedPreferencesEditor.apply();
 
             /* Launch browser */
@@ -93,11 +93,11 @@ public class LoginActivity extends AppCompatActivity {
         Uri uri = intent.getData();
         String code = uri.getQueryParameter("code");
         String state = uri.getQueryParameter("state");
-        originalHashState = sharedPreferences.getString(STATE_PREF_KEY, null);
+        originalHashState = sharedPreferences.getString(PREF_CODE_STATE, null);
         if (code != null && state != null && state.equals(originalHashState)) {
             if (state.equals(originalHashState)) {
                 SharedPreferences.Editor sharedPreferencesEditor = sharedPreferences.edit();
-                sharedPreferencesEditor.putString(ACCESS_CODE_PREF_KEY, code);
+                sharedPreferencesEditor.putString(PREF_ACCESS_CODE, code);
                 sharedPreferencesEditor.apply();
                 requestAccessToken(code);
             } else {
@@ -127,7 +127,7 @@ public class LoginActivity extends AppCompatActivity {
                 Log.d(LOG_TAG, "onResponse: " + accessToken.getAccessToken());
                 Gson gson = new Gson();
                 String gsonString = gson.toJson(accessToken);
-                sharedPreferencesEditor.putString(ACCESS_TOKEN_PREF_KEY, gsonString);
+                sharedPreferencesEditor.putString(PREF_ACCESS_TOKEN, gsonString);
                 sharedPreferencesEditor.apply();
                 EventBus.getDefault().postSticky(loginEvent.setLoginSuccess(true));
                 finish();

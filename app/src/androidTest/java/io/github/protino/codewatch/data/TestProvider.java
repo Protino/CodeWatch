@@ -1,7 +1,10 @@
 package io.github.protino.codewatch.data;
 
+import android.content.ComponentName;
 import android.content.ContentUris;
 import android.content.ContentValues;
+import android.content.pm.PackageManager;
+import android.content.pm.ProviderInfo;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.net.Uri;
@@ -29,36 +32,30 @@ public class TestProvider extends AndroidTestCase {
                 null,
                 null
         );
+        assertNotNull(cursor);
         assertEquals("Error: Records not deleted from Leader table during delete", 0, cursor.getCount());
         cursor.close();
     }
 
-    /*
-        This test checks to make sure that the content provider is registered correctly.
-        Students: Uncomment this test to make sure you've correctly registered the WeatherProvider.
-     */
-//    public void testProviderRegistry() {
-//        PackageManager pm = mContext.getPackageManager();
-//
-//        // We define the component name based on the package name from the context and the
-//        // WeatherProvider class.
-//        ComponentName componentName = new ComponentName(mContext.getPackageName(),
-//                WeatherProvider.class.getName());
-//        try {
-//            // Fetch the provider info using the component name from the PackageManager
-//            // This throws an exception if the provider isn't registered.
-//            ProviderInfo providerInfo = pm.getProviderInfo(componentName, 0);
-//
-//            // Make sure that the registered authority matches the authority from the Contract.
-//            assertEquals("Error: WeatherProvider registered with authority: " + providerInfo.authority +
-//                    " instead of authority: " + WeatherContract.CONTENT_AUTHORITY,
-//                    providerInfo.authority, WeatherContract.CONTENT_AUTHORITY);
-//        } catch (PackageManager.NameNotFoundException e) {
-//            // I guess the provider isn't registered correctly.
-//            assertTrue("Error: WeatherProvider not registered at " + mContext.getPackageName(),
-//                    false);
-//        }
-//    }
+    public void testProviderRegistry() {
+        PackageManager pm = mContext.getPackageManager();
+
+        ComponentName componentName = new ComponentName(mContext.getPackageName(),
+                LeaderProvider.class.getName());
+        try {
+            // Fetch the provider info using the component name from the PackageManager
+            // This throws an exception if the provider isn't registered.
+            ProviderInfo providerInfo = pm.getProviderInfo(componentName, 0);
+
+            // Make sure that the registered authority matches the authority from the Contract.
+            assertEquals("Error: LeaderProvider registered with authority: " + providerInfo.authority +
+                    " instead of authority: " + LeaderContract.CONTENT_AUTHORITY,
+                    providerInfo.authority, LeaderContract.CONTENT_AUTHORITY);
+        } catch (PackageManager.NameNotFoundException e) {
+            assertTrue("Error: LeaderProvider not registered at " + mContext.getPackageName(),
+                    false);
+        }
+    }
 
 
     @Override
@@ -67,12 +64,7 @@ public class TestProvider extends AndroidTestCase {
         deleteAllRecordsFromProvider();
     }
 
-    /*
-            This test doesn't touch the database.  It verifies that the ContentProvider returns
-            the correct type for each type of URI that it can handle.
-            Students: Uncomment this test to verify that your implementation of GetType is
-            functioning correctly.
-         */
+
     public void testGetType() {
         // content://io.github.protino.codewatch/leader/
         String type = mContext.getContentResolver().getType(LeaderContract.LeaderEntry.CONTENT_URI);
@@ -89,6 +81,9 @@ public class TestProvider extends AndroidTestCase {
                 LeaderContract.LeaderEntry.CONTENT_ITEM_TYPE, type);
     }
 
+    public void testProfileQuery(){
+    }
+
     /*
         This test uses the database directly to insert and then uses the ContentProvider to
         read out the data.
@@ -101,7 +96,7 @@ public class TestProvider extends AndroidTestCase {
         ContentValues testValues = TestUtilities.createLeaderValues();
 
         long leaderRowId = db.insert(LeaderContract.LeaderEntry.TABLE_NAME, null, testValues);
-        assertTrue("Unable to Insert LeaderEntry into the Database", leaderRowId != -1);
+        assertTrue("Unable to insert LeaderEntry into the Database", leaderRowId != -1);
         db.close();
 
         // Test the basic content provider query

@@ -5,13 +5,12 @@ import android.support.annotation.StringDef;
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 
-import io.github.protino.codewatch.remote.model.AccessToken;
-import io.github.protino.codewatch.remote.model.leaders.LeadersResponse;
-import io.github.protino.codewatch.remote.model.project.ProjectsResponse;
-import io.github.protino.codewatch.remote.model.project.summary.GenericSummaryResponse;
-import io.github.protino.codewatch.remote.model.project.summary.ProjectSummaryResponse;
-import io.github.protino.codewatch.remote.model.statistics.StatsResponse;
-import io.github.protino.codewatch.remote.model.user.UserResponse;
+import io.github.protino.codewatch.model.AccessToken;
+import io.github.protino.codewatch.model.project.ProjectsResponse;
+import io.github.protino.codewatch.model.project.summary.GenericSummaryResponse;
+import io.github.protino.codewatch.model.project.summary.ProjectSummaryResponse;
+import io.github.protino.codewatch.model.statistics.StatsResponse;
+import io.github.protino.codewatch.model.user.UserResponse;
 import retrofit2.Call;
 import retrofit2.http.Field;
 import retrofit2.http.FormUrlEncoded;
@@ -83,14 +82,6 @@ public interface ApiInterface {
      */
     @GET(API_SUFFIX)
     Call<UserResponse> getUserProfileData();
-
-    /**
-     * Returns leaderboard data based on coding average
-     *
-     * @return {@link LeadersResponse}
-     */
-    @GET("api/v1/leaders")
-    Call<LeadersResponse> getLeaders();
 
     @Retention(RetentionPolicy.SOURCE)
     @StringDef({_7_DAYS, _30_DAYS, _6_MONTHS, _YEAR})

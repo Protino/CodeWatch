@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+	<group android:checkableBehavior="single">
+		<item
+			android:id="@+id/dashboard"
+			android:checked="true"
+			android:icon="@drawable/ic_dashboard_white_24dp"
+			android:title="@string/dashboard"/>
+		<item
+			android:id="@+id/goals"
+			android:checked="false"
+			android:icon="@drawable/ic_access_time_white_24dp"
+			android:title="@string/goals"/>
+		<item
+			android:id="@+id/leaderboards"
+			android:checked="false"
+			android:icon="@drawable/ic_account_circle_white_24dp"
+			android:title="@string/leaderboards"/>
+		<item
+			android:id="@+id/achievements"
+			android:checked="false"
+			android:icon="@drawable/ic_grade_white_24dp"
+			android:title="@string/achievements"/>
+		<item
+			android:id="@+id/projects"
+			android:checked="false"
+			android:icon="@drawable/ic_view_module_white_24dp"
+			android:title="@string/projects"/>
+		<item
+			android:id="@+id/settings"
+			android:checked="false"
+			android:icon="@drawable/ic_settings_white_24dp"
+			android:title="@string/settings"/>
+	</group>
+</menu>

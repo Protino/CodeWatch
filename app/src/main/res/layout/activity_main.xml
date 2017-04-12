@@ -6,7 +6,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
-    tools:context="io.github.protino.codewatch.MainActivity">
+    tools:context="io.github.protino.codewatch.FirebaseTestActivity">
 
     <Button
         android:id="@+id/button"

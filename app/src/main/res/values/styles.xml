@@ -1,11 +1,26 @@
 <resources>
 
-    <!-- Base application theme. -->
-    <style name="AppTheme" parent="Theme.AppCompat.Light.DarkActionBar">
-        <!-- Customize your theme here. -->
-        <item name="colorPrimary">@color/colorPrimary</item>
-        <item name="colorPrimaryDark">@color/colorPrimaryDark</item>
-        <item name="colorAccent">@color/colorAccent</item>
-    </style>
+	<!-- Base theme -->
+	<style name="BaseTheme" parent="Theme.AppCompat.NoActionBar"/>
+
+	<!-- Base application theme. -->
+	<style name="AppTheme" parent="BaseTheme">
+		<!-- Customize your theme here. -->
+		<item name="colorPrimary">@color/colorPrimary</item>
+		<item name="colorPrimaryDark">@color/colorPrimaryDark</item>
+		<item name="colorAccent">@color/colorAccent</item>
+	</style>
+
+	<!-- Navigation drawer theme -->
+	<style name="AppTheme.Drawer" parent="AppTheme"/>
+
+	<style name="DefaultToolbarStyle" parent="">
+		<item name="popupTheme">@style/ThemeOverlay.AppCompat.Light</item>
+		<item name="theme">@style/ThemeOverlay.AppCompat.ActionBar</item>
+	</style>
+
+	<style name="CollapsedAppBarTextStyle" parent="@android:style/TextAppearance.Small">
+		<item name="android:textSize">0sp</item>
+	</style>
 
 </resources>

@@ -11,12 +11,15 @@ import com.google.firebase.database.FirebaseDatabase;
 
 import java.util.concurrent.CountDownLatch;
 
+import io.github.protino.codewatch.model.WakatimeData;
+import io.github.protino.codewatch.model.firebase.User;
+import io.github.protino.codewatch.remote.FetchLeaderBoardData;
 import io.github.protino.codewatch.remote.FetchWakatimeData;
-import io.github.protino.codewatch.remote.model.WakatimeData;
-import io.github.protino.codewatch.remote.model.firebase.User;
-import io.github.protino.codewatch.utils.Cache;
 import io.github.protino.codewatch.utils.Constants;
 import io.github.protino.codewatch.utils.Transform;
+import io.github.protino.codewatch.utils.CacheUtils;
+import io.github.protino.codewatch.utils.Constants;
+import io.github.protino.codewatch.utils.TransformUtils;
 import timber.log.Timber;
 
 
@@ -24,7 +27,7 @@ public class WakatimeDataSyncJob extends JobService {
     @Override
     public boolean onStartJob(JobParameters job) {
         //check whether logged in or not, also check network connectivity
-        if (!Cache.isLoggedIn(getApplicationContext())) {
+        if (!CacheUtils.isLoggedIn(getApplicationContext())) {
             return false;
         }
         new MainThread(job).start();
@@ -62,7 +65,7 @@ public class WakatimeDataSyncJob extends JobService {
         }
     }
 
-    private class FirebaseSyncTask extends Thread {
+    public class FirebaseSyncTask extends Thread {
 
         volatile boolean needsReschedule;
         private CountDownLatch countDownLatch;
@@ -80,19 +83,19 @@ public class WakatimeDataSyncJob extends JobService {
                 SharedPreferences sharedPreferences =
                         PreferenceManager.getDefaultSharedPreferences(getApplicationContext());
                 SharedPreferences.Editor editor = sharedPreferences.edit();
-                editor.putBoolean(Constants.WAKATIME_DATA_UPDATED, false);
+                editor.putBoolean(Constants.PREF_WAKATIME_DATA_UPDATED, false);
                 FetchWakatimeData fetchWakatimeData = new FetchWakatimeData(getApplicationContext());
                 WakatimeData wakatimeData = fetchWakatimeData.execute();
                 Timber.d("Successfully download wakatimeData");
-                User user = new Transform(wakatimeData, new User()).execute();
+                User user = new TransformUtils(wakatimeData, new User()).execute();
                 //save to firebase
                 Timber.d("Saving to firebase rdb");
-                String uid = sharedPreferences.getString(Constants.FIREBASE_USER_ID_PREF_KEY, null);
+                String uid = sharedPreferences.getString(Constants.PREF_FIREBASE_USER_ID, null);
                 if (uid != null) {
                     FirebaseDatabase firebaseDatabase = FirebaseDatabase.getInstance();
                     DatabaseReference databaseReference = firebaseDatabase.getReference().child("users");
                     databaseReference.child(uid).setValue(user);
-                    editor.putBoolean(Constants.WAKATIME_DATA_UPDATED, true);
+                    editor.putBoolean(Constants.PREF_WAKATIME_DATA_UPDATED, true);
                 }
                 editor.commit();
             } catch (Exception e) {
@@ -114,12 +117,13 @@ public class WakatimeDataSyncJob extends JobService {
 
         @Override
         public void run() {
-            FetchWakatimeData fetchWakatimeData = new FetchWakatimeData(getApplicationContext());
+            FetchLeaderBoardData fetchLeaderBoardData = new FetchLeaderBoardData(getApplicationContext());
             try {
-                //List<LeadersData> dataList = fetchWakatimeData.fetchLeaders().getData();
-                Timber.d("Successfully download leadersData");
-               // LeaderDb.store(getApplicationContext(), dataList);
-                Timber.d("Successfully stored wakatimeData");
+                boolean result = fetchLeaderBoardData.execute();
+                if (!result) {
+                    Timber.e("LeaderboardSyncTask failed");
+                    needsReschedule = true;
+                }
             } catch (Exception e) {
                 Timber.d(e, "LeaderboardSyncTask failed");
                 needsReschedule = true;

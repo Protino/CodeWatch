@@ -11,7 +11,7 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 
 import io.github.protino.codewatch.ui.LoginActivity;
-import io.github.protino.codewatch.utils.Cache;
+import io.github.protino.codewatch.utils.CacheUtils;
 
 import static junit.framework.Assert.assertTrue;
 
@@ -25,10 +25,10 @@ public class LoginActivityTest {
     @Test
     public void testLogin() throws InterruptedException {
         Context context = InstrumentationRegistry.getTargetContext();
-        Cache.clearLoginInfo(context);
+        CacheUtils.clearLoginInfo(context);
         testRule.launchActivity(new Intent());
         Thread.sleep(18000);
-        assertTrue(Cache.isLoggedIn(context));
+        assertTrue(CacheUtils.isLoggedIn(context));
     }
 
 }

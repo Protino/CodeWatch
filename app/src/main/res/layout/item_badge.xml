@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout
+	xmlns:android="http://schemas.android.com/apk/res/android"
+	xmlns:tools="http://schemas.android.com/tools"
+	android:layout_width="match_parent"
+	android:layout_height="?attr/listPreferredItemHeight"
+	android:background="@color/grey_900"
+	android:paddingEnd="16dp"
+	android:paddingStart="16dp">
+
+	<io.github.protino.codewatch.ui.widget.BadgeView
+		android:id="@+id/badge"
+		android:layout_width="0dp"
+		android:layout_height="wrap_content"
+		android:layout_gravity="center_vertical"
+		android:layout_weight="1"/>
+
+	<TextView
+		android:id="@+id/req_text"
+		style="@style/Base.TextAppearance.AppCompat.Subhead"
+		android:layout_width="0dp"
+		android:layout_height="wrap_content"
+		android:layout_gravity="center_vertical|end"
+		android:layout_weight="1"
+		android:textColor="@color/white_1000"
+		tools:text="Use CodeWatch for more than 10 days"/>
+</LinearLayout>

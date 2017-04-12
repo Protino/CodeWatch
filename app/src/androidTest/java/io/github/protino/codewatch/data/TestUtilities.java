@@ -11,7 +11,7 @@ import android.test.AndroidTestCase;
 import java.util.Map;
 import java.util.Set;
 
-import io.github.protino.codewatch.utils.PollingCheck;
+import io.github.protino.codewatch.utils.PollingCheckUtils;
 
 /*
     Students: These are functions and some test data to make it easier to test your database and
@@ -46,6 +46,7 @@ public class TestUtilities extends AndroidTestCase {
         ContentValues leaderValues = new ContentValues();
         leaderValues.put(LeaderContract.LeaderEntry.COLUMN_DAILY_AVERAGE, 32);
         leaderValues.put(LeaderContract.LeaderEntry.COLUMN_USER_ID, TEST_USER_ID);
+        leaderValues.put(LeaderContract.LeaderEntry.COLUMN_RANK, 1);
         leaderValues.put(LeaderContract.LeaderEntry.COLUMN_USER_NAME, "gurupad");
         leaderValues.put(LeaderContract.LeaderEntry.COLUMN_DISPLAY_NAME, "Gurupad M");
         leaderValues.put(LeaderContract.LeaderEntry.COLUMN_EMAIL, "gurupad@gmailc.om");
@@ -71,6 +72,7 @@ public class TestUtilities extends AndroidTestCase {
             leaderValues.put(LeaderContract.LeaderEntry.COLUMN_TOTAL_SECONDS, 564654);
             leaderValues.put(LeaderContract.LeaderEntry.COLUMN_USER_NAME, "ASSAD");
             leaderValues.put(LeaderContract.LeaderEntry.COLUMN_WEBSITE, "ADWAD");
+            leaderValues.put(LeaderContract.LeaderEntry.COLUMN_RANK, i);
             leaderValues.put(LeaderContract.LeaderEntry.COLUMN_LOCATION, "Piipop");
             leaderValues.put(LeaderContract.LeaderEntry.COLUMN_EMAIL, "dwadwa^@Ead");
             leaderValues.put(LeaderContract.LeaderEntry.COLUMN_LANGUAGE_STATS, "{}{#WDA#RE}}AD:::}{");
@@ -108,7 +110,7 @@ public class TestUtilities extends AndroidTestCase {
         }
 
         public void waitForNotificationOrFail() {
-            new PollingCheck(5000) {
+            new PollingCheckUtils(5000) {
                 @Override
                 protected boolean check() {
                     return mContentChanged;

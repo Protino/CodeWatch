@@ -1,0 +1,187 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+              xmlns:app="http://schemas.android.com/apk/res-auto"
+              xmlns:tools="http://schemas.android.com/tools"
+              android:layout_width="match_parent"
+              android:layout_height="wrap_content"
+              android:padding="16dp">
+
+	<RelativeLayout
+		android:id="@+id/second"
+		android:layout_width="0dp"
+		android:layout_height="match_parent"
+		android:layout_weight="3"
+		android:paddingTop="20dp">
+
+		<FrameLayout
+			android:id="@+id/avatarContainer2"
+			android:layout_width="match_parent"
+			android:layout_height="wrap_content">
+
+			<ImageView
+				android:id="@+id/imgAvatar2"
+				android:layout_width="90dp"
+				android:layout_height="90dp"
+				android:layout_gravity="center"
+				android:padding="8dp"
+				android:src="@drawable/ic_account_circle_white_24dp"/>
+
+			<android.support.v7.widget.CardView
+				android:layout_width="22dp"
+				android:layout_height="22dp"
+				android:layout_gravity="center|bottom"
+				app:cardBackgroundColor="@color/silver">
+
+				<!-- Purposefully setting the text size in dp instead of sp-->
+				<TextView
+					android:layout_width="match_parent"
+					android:layout_height="match_parent"
+					android:gravity="center"
+					android:padding="2dp"
+					android:text="@string/_2"
+					android:textSize="12dp"
+					android:textStyle="bold"
+					tools:ignore="SpUsage"/>
+			</android.support.v7.widget.CardView>
+		</FrameLayout>
+
+		<TextView
+			android:id="@+id/name2"
+			android:layout_width="match_parent"
+			android:layout_height="wrap_content"
+			android:layout_below="@id/avatarContainer2"
+			android:ellipsize="end"
+			android:gravity="center"
+			android:maxLines="1"
+			android:paddingTop="8dp"
+			tools:text="Gurupad"/>
+
+		<TextView
+			android:id="@+id/total_seconds2"
+			android:layout_width="match_parent"
+			android:layout_height="wrap_content"
+			android:layout_below="@id/name2"
+			android:gravity="center"
+			android:paddingTop="8dp"
+			tools:text="46 hrs 36 min"/>
+	</RelativeLayout>
+
+	<RelativeLayout
+		android:id="@+id/first"
+		android:layout_width="0dp"
+		android:layout_height="match_parent"
+		android:layout_weight="4">
+
+		<FrameLayout
+			android:id="@+id/avatarContainer"
+			android:layout_width="match_parent"
+			android:layout_height="wrap_content">
+
+			<ImageView
+				android:id="@+id/avatar"
+				android:layout_width="100dp"
+				android:layout_height="100dp"
+				android:layout_gravity="center"
+				android:padding="8dp"
+				android:src="@drawable/ic_account_circle_white_24dp"/>
+
+			<android.support.v7.widget.CardView
+				android:layout_width="24dp"
+				android:layout_height="24dp"
+				android:layout_gravity="center|bottom"
+				app:cardBackgroundColor="@color/gold">
+
+				<!-- Purposefully setting the text size in dp instead of sp-->
+				<TextView
+					android:layout_width="match_parent"
+					android:layout_height="match_parent"
+					android:gravity="center"
+					android:padding="2dp"
+					android:text="@string/_1"
+					android:textSize="13dp"
+					android:textStyle="bold"
+					tools:ignore="SpUsage"/>
+			</android.support.v7.widget.CardView>
+		</FrameLayout>
+
+		<TextView
+			android:id="@+id/name"
+			android:layout_width="match_parent"
+			android:layout_height="wrap_content"
+			android:layout_below="@id/avatarContainer"
+			android:ellipsize="end"
+			android:gravity="center"
+			android:maxLines="1"
+			android:paddingTop="8dp"
+			tools:text="Gurupad"/>
+
+		<TextView
+			android:id="@+id/total_seconds"
+			android:layout_width="match_parent"
+			android:layout_height="wrap_content"
+			android:layout_below="@id/name"
+			android:gravity="center"
+			android:paddingTop="8dp"
+			tools:text="46 hrs 36 min"/>
+	</RelativeLayout>
+
+	<RelativeLayout
+		android:id="@+id/third"
+		android:layout_width="0dp"
+		android:layout_height="match_parent"
+		android:layout_weight="3"
+		android:paddingTop="20dp">
+
+		<FrameLayout
+			android:id="@+id/avatarContainer3"
+			android:layout_width="match_parent"
+			android:layout_height="wrap_content">
+
+			<ImageView
+				android:id="@+id/imgAvatar3"
+				android:layout_width="90dp"
+				android:layout_height="90dp"
+				android:layout_gravity="center"
+				android:padding="8dp"
+				android:src="@drawable/ic_account_circle_white_24dp"/>
+
+			<android.support.v7.widget.CardView
+				android:layout_width="22dp"
+				android:layout_height="22dp"
+				android:layout_gravity="center|bottom"
+				app:cardBackgroundColor="@color/bronze">
+
+				<!-- Purposefully setting the text size in dp instead of sp-->
+				<TextView
+					android:layout_width="match_parent"
+					android:layout_height="match_parent"
+					android:gravity="center"
+					android:padding="2dp"
+					android:text="@string/_3"
+					android:textSize="12dp"
+					android:textStyle="bold"
+					tools:ignore="SpUsage"/>
+			</android.support.v7.widget.CardView>
+		</FrameLayout>
+
+		<TextView
+			android:id="@+id/name3"
+			android:layout_width="match_parent"
+			android:layout_height="wrap_content"
+			android:layout_below="@id/avatarContainer3"
+			android:ellipsize="end"
+			android:gravity="center"
+			android:maxLines="1"
+			android:paddingTop="8dp"
+			tools:text="Gurupad"/>
+
+		<TextView
+			android:id="@+id/total_seconds3"
+			android:layout_width="match_parent"
+			android:layout_height="wrap_content"
+			android:layout_below="@id/name3"
+			android:gravity="center"
+			android:paddingTop="8dp"
+			tools:text="46 hrs 36 min"/>
+	</RelativeLayout>
+</LinearLayout>

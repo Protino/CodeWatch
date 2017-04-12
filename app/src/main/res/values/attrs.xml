@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+	<declare-styleable name="PerformanceBarView">
+		<!-- Color of the bar when the performance is improved -->
+		<attr name="barPositiveColor" format="color"/>
+		<!-- Color of the bar when the performance is decreased -->
+		<attr name="barNegativeColor" format="color"/>
+		<!-- Color of the bar border -->
+		<attr name="barBorderColor" format="color"/>
+		<!-- Height of bar in dp -->
+		<attr name="barHeight" format="dimension"/>
+		<!-- Width of bar in dp -->
+		<attr name="barWidth" format="dimension"/>
+		<!-- If set to true displays a short shadow below the bar. Default : false. -->
+		<attr name="shadowEnabled" format="boolean"/>
+		<!-- Radius of the rounded corners. Default is set to 0 (no roundness) -->
+		<attr name="cornerRadius" format="dimension"/>
+		<!-- Thickness of the bar border. Default is set to 0 (no border)-->
+		<attr name="barBorderThickness" format="dimension"/>
+		<!-- Float value representing the goal that is to be reached for 100% performance -->
+		<attr name="goal" format="float"/>
+		<!-- Float value representing the current amount of work done -->
+		<attr name="progress" format="float"/>
+	</declare-styleable>
+</resources>
