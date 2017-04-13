@@ -50,6 +50,7 @@ import io.github.protino.codewatch.model.BadgeItem;
 import io.github.protino.codewatch.model.ProfileItem;
 import io.github.protino.codewatch.ui.adapter.AchievementsAdapter;
 import io.github.protino.codewatch.utils.AchievementsUtils;
+import io.github.protino.codewatch.utils.Constants;
 import io.github.protino.codewatch.utils.FormatUtils;
 import timber.log.Timber;
 
@@ -270,9 +271,9 @@ public class ProfileActivity extends AppCompatActivity implements LoaderManager.
                     unlockedAchievements = getUnlockedAchievements(achievements);
                     profileItem.setUnlockedAchievements(unlockedAchievements);
                     List<BadgeItem> allBadges = new ArrayList<>();
-                    allBadges.addAll(AchievementsUtils.createBadgeItems(goldBadges, unlockedAchievements));
-                    allBadges.addAll(AchievementsUtils.createBadgeItems(silverBadges, unlockedAchievements));
-                    allBadges.addAll(AchievementsUtils.createBadgeItems(bronzeBadges, unlockedAchievements));
+                    allBadges.addAll(AchievementsUtils.createBadgeItems(goldBadges, unlockedAchievements, Constants.GOLD_BADGE));
+                    allBadges.addAll(AchievementsUtils.createBadgeItems(silverBadges, unlockedAchievements, Constants.SILVER_BADGE));
+                    allBadges.addAll(AchievementsUtils.createBadgeItems(bronzeBadges, unlockedAchievements, Constants.BRONZE_BADGE));
 
                     //add unlocked badges to badgeItemList
                     badgeItemList = new ArrayList<>();
