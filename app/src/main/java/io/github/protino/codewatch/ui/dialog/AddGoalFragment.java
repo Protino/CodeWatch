@@ -7,12 +7,6 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.app.AlertDialog;
 
-import com.google.gson.Gson;
-import com.google.gson.reflect.TypeToken;
-
-import java.lang.reflect.Type;
-import java.util.Map;
-
 import butterknife.BindArray;
 import butterknife.ButterKnife;
 import io.github.protino.codewatch.R;
@@ -30,22 +24,17 @@ public class AddGoalFragment extends DialogFragment {
     @BindArray(R.array.goal_types) public String[] goalTypes;
     //@formatter:on
     private Bundle bundle;
+
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         try {
             String mapString = getArguments().getString(Intent.EXTRA_TEXT);
-            Type mapType = new TypeToken<Map<String, String>>() {
-            }.getType();
-            Map<String, String> projectNameMap = new Gson().fromJson(mapString, mapType);
-
             bundle = new Bundle();
-            Type type = new TypeToken<Map<String, String>>() {
-            }.getType();
-            bundle.putString(Intent.EXTRA_TEXT, new Gson().toJson(projectNameMap, type));
+            bundle.putString(Intent.EXTRA_TEXT, mapString);
 
         } catch (Exception e) {
-            throw new IllegalArgumentException("Project ID-NAME map not set.");
+            throw new IllegalArgumentException("Project names not set.");
         }
     }
 

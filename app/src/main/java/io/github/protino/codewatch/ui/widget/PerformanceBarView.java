@@ -135,7 +135,7 @@ public class PerformanceBarView extends View {
                     R.styleable.PerformanceBarView_shadowEnabled, DEFAULT_SHADOW_ENABLED);
 
             progressAsDate = false;
-            textColor = Color.BLACK;
+            textColor = Color.WHITE;
             deadlineDate = -1;
             startDate = -1;
 

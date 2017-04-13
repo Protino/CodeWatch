@@ -6,12 +6,8 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
-import android.widget.Toast;
 
-import java.text.SimpleDateFormat;
 import java.util.List;
-import java.util.Locale;
-import java.util.Map;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -31,13 +27,11 @@ public class GoalsAdapter extends RecyclerView.Adapter<GoalsAdapter.GoalsViewHol
 
     private final Context context;
     private List<GoalItem> dataList;
-    private Map<String, String> projectNameMap;
     private OnGoalItemClickListener itemClickListener;
 
-    public GoalsAdapter(Context context, List<GoalItem> dataList, Map<String, String> projectNameMap) {
+    public GoalsAdapter(Context context, List<GoalItem> dataList) {
         this.context = context;
         this.dataList = dataList;
-        this.projectNameMap = projectNameMap;
     }
 
     @Override
@@ -52,8 +46,8 @@ public class GoalsAdapter extends RecyclerView.Adapter<GoalsAdapter.GoalsViewHol
         long goalData = goalItem.getData();
 
         String resultText = null;
-        String goalId = goalItem.getId();
-        String projectName = projectNameMap.get(goalId); //null if not found
+        String goalId = goalItem.getName();
+        String projectName = goalItem.getName();
 
         switch (goalItem.getType()) {
             case LANGUAGE_GOAL:
@@ -77,26 +71,21 @@ public class GoalsAdapter extends RecyclerView.Adapter<GoalsAdapter.GoalsViewHol
     }
 
     public void addItem(GoalItem goalItem) {
-        if (isDuplicate(goalItem)) {
-            Toast.makeText(context, R.string.duplicate_goal_message, Toast.LENGTH_SHORT).show();
-            return;
-        }
         dataList.add(goalItem);
         notifyDataSetChanged();
     }
 
-    private boolean isDuplicate(GoalItem goalItem) {
-        SimpleDateFormat dateFormat = new SimpleDateFormat("yyyyMMdd", Locale.getDefault());
+    public boolean isDuplicate(GoalItem goalItem) {
 
         if (goalItem == null) {
             return false;
         }
 
-        String goalId = goalItem.getId();
+        String goalId = goalItem.getName();
         int goalType = goalItem.getType();
 
         for (GoalItem item : dataList) {
-            if (item.getId().equals(goalId) && item.getType() == goalType) {
+            if (item.getName().equals(goalId) && item.getType() == goalType) {
                 return true;
             }
         }
@@ -110,6 +99,15 @@ public class GoalsAdapter extends RecyclerView.Adapter<GoalsAdapter.GoalsViewHol
     public void deleteItem(int position) {
         dataList.remove(position);
         notifyItemRemoved(position);
+    }
+
+    public void swapData(List<GoalItem> goalItemList) {
+        this.dataList = goalItemList;
+        notifyDataSetChanged();
+    }
+
+    public String getItem(int adapterPosition) {
+        return dataList.get(adapterPosition).getUid();
     }
 
 

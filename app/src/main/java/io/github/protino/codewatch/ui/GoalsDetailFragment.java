@@ -29,20 +29,23 @@ import com.google.gson.Gson;
 import org.joda.time.DateTime;
 
 import java.util.ArrayList;
+import java.util.List;
 import java.util.concurrent.TimeUnit;
 
 import butterknife.BindColor;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import io.github.protino.codewatch.R;
+import io.github.protino.codewatch.model.GoalItem;
 import io.github.protino.codewatch.model.firebase.LanguageGoal;
 import io.github.protino.codewatch.model.firebase.ProjectGoal;
 import io.github.protino.codewatch.ui.widget.CustomMarkerView;
 import io.github.protino.codewatch.ui.widget.PerformanceBarView;
-import io.github.protino.codewatch.utils.Constants;
 import io.github.protino.codewatch.utils.FormatUtils;
 import io.github.protino.codewatch.utils.UiUtils;
 
+import static io.github.protino.codewatch.ui.GoalsFragment.GOAL_DATA_KEY;
+import static io.github.protino.codewatch.ui.GoalsFragment.GOAL_ITEM_KEY;
 import static io.github.protino.codewatch.utils.Constants.LANGUAGE_GOAL;
 import static io.github.protino.codewatch.utils.Constants.PROJECT_DAILY_GOAL;
 import static io.github.protino.codewatch.utils.Constants.PROJECT_DEADLINE_GOAL;
@@ -59,7 +62,6 @@ public class GoalsDetailFragment extends DialogFragment {
     @BindView(R.id.remainingDays) public TextView remainingDays;
     @BindView(R.id.progressBar) public PerformanceBarView progressBarView;
     @BindView(R.id.goal_chart) public BarChart goalBarChart;
-    @BindColor(R.color.grey_800) public int darkGrey;
     @BindColor(R.color.green_400) public int green400;
     @BindColor(R.color.red_400) public int red400;
     @BindColor(R.color.colorAccent) public int accentColor;
@@ -67,32 +69,35 @@ public class GoalsDetailFragment extends DialogFragment {
     @BindView(R.id.toolbar) Toolbar toolbar;
     @BindView(R.id.status_bar) View statusBar;
     //@formatter:on
+    private GoalItem goalItem;
     private int goalType;
-    private String goalData;
     private LanguageGoal languageGoal;
     private ProjectGoal projectGoal;
     private Context context;
     private long referenceTime;
 
+    private OnDeleteListener onDeleteListener;
+
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        goalData = getArguments().getString(Constants.GOAL_DATA_KEY, null);
-        goalType = getArguments().getInt(Constants.GOAL_TYPE_KEY, -1);
+        String gsonData = getArguments().getString(GOAL_DATA_KEY, null);
+        goalItem = new Gson().fromJson(getArguments().getString(GOAL_ITEM_KEY, null), GoalItem.class);
 
-        if (goalData == null || goalType == -1) {
+        if (gsonData == null || goalItem == null) {
             throw new IllegalArgumentException("Incorrect data passed");
         }
+
+        goalType = goalItem.getType();
 
         //fetch data
         switch (goalType) {
             case LANGUAGE_GOAL:
-                //fetch data
-                languageGoal = new Gson().fromJson(goalData, LanguageGoal.class);
+                languageGoal = new Gson().fromJson(gsonData, LanguageGoal.class);
                 break;
             case PROJECT_DAILY_GOAL:
             case PROJECT_DEADLINE_GOAL:
-                projectGoal = new Gson().fromJson(goalData, ProjectGoal.class);
+                projectGoal = new Gson().fromJson(gsonData, ProjectGoal.class);
                 break;
             default:
                 throw new IllegalArgumentException("Incorrect data passed");
@@ -120,7 +125,7 @@ public class GoalsDetailFragment extends DialogFragment {
                 break;
             case PROJECT_DEADLINE_GOAL:
                 goalText.setText(FormatUtils.getDeadlineGoalText(
-                        context, projectGoal.getProjectName(), projectGoal.getDeadline() * 1000L));
+                        context, projectGoal.getProjectName(), projectGoal.getDeadline()));
                 setUpProgressBar();
                 break;
             default:
@@ -157,7 +162,7 @@ public class GoalsDetailFragment extends DialogFragment {
                         ViewGroup.LayoutParams.MATCH_PARENT, UiUtils.getStatusBarHeight(context)));
     }
 
-    private void setUpBarChart(int dailyGoal, int[] progressSoFar) {
+    private void setUpBarChart(int dailyGoal, List<Integer> progressSoFar) {
 
         BarData barData = generateBarData(dailyGoal, progressSoFar);
 
@@ -172,8 +177,6 @@ public class GoalsDetailFragment extends DialogFragment {
         xAxis.setDrawGridLines(false);
         xAxis.setGranularity(1f);
         xAxis.setValueFormatter(new FormatUtils().getBarXAxisValueFormatterInstance(referenceTime));
-        //xAxis.setSpaceMin(36288f);
-        //xAxis.setSpaceMax(36288f);
         xAxis.setAxisLineWidth(2f);
 
         YAxis leftAxis = goalBarChart.getAxisLeft();
@@ -226,22 +229,22 @@ public class GoalsDetailFragment extends DialogFragment {
         goalBarChart.animateY(1500, Easing.EasingOption.Linear);
     }
 
-    private BarData generateBarData(int dailyGoal, int[] progressSoFar) {
+    private BarData generateBarData(int dailyGoal, List<Integer> progressSoFar) {
 
 
-        ArrayList<BarEntry> barEntries = new ArrayList<>(progressSoFar.length);
+        ArrayList<BarEntry> barEntries = new ArrayList<>(progressSoFar.size());
 
         DateTime dateTime = new DateTime();
         referenceTime = dateTime.plusDays(-6).getMillis();
-        for (int i = 0; i < progressSoFar.length; i++) {
-            barEntries.add(new BarEntry(i, progressSoFar[i]));
+        for (int i = 0; i < progressSoFar.size(); i++) {
+            barEntries.add(new BarEntry(i, progressSoFar.get(i)));
         }
 
         BarDataSet barDataSet = new BarDataSet(barEntries, "");
 
-        int colors[] = new int[progressSoFar.length];
-        for (int i = 0; i < progressSoFar.length; i++) {
-            colors[i] = (progressSoFar[i] >= dailyGoal * 60 * 60) ? green400 : red400;
+        int colors[] = new int[progressSoFar.size()];
+        for (int i = 0; i < progressSoFar.size(); i++) {
+            colors[i] = (progressSoFar.get(i) >= dailyGoal * 60 * 60) ? green400 : red400;
         }
         barDataSet.setColors(colors);
 
@@ -253,23 +256,25 @@ public class GoalsDetailFragment extends DialogFragment {
 
     private void setUpProgressBar() {
         progressBarView.setProgressAsDate(true);
-        progressBarView.setDeadlineDate(projectGoal.getDeadline() * 1000L);
-        progressBarView.setStartDate(projectGoal.getStartDate() * 1000L);
-        progressBarView.setMarkerLineColor(darkGrey);
+        progressBarView.setDeadlineDate(projectGoal.getDeadline());
+        progressBarView.setStartDate(projectGoal.getStartDate());
+        progressBarView.setMarkerLineColor(Color.WHITE);
         remainingDays.setText(FormatUtils.getRemainingDaysText(context, progressBarView.getRemainingDays()));
         progressContent.setVisibility(View.VISIBLE);
     }
 
-    //    @OnClick(R.id.edit)
-//    public void onEditClick() {
-//        // open edit dialog
-//    }
-//
     public void onDelete() {
-        //delete the item
-        //notify adapter to reload
-        //close the dialog
+        if (onDeleteListener != null) {
+            onDeleteListener.onDeleteSelected(goalItem);
+        }
         dismiss();
+    }
 
+    public void setOnDeleteListener(OnDeleteListener onDeleteListener) {
+        this.onDeleteListener = onDeleteListener;
+    }
+
+    public interface OnDeleteListener {
+        void onDeleteSelected(GoalItem goalItem);
     }
 }

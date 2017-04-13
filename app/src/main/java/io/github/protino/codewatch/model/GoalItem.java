@@ -14,22 +14,32 @@ import static io.github.protino.codewatch.utils.Constants.PROJECT_DEADLINE_GOAL;
  */
 
 public class GoalItem {
-    private String id;
-    @GoalType private int type;
-    private long data; //depends on type
 
-    public GoalItem(String id, int type, long data) {
-        this.id = id;
+    private String uid; //for deletion purposes
+
+    private String name;
+    @GoalType
+    private int type;
+    private long data; //depends on type
+    private long extraData;
+
+    public GoalItem() {
+        //needed by firebase
+    }
+
+    public GoalItem(String uid, String name, int type, long data) {
+        this.uid = uid;
+        this.name = name;
         this.type = type;
         this.data = data;
     }
 
-    public String getId() {
-        return id;
+    public String getName() {
+        return name;
     }
 
-    public void setId(String id) {
-        this.id = id;
+    public void setName(String name) {
+        this.name = name;
     }
 
     public int getType() {
@@ -52,11 +62,27 @@ public class GoalItem {
     public String toString() {
         return "Type - " + type +
                 "Data - " + data +
-                "Id - " + id;
+                "Id - " + name;
+    }
+
+    public long getExtraData() {
+        return extraData;
+    }
+
+    public void setExtraData(long extraData) {
+        this.extraData = extraData;
+    }
+
+    public String getUid() {
+        return uid;
+    }
+
+    public void setUid(String uid) {
+        this.uid = uid;
     }
 
     @Retention(RetentionPolicy.SOURCE)
     @IntDef({LANGUAGE_GOAL, PROJECT_DEADLINE_GOAL, PROJECT_DAILY_GOAL})
-    @interface GoalType {
+    public @interface GoalType {
     }
 }

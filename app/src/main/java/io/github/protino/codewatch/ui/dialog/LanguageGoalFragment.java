@@ -15,6 +15,8 @@ import android.widget.NumberPicker;
 
 import org.greenrobot.eventbus.EventBus;
 
+import java.util.UUID;
+
 import butterknife.BindArray;
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -92,6 +94,7 @@ public class LanguageGoalFragment extends DialogFragment implements DialogInterf
                 autoCompleteTextView.performValidation();
                 if (validator.isValidLanguage()) {
                     GoalItem goalItem = new GoalItem(
+                            UUID.randomUUID().toString(),
                             autoCompleteTextView.getText().toString(),
                             LANGUAGE_GOAL,
                             hoursPicker.getValue());

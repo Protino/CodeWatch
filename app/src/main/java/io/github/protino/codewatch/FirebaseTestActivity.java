@@ -33,8 +33,6 @@ import java.util.Map;
 
 import io.github.protino.codewatch.model.WakatimeDataWrapper;
 import io.github.protino.codewatch.model.firebase.Goals;
-import io.github.protino.codewatch.model.firebase.LanguageGoal;
-import io.github.protino.codewatch.model.firebase.ProjectGoal;
 import io.github.protino.codewatch.model.firebase.Stats;
 import io.github.protino.codewatch.model.firebase.User;
 import io.github.protino.codewatch.model.statistics.Editor;
@@ -261,7 +259,7 @@ public class FirebaseTestActivity extends AppCompatActivity {
         Map<String, Project> projectMap = new HashMap<>();
         for (ProjectsData projectsData : wakatimeData.getProjectsResponse().getProjectsList()) {
             Project project = new Project();
-            project.setId(projectsData.getId());
+            project.setName(projectsData.getName());
             project.setName(projectsData.getName());
             project.setPublicUrl(projectsData.getPublicUrl());
 
@@ -306,7 +304,7 @@ public class FirebaseTestActivity extends AppCompatActivity {
             project.setLanguageList(languagePairsList);
             project.setEditorPaiList(editorPairList);
 
-            projectMap.put(project.getId(), project);
+            projectMap.put(project.getName(), project);
         }
         Timber.i("Projects data calculated - " + (System.currentTimeMillis() - start) + " ms");
         user.setProjects(projectMap);
@@ -329,22 +327,22 @@ public class FirebaseTestActivity extends AppCompatActivity {
     public void sendData(View view) {
         if (goalsDatabaseReference != null) {
             Goals goals = new Goals();
-
-            Map<String, LanguageGoal> map = new HashMap<>();
-            LanguageGoal languageGoal = new LanguageGoal("Java", 45684, new int[]{2, 4, 5, 6, 7, 78});
-
-            map.put("Java", languageGoal);
-            goals.setLanguageGoals(map);
-
-            ProjectGoal projectGoal = new ProjectGoal("32424", "CodeWatch", 43, 564, 345, new int[]{23, 5, 46, 56});
-            projectGoal.setDaily(2432);
-            projectGoal.setDeadline(2343);
-
-            Map<String, ProjectGoal> newMap = new HashMap<>();
-            newMap.put("CodeWatch", projectGoal);
-            goals.setProjectGoals(newMap);
-
-            goalsDatabaseReference.child(firebaseUserId).setValue(goals);
+//
+//            Map<String, LanguageGoal> map = new HashMap<>();
+//            LanguageGoal languageGoal = new LanguageGoal("Java", 45684, new int[]{2, 4, 5, 6, 7, 78});
+//
+//            map.put("Java", languageGoal);
+//            goals.setLanguageGoals(map);
+//
+//            ProjectGoal projectGoal = new ProjectGoal("32424", "CodeWatch", 43, 564, 345, new int[]{23, 5, 46, 56});
+//            projectGoal.setDaily(2432);
+//            projectGoal.setDeadline(2343);
+//
+//            Map<String, ProjectGoal> newMap = new HashMap<>();
+//            newMap.put("CodeWatch", projectGoal);
+//            goals.setProjectGoals(newMap);
+//
+//            goalsDatabaseReference.child(firebaseUserId).setValue(goals);
             //userDatabaseReference.child(firebaseUserId).setValue(user);
             //Map<String, Integer> hashMap = new HashMap();
             //hashMap.put(user.getUserId(), 123);

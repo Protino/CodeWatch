@@ -2,8 +2,10 @@ package io.github.protino.codewatch.ui;
 
 import android.app.Fragment;
 import android.app.FragmentTransaction;
+import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.Intent;
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.design.widget.FloatingActionButton;
@@ -13,18 +15,23 @@ import android.support.v7.widget.helper.ItemTouchHelper;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Toast;
 
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 
 import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.eventbus.Subscribe;
 
+import java.io.IOException;
 import java.lang.reflect.Type;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -32,12 +39,17 @@ import butterknife.OnClick;
 import io.github.protino.codewatch.R;
 import io.github.protino.codewatch.model.GoalItem;
 import io.github.protino.codewatch.model.firebase.LanguageGoal;
+import io.github.protino.codewatch.model.firebase.Project;
 import io.github.protino.codewatch.model.firebase.ProjectGoal;
+import io.github.protino.codewatch.model.project.summary.GenericSummaryData;
+import io.github.protino.codewatch.model.project.summary.Language;
+import io.github.protino.codewatch.model.project.summary.ProjectSummaryData;
+import io.github.protino.codewatch.remote.FetchWakatimeData;
 import io.github.protino.codewatch.ui.adapter.GoalsAdapter;
 import io.github.protino.codewatch.ui.dialog.AddGoalFragment;
+import io.github.protino.codewatch.utils.CacheUtils;
+import timber.log.Timber;
 
-import static io.github.protino.codewatch.utils.Constants.GOAL_DATA_KEY;
-import static io.github.protino.codewatch.utils.Constants.GOAL_TYPE_KEY;
 import static io.github.protino.codewatch.utils.Constants.LANGUAGE_GOAL;
 import static io.github.protino.codewatch.utils.Constants.PROJECT_DAILY_GOAL;
 import static io.github.protino.codewatch.utils.Constants.PROJECT_DEADLINE_GOAL;
@@ -46,8 +58,11 @@ import static io.github.protino.codewatch.utils.Constants.PROJECT_DEADLINE_GOAL;
  * @author Gurupad Mamadapur
  */
 
-public class GoalsFragment extends Fragment implements GoalsAdapter.OnGoalItemClickListener {
+public class GoalsFragment extends Fragment implements
+        GoalsAdapter.OnGoalItemClickListener, GoalsDetailFragment.OnDeleteListener {
 
+    public static final String GOAL_DATA_KEY = "goal_data_key";
+    public static final String GOAL_ITEM_KEY = "goal_item_key";
     private static final String ADD_GOAL_TAG = "ADD_GOAL_TAG";
     private static final String GD_TAG = "GOAL_DETAIL_TAG";
     //@formatter:off
@@ -62,19 +77,16 @@ public class GoalsFragment extends Fragment implements GoalsAdapter.OnGoalItemCl
 
     //data
     private List<GoalItem> goalItemList;
-    private Map<String, String> projectNameMap;
+    private List<String> projectNames; //project id is irrelevant
+
+    private DatabaseReference projectsDatabaseReference;
+    private DatabaseReference goalsDatabaseReference;
+
+    private ValueEventListener projectValueEventListener;
+    private ValueEventListener goalValueEventListener;
+    private ProgressDialog goalDetailProgressDialog;
 
     public GoalsFragment() {
-        projectNameMap = new HashMap<>();
-
-        projectNameMap.put("sdfaad378", "CodeWatch");
-        projectNameMap.put("dvcsad564378", "Lego");
-        projectNameMap.put("27814s", "CodeWatch");
-        projectNameMap.put("98vcds", "Brink");
-        projectNameMap.put("90adsu9", "Dummy");
-        projectNameMap.put("weryuiw", "So");
-
-        goalItemList = new ArrayList<>();
     }
 
     @Nullable
@@ -83,14 +95,98 @@ public class GoalsFragment extends Fragment implements GoalsAdapter.OnGoalItemCl
         rootView = inflater.inflate(R.layout.fragment_goals, container, false);
         ButterKnife.bind(this, rootView);
         hideProgressBar(false);
+        fab.setVisibility(View.INVISIBLE);
+
         context = getActivity();
 
-        goalsAdapter = new GoalsAdapter(context, goalItemList, projectNameMap);
+        initializeData();
+        goalsAdapter = new GoalsAdapter(context, goalItemList);
         goalsAdapter.setGoalItemClickListener(this);
         recyclerView.setLayoutManager(new LinearLayoutManager(context, LinearLayoutManager.VERTICAL, false));
         recyclerView.setAdapter(goalsAdapter);
         setUpSwipeToDelete();
         return rootView;
+    }
+
+    @Override
+    public void onStart() {
+        super.onStart();
+        attachListeners();
+        EventBus.getDefault().register(this);
+    }
+
+
+    @Override
+    public void onPause() {
+        EventBus.getDefault().unregister(this);
+        detachListeners();
+        super.onPause();
+    }
+
+    private void attachListeners() {
+        if (goalValueEventListener == null) {
+            goalValueEventListener = new ValueEventListener() {
+                @Override
+                public void onDataChange(DataSnapshot dataSnapshot) {
+                    goalItemList = new ArrayList<>();
+                    for (DataSnapshot child : dataSnapshot.getChildren()) {
+                        goalItemList.add(child.getValue(GoalItem.class));
+                    }
+                    goalsAdapter.swapData(goalItemList);
+                    hideProgressBar(true);
+                }
+
+                @Override
+                public void onCancelled(DatabaseError databaseError) {
+                    Timber.e(databaseError.toException(), databaseError.getMessage());
+                }
+            };
+        }
+        if (projectValueEventListener == null) {
+            projectValueEventListener = new ValueEventListener() {
+                @Override
+                public void onDataChange(DataSnapshot dataSnapshot) {
+                    projectNames = new ArrayList<>();
+                    for (DataSnapshot child : dataSnapshot.getChildren()) {
+                        Project project = child.getValue(Project.class);
+                        projectNames.add(project.getName());
+                    }
+                    fab.setVisibility(View.VISIBLE);
+                }
+
+                @Override
+                public void onCancelled(DatabaseError databaseError) {
+                    Timber.e(databaseError.toException(), databaseError.getMessage());
+                }
+
+            };
+        }
+        goalsDatabaseReference.addValueEventListener(goalValueEventListener);
+        projectsDatabaseReference.addValueEventListener(projectValueEventListener);
+    }
+
+    private void detachListeners() {
+        if (projectValueEventListener != null) {
+            projectsDatabaseReference.removeEventListener(projectValueEventListener);
+            projectValueEventListener = null;
+        }
+        if (goalValueEventListener != null) {
+            goalsDatabaseReference.removeEventListener(goalValueEventListener);
+            goalValueEventListener = null;
+        }
+    }
+
+    private void initializeData() {
+        goalItemList = new ArrayList<>();
+        projectNames = new ArrayList<>();
+
+        String firebaseUid = CacheUtils.getFirebaseUserId(context);
+
+        FirebaseDatabase firebaseDatabase = FirebaseDatabase.getInstance();
+        projectsDatabaseReference = firebaseDatabase.getReference()
+                .child("users").child(firebaseUid).child("projects");
+        goalsDatabaseReference = firebaseDatabase.getReference()
+                .child("goals").child(firebaseUid);
     }
 
     private void setUpSwipeToDelete() {
@@ -103,96 +199,172 @@ public class GoalsFragment extends Fragment implements GoalsAdapter.OnGoalItemCl
 
             @Override
             public void onSwiped(RecyclerView.ViewHolder viewHolder, int direction) {
-                goalsAdapter.deleteItem(viewHolder.getAdapterPosition());
+                // TODO: 13-04-2017 remove redundant deletion
+                deleteGoalItem(goalsAdapter.getItem(viewHolder.getAdapterPosition()));
             }
         }).attachToRecyclerView(recyclerView);
+    }
+
+    private void deleteGoalItem(String uid) {
+        goalsDatabaseReference.child(uid).removeValue();
     }
 
     @OnClick({R.id.add_goal})
     public void addGoal() {
         AddGoalFragment addGoalFragment = new AddGoalFragment();
         Bundle bundle = new Bundle();
-        Type type = new TypeToken<Map<String, String>>() {
+        Type type = new TypeToken<List<String>>() {
         }.getType();
-        bundle.putString(Intent.EXTRA_TEXT, new Gson().toJson(projectNameMap, type));
+        bundle.putString(Intent.EXTRA_TEXT, new Gson().toJson(projectNames, type));
         addGoalFragment.setArguments(bundle);
         addGoalFragment.show(getActivity().getFragmentManager(), ADD_GOAL_TAG);
     }
 
-    public LanguageGoal getLanguageGoalById(String goalId) {
-        int oneHour = 60 * 60;
-        return new LanguageGoal(goalId, 4,
-                new int[]{
-                        oneHour + 4334, oneHour * 3, oneHour * 2,
-                        oneHour * 5 + 324, (int) (oneHour * 2.7), oneHour + 8947});
-    }
-
-
-    private ProjectGoal getProjectGoalById(String goalId) {
-        int oneHour = 60 * 60;
-        return new ProjectGoal(goalId, "CodeWatch", 1491982809, 1490691846, 4,
-                new int[]{
-                        oneHour,
-                        oneHour + 4334, oneHour * 3, oneHour * 2,
-                        oneHour * 5 + 324, (int) (oneHour * 2.7), oneHour + 8947});
-    }
-
     @Override
     public void onGoalItemClicked(GoalItem goalItem) {
-        String goalId = goalItem.getId();
-        Bundle bundle = new Bundle();
-        String objectDataString;
-        int goalType;
+        goalDetailProgressDialog = new ProgressDialog(context);
+        goalDetailProgressDialog.setMessage(context.getString(R.string.loading_goal_details));
+        goalDetailProgressDialog.show();
 
         switch (goalItem.getType()) {
             case LANGUAGE_GOAL:
-                goalType = LANGUAGE_GOAL;
-                objectDataString = new Gson().toJson(getLanguageGoalById(goalId), LanguageGoal.class);
+                new FetchTimeSpentOnLanguageTask(goalItem).execute();
                 break;
             case PROJECT_DAILY_GOAL:
-                goalType = PROJECT_DAILY_GOAL;
-                objectDataString = new Gson().toJson(getProjectGoalById(goalId), ProjectGoal.class);
+                new FetchTimeSpentOnProjectTask(goalItem).execute();
                 break;
             case PROJECT_DEADLINE_GOAL:
-                goalType = PROJECT_DEADLINE_GOAL;
-                objectDataString = new Gson().toJson(getProjectGoalById(goalId), ProjectGoal.class);
+                ProjectGoal projectGoal = new ProjectGoal();
+                projectGoal.setProjectName(goalItem.getName());
+                projectGoal.setDeadline(goalItem.getData());
+                projectGoal.setStartDate(goalItem.getExtraData());
+                String gsonData = new Gson().toJson(projectGoal, ProjectGoal.class);
+                onGoalDetailsDownloaded(gsonData, goalItem);
                 break;
             default:
                 throw new IllegalArgumentException("Incorrect goal item");
         }
-        bundle.putInt(GOAL_TYPE_KEY, goalType);
-        bundle.putString(GOAL_DATA_KEY, objectDataString);
+
+
+    }
+
+    public void onGoalDetailsDownloaded(String dataString, GoalItem goalItem) {
+        goalDetailProgressDialog.dismiss();
+        Bundle bundle = new Bundle();
+        bundle.putString(GOAL_ITEM_KEY, new Gson().toJson(goalItem, GoalItem.class));
+        bundle.putString(GOAL_DATA_KEY, dataString);
 
         GoalsDetailFragment fragment = new GoalsDetailFragment();
+        fragment.setOnDeleteListener(this);
         fragment.setArguments(bundle);
 
         FragmentTransaction fragmentTransaction = getActivity().getFragmentManager().beginTransaction();
         fragmentTransaction.setTransition(FragmentTransaction.TRANSIT_FRAGMENT_OPEN);
         fragmentTransaction.add(android.R.id.content, fragment).addToBackStack(null).commit();
-
     }
 
     @Subscribe
     public void onGoalItemAdded(GoalItem goalItem) {
+        if (goalsAdapter.isDuplicate(goalItem)) {
+            Toast.makeText(context, R.string.duplicate_goal_message, Toast.LENGTH_SHORT).show();
+            return;
+        }
         goalsAdapter.addItem(goalItem);
-        //check the type and store accordingly in database
-    }
-
-    @Override
-    public void onStart() {
-        super.onStart();
-        EventBus.getDefault().register(this);
-    }
-
-    @Override
-    public void onPause() {
-        EventBus.getDefault().unregister(this);
-        super.onPause();
+        goalsDatabaseReference.child(goalItem.getUid()).setValue(goalItem);
     }
 
     private void hideProgressBar(Boolean hide) {
         progressBar.setVisibility(hide ? View.INVISIBLE : View.VISIBLE);
-        fab.setVisibility(hide ? View.VISIBLE : View.INVISIBLE);
         recyclerView.setVisibility(hide ? View.VISIBLE : View.INVISIBLE);
+    }
+
+    @Override
+    public void onDeleteSelected(GoalItem goalItem) {
+        deleteGoalItem(goalItem.getUid());
+    }
+
+    private class FetchTimeSpentOnLanguageTask extends AsyncTask<Void, Void, List<Integer>> {
+
+        private GoalItem goalItem;
+
+        private FetchTimeSpentOnLanguageTask(GoalItem goalItem) {
+            this.goalItem = goalItem;
+        }
+
+        @Override
+        protected List<Integer> doInBackground(Void... params) {
+            String languageName = goalItem.getName();
+            FetchWakatimeData fetchWakatimeData = new FetchWakatimeData(context);
+            List<Integer> timeSpentList = new ArrayList<>();
+            try {
+                long start = System.currentTimeMillis();
+                List<GenericSummaryData> dataList = fetchWakatimeData.fetchGenericSummaryResponse().getData();
+                Timber.d("Download time - " + (System.currentTimeMillis() - start));
+                int i = 0;
+                start = System.currentTimeMillis();
+                for (GenericSummaryData data : dataList) {
+                    for (Language language : data.getLanguages()) {
+                        if (language.getName().equals(languageName)) {
+                            timeSpentList.add(i++, language.getTotalSeconds());
+                        }
+                    }
+                }
+                Timber.d("Parse time - " + (System.currentTimeMillis() - start));
+                return timeSpentList;
+            } catch (IOException e) {
+                Timber.e(e);
+                return null;
+            }
+        }
+
+        @Override
+        protected void onPostExecute(List<Integer> list) {
+            if (list != null) {
+                LanguageGoal languageGoal = new LanguageGoal();
+                languageGoal.setGoalId(goalItem.getName());
+                languageGoal.setDailyGoal((int) goalItem.getData());
+                languageGoal.setProgressSoFar(list);
+                String gsonData = new Gson().toJson(languageGoal, LanguageGoal.class);
+                onGoalDetailsDownloaded(gsonData, goalItem);
+            } else {
+                goalDetailProgressDialog.dismiss();
+            }
+        }
+    }
+
+    private class FetchTimeSpentOnProjectTask extends AsyncTask<Void, Void, List<Integer>> {
+
+        private GoalItem goalItem;
+
+        private FetchTimeSpentOnProjectTask(GoalItem goalItem) {
+            this.goalItem = goalItem;
+        }
+
+        @Override
+        protected List<Integer> doInBackground(Void... params) {
+            String projectName = goalItem.getName();
+            List<Integer> timeSpentList = new ArrayList<>();
+            FetchWakatimeData fetchWakatimeData = new FetchWakatimeData(context);
+            try {
+                List<ProjectSummaryData> dataList = fetchWakatimeData.fetchProjectSummary(projectName).getData();
+                for (ProjectSummaryData summaryData : dataList) {
+                    timeSpentList.add(summaryData.getGrandTotal().getTotalSeconds());
+                }
+                return timeSpentList;
+            } catch (IOException e) {
+                e.printStackTrace();
+                return null;
+            }
+        }
+
+        @Override
+        protected void onPostExecute(List<Integer> list) {
+            ProjectGoal projectGoal = new ProjectGoal();
+            projectGoal.setProjectName(goalItem.getName());
+            projectGoal.setDaily((int) goalItem.getData());
+            projectGoal.setProgressSoFar(list);
+            String dataString = new Gson().toJson(projectGoal, ProjectGoal.class);
+            onGoalDetailsDownloaded(dataString, goalItem);
+        }
     }
 }

@@ -1,5 +1,8 @@
 package io.github.protino.codewatch.model.firebase;
 
+import java.util.ArrayList;
+import java.util.List;
+
 /**
  * @author Gurupad Mamadapur
  */
@@ -10,24 +13,24 @@ public class LanguageGoal {
      * Number of hours.
      */
     private int dailyGoal;
-    private int[] progressSoFar; //time in seconds
+    private List<Integer> progressSoFar; //time in seconds
 
     public LanguageGoal() {
         dailyGoal = -1;
-        progressSoFar = new int[]{};
+        progressSoFar = new ArrayList<>();
     }
 
-    public LanguageGoal(String goalId,int dailyGoal, int[] progressSoFar) {
+    public LanguageGoal(String goalId, int dailyGoal, List<Integer> progressSoFar) {
         this.goalId = goalId;
         this.dailyGoal = dailyGoal;
         this.progressSoFar = progressSoFar;
     }
 
-    public int[] getProgressSoFar() {
+    public List<Integer> getProgressSoFar() {
         return progressSoFar;
     }
 
-    public void setProgressSoFar(int[] progressSoFar) {
+    public void setProgressSoFar(List<Integer> progressSoFar) {
         this.progressSoFar = progressSoFar;
     }
 

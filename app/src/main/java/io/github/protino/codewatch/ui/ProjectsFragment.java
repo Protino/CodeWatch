@@ -54,7 +54,7 @@ public class ProjectsFragment extends Fragment implements SearchView.OnQueryText
     private Context context;
     private ProjectsAdapter projectsAdapter;
     private List<ProjectItem> projectItemList;
-    private AtomicInteger latchCount = new AtomicInteger(); //naive synchronization
+    private AtomicInteger mutex = new AtomicInteger(); //naive synchronization
 
     private MenuItem sortByTimeSpent;
     private MenuItem sortByName;
@@ -170,7 +170,7 @@ public class ProjectsFragment extends Fragment implements SearchView.OnQueryText
                         Project project = snapshot.getValue(Project.class);
                         projectItemList.add(new ProjectItem(project.getId(), project.getName(), 0));
                     }
-                    latchCount.incrementAndGet();
+                    mutex.incrementAndGet();
                     onDownloadComplete();
                 }
 
@@ -187,7 +187,7 @@ public class ProjectsFragment extends Fragment implements SearchView.OnQueryText
                 @Override
                 public void onDataChange(DataSnapshot dataSnapshot) {
                     timeSpentMap = (HashMap<String, Long>) dataSnapshot.getValue();
-                    latchCount.incrementAndGet();
+                    mutex.incrementAndGet();
                     onDownloadComplete();
                 }
 
@@ -203,7 +203,7 @@ public class ProjectsFragment extends Fragment implements SearchView.OnQueryText
     }
 
     private void onDownloadComplete() {
-        if (latchCount.get() == 2) {
+        if (mutex.get() == 2) {
             for (ProjectItem item : projectItemList) {
                 Long totalSeconds = timeSpentMap.get(item.getName());
                 if (totalSeconds != null) {

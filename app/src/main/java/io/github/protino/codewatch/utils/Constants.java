@@ -77,15 +77,12 @@ public final class Constants {
             LeaderContract.LeaderEntry.COLUMN_DAILY_AVERAGE
     };
     public static final String LEADER_SORT_ORDER = LeaderContract.LeaderEntry.COLUMN_TOTAL_SECONDS + " DESC";
+
     /* Firebase Constants */
     public static final String WAKATIME_DATA_SYNC_JOB_TAG = "daily_sync_job";
     public static final int SYNC_TOLERANCE = 60;
     public static final int SYNC_PERIOD = 60 * 60 * 24;
     public static final String PERIODIC_SYNC_SCHEDULED_KEY = "periodic_sync_scheduled_key";
-
-    /* Goal Detail keys */
-    public static final String GOAL_DATA_KEY = "goal_data_key";
-    public static final String GOAL_TYPE_KEY = "goal_type_key";
 
 
     /**
@@ -100,7 +97,6 @@ public final class Constants {
      * </pre>
      * These are dependent on badges declared in {@link io.github.protino.codewatch.R.array}
      */
-
 
     //Gold badges
     public static final int DEVOTED = 0;

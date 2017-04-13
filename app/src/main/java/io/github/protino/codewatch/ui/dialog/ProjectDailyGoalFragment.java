@@ -19,9 +19,8 @@ import com.google.gson.reflect.TypeToken;
 import org.greenrobot.eventbus.EventBus;
 
 import java.lang.reflect.Type;
-import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
+import java.util.UUID;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -43,18 +42,15 @@ public class ProjectDailyGoalFragment extends DialogFragment {
     //@formatter:on
 
     private List<String> projectNames;
-    private List<String> projectIds;
-
-    private Map<String, String> projectNameMap;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         try {
             String mapString = getArguments().getString(Intent.EXTRA_TEXT);
-            Type mapType = new TypeToken<Map<String, String>>() {
+            Type mapType = new TypeToken<List<String>>() {
             }.getType();
-            projectNameMap = new Gson().fromJson(mapString, mapType);
+            projectNames = new Gson().fromJson(mapString, mapType);
         } catch (Exception e) {
             throw new IllegalArgumentException("Project ID-NAME map not set.");
         }
@@ -64,8 +60,6 @@ public class ProjectDailyGoalFragment extends DialogFragment {
     @Override
     public Dialog onCreateDialog(Bundle savedInstanceState) {
         AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
-
-        loadProjectsData();
 
         LayoutInflater layoutInflater = getActivity().getLayoutInflater();
         View rootView = layoutInflater.inflate(R.layout.dialog_add_project_daily_goal, null);
@@ -79,10 +73,11 @@ public class ProjectDailyGoalFragment extends DialogFragment {
                 .setPositiveButton(R.string.ok, new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
-                        String projectId = getProjectId(spinner.getSelectedItem().toString());
+                        String projectName = spinner.getSelectedItem().toString();
 
                         GoalItem goalItem = new GoalItem(
-                                projectId,
+                                UUID.randomUUID().toString(),
+                                projectName,
                                 PROJECT_DAILY_GOAL,
                                 hoursPicker.getValue());
                         EventBus.getDefault().post(goalItem);
@@ -103,19 +98,6 @@ public class ProjectDailyGoalFragment extends DialogFragment {
         spinner.setAdapter(adapter);
 
         return builder.create();
-    }
-
-    private void loadProjectsData() {
-        projectIds = new ArrayList<>();
-        projectNames = new ArrayList<>();
-        for (Map.Entry<String, String> entry : projectNameMap.entrySet()) {
-            projectIds.add(entry.getKey());
-            projectNames.add(entry.getValue());
-        }
-    }
-
-    private String getProjectId(String projectName) {
-        return projectIds.get(projectNames.indexOf(projectName));
     }
 
     @Override

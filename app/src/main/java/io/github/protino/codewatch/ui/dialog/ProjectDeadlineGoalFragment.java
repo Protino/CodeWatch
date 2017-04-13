@@ -20,12 +20,11 @@ import org.greenrobot.eventbus.Subscribe;
 
 import java.lang.reflect.Type;
 import java.text.SimpleDateFormat;
-import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
 import java.util.Locale;
-import java.util.Map;
+import java.util.UUID;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -51,19 +50,17 @@ public class ProjectDeadlineGoalFragment extends DialogFragment {
     private long deadlineDate;
     private List<String> projectNames;
     private SimpleDateFormat simpleDateFormat;
-    private List<String> projectIds;
-    private Map<String, String> projectNameMap;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         try {
-            String mapString = getArguments().getString(Intent.EXTRA_TEXT);
-            Type mapType = new TypeToken<Map<String, String>>() {
+            String dataString = getArguments().getString(Intent.EXTRA_TEXT);
+            Type type = new TypeToken<List<String>>() {
             }.getType();
-            projectNameMap = new Gson().fromJson(mapString, mapType);
+            projectNames = new Gson().fromJson(dataString, type);
         } catch (Exception e) {
-            throw new IllegalArgumentException("Project ID-NAME map not set.");
+            throw new IllegalArgumentException("Project names list not set.");
         }
     }
 
@@ -72,8 +69,6 @@ public class ProjectDeadlineGoalFragment extends DialogFragment {
     public Dialog onCreateDialog(Bundle savedInstanceState) {
         View view = getActivity().getLayoutInflater().inflate(R.layout.dialog_project_deadline_goal, null);
         ButterKnife.bind(this, view);
-
-        loadProjectsData();
 
         calendar.setTime(new Date());
         calendar.add(Calendar.DATE, 1);
@@ -89,12 +84,14 @@ public class ProjectDeadlineGoalFragment extends DialogFragment {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
 
-                        String projectId = getProjectId(spinner.getSelectedItem().toString());
+                        String name = spinner.getSelectedItem().toString();
 
                         GoalItem goalItem = new GoalItem(
-                                projectId,
+                                UUID.randomUUID().toString(),
+                                name,
                                 PROJECT_DEADLINE_GOAL,
                                 deadlineDate);
+                        goalItem.setExtraData(System.currentTimeMillis());
 
                         EventBus.getDefault().post(goalItem);
 
@@ -116,19 +113,6 @@ public class ProjectDeadlineGoalFragment extends DialogFragment {
         spinner.setAdapter(adapter);
 
         return builder.create();
-    }
-
-    private String getProjectId(String projectName) {
-        return projectIds.get(projectNames.indexOf(projectName));
-    }
-
-    private void loadProjectsData() {
-        projectIds = new ArrayList<>();
-        projectNames = new ArrayList<>();
-        for (Map.Entry<String, String> entry : projectNameMap.entrySet()) {
-            projectIds.add(entry.getKey());
-            projectNames.add(entry.getValue());
-        }
     }
 
     @OnClick(R.id.date)

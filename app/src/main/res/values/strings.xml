@@ -18,44 +18,44 @@
 
 	<string name="CD_PROGRESS">
 		You\'ve logged
-		<xliff:g example="2" id="quantity">%.2f</xliff:g>%% of your daily average.
+		<xliff:g example="2" name="quantity">%.2f</xliff:g>%% of your daily average.
 	</string>
 	<string name="performance_title">Performance</string>
 	<string name="default_time_format">
-		<xliff:g example="7" id="hours">%1$d</xliff:g> h
-		<xliff:g example="10" id="minutes">%2$d</xliff:g> m
+		<xliff:g example="7" name="hours">%1$d</xliff:g> h
+		<xliff:g example="10" name="minutes">%2$d</xliff:g> m
 	</string>
 	<string name="daily_average_format">
 		Daily average -
-		<xliff:g example="3 h 5 m" id="time">%s</xliff:g>
+		<xliff:g example="3 h 5 m" name="time">%s</xliff:g>
 		<!-- above format is dependent on default_time_format-->
 	</string>
 	<string name="todays_log_percent_text">
 		Today you logged
-		<xliff:g example="45.32" id="quantity">%.2f</xliff:g>
+		<xliff:g example="45.32" name="quantity">%.2f</xliff:g>
 		%% of your daily average.
 	</string>
 	<string name="todays_total_log_time">
-		You coded for <xliff:g example="7 h 5 m" id="time">%s</xliff:g> today.
+		You coded for <xliff:g example="7 h 5 m" name="time">%s</xliff:g> today.
 	</string>
 	<string name="total_project_time">
-		You spent <xliff:g example="7 h 5 m" id="time">%s</xliff:g> on this project over a week.
+		You spent <xliff:g example="7 h 5 m" name="time">%s</xliff:g> on this project over a week.
 	</string>
 	<string name="card_languages_header">Languages</string>
 	<string name="card_editors_header">Editors</string>
 	<string name="card_os_header">Operating Systems</string>
-	<string name="percent_format"><xliff:g id="percent">%.2f</xliff:g>%%</string>
+	<string name="percent_format"><xliff:g name="percent">%.2f</xliff:g>%%</string>
 	<string name="language_goal">
-		Code in <xliff:g id="name">%1$s</xliff:g> for
-		<xliff:g example="3 hrs 5 min" id="time">%2$d</xliff:g> h daily.
+		Code in <xliff:g name="name">%1$s</xliff:g> for
+		<xliff:g example="3 hrs 5 min" name="time">%2$d</xliff:g> h daily.
 	</string>
 	<string name="project_deadline_goal">
-		Finish <xliff:g id="project_name">%1$s</xliff:g> by
-		<xliff:g example="4 Jun" id="date">%2$s</xliff:g>. <!-- Don't worry date is translated -->
+		Finish <xliff:g name="project_name">%1$s</xliff:g> by
+		<xliff:g example="4 Jun" name="date">%2$s</xliff:g>. <!-- Don't worry date is translated -->
 	</string>
 	<string name="project_daily_goal">
-		Spend <xliff:g id="time">%1$d</xliff:g> h on
-		<xliff:g id="project_name">%2$s</xliff:g> daily.
+		Spend <xliff:g name="time">%1$d</xliff:g> h on
+		<xliff:g name="project_name">%2$s</xliff:g> daily.
 	</string>
 	<string name="choose_goal_type">Choose goal type</string>
 	<string name="cancel">Cancel</string>
@@ -70,8 +70,8 @@
 	<string name="day">day</string>
 	<string name="days">days</string>
 	<string name="remaining_days">
-		<xliff:g id="remainingDays">%1$d</xliff:g>
-		<xliff:g id="day/s">%2$s</xliff:g> remaining. </string>
+		<xliff:g name="remainingDays">%1$d</xliff:g>
+		<xliff:g name="day/s">%2$s</xliff:g> remaining. </string>
 
 	<string-array name="goal_types">
 		<!-- Order is important -->
@@ -85,8 +85,8 @@
 	<string name="goal">Goal</string>
 	<string name="deadline_reached">Deadline reached</string>
 	<string name="marker_text">
-		<xliff:g id="time">%1$s</xliff:g> on
-		<xliff:g id="date">%2$s</xliff:g>
+		<xliff:g name="time">%1$s</xliff:g> on
+		<xliff:g name="date">%2$s</xliff:g>
 	</string>
 	<string name="minutes">%d m</string>
 	<string name="delete">Delete</string>
@@ -96,7 +96,7 @@
 	<string name="_3">3</string>
 	<string name="_1">1</string>
 	<string name="_2">2</string>
-	<string name="empty_leaderboard">No users using - <xliff:g id="language">%s</xliff:g>.</string>
+	<string name="empty_leaderboard">No users using - <xliff:g name="language">%s</xliff:g>.</string>
 	<string name="empty_project_list">No projects found.</string>
 
 
@@ -130,4 +130,5 @@
 	<string name="choose_app">Choose an app</string>
 	<string name="share_error">Sorry couldn\'t share the image</string>
 	<string name="stats_updating_error_message">Your stats are being calculated</string>
+	<string name="loading_goal_details">Loading goal details…</string>
 </resources>
