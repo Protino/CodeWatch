@@ -31,7 +31,7 @@ import java.io.IOException;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import io.github.protino.codewatch.event.LoginEvent;
-import io.github.protino.codewatch.model.WakatimeData;
+import io.github.protino.codewatch.model.WakatimeDataWrapper;
 import io.github.protino.codewatch.model.firebase.User;
 import io.github.protino.codewatch.model.user.ProfileData;
 import io.github.protino.codewatch.remote.FetchWakatimeData;
@@ -187,14 +187,14 @@ public class OnBoardActivity extends AppCompatActivity {
         @Override
         protected Boolean doInBackground(Void... params) {
             FetchWakatimeData fetchWakatimeData = new FetchWakatimeData(getApplicationContext());
-            WakatimeData wakatimeData;
+            WakatimeDataWrapper wakatimeDataWrapper;
             try {
-                wakatimeData = fetchWakatimeData.execute();
+                wakatimeDataWrapper = fetchWakatimeData.execute();
             } catch (IOException e) {
                 e.printStackTrace();
                 return false;
             }
-            User user = new TransformUtils(wakatimeData, new User()).execute();
+            User user = new TransformUtils(wakatimeDataWrapper, new User()).execute();
             FirebaseDatabase firebaseDatabase = FirebaseDatabase.getInstance();
             DatabaseReference databaseReference = firebaseDatabase.getReference().child("users");
             databaseReference.child(firebaseUid).setValue(user);

@@ -11,7 +11,7 @@ import com.google.firebase.database.FirebaseDatabase;
 
 import java.util.concurrent.CountDownLatch;
 
-import io.github.protino.codewatch.model.WakatimeData;
+import io.github.protino.codewatch.model.WakatimeDataWrapper;
 import io.github.protino.codewatch.model.firebase.User;
 import io.github.protino.codewatch.remote.FetchLeaderBoardData;
 import io.github.protino.codewatch.remote.FetchWakatimeData;
@@ -83,9 +83,9 @@ public class WakatimeDataSyncJob extends JobService {
                 SharedPreferences.Editor editor = sharedPreferences.edit();
                 editor.putBoolean(Constants.PREF_WAKATIME_DATA_UPDATED, false);
                 FetchWakatimeData fetchWakatimeData = new FetchWakatimeData(getApplicationContext());
-                WakatimeData wakatimeData = fetchWakatimeData.execute();
+                WakatimeDataWrapper wakatimeDataWrapper = fetchWakatimeData.execute();
                 Timber.d("Successfully download wakatimeData");
-                User user = new TransformUtils(wakatimeData, new User()).execute();
+                User user = new TransformUtils(wakatimeDataWrapper, new User()).execute();
                 //save to firebase
                 Timber.d("Saving to firebase rdb");
                 String uid = sharedPreferences.getString(Constants.PREF_FIREBASE_USER_ID, null);

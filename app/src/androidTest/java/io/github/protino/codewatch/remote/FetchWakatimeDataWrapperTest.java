@@ -9,7 +9,7 @@ import org.junit.runner.RunWith;
 import java.io.IOException;
 import java.util.List;
 
-import io.github.protino.codewatch.model.WakatimeData;
+import io.github.protino.codewatch.model.WakatimeDataWrapper;
 import io.github.protino.codewatch.model.project.summary.GenericSummaryData;
 import io.github.protino.codewatch.model.project.summary.GenericSummaryResponse;
 import io.github.protino.codewatch.model.project.summary.ProjectSummaryResponse;
@@ -22,7 +22,7 @@ import static junit.framework.Assert.assertTrue;
  */
 
 @RunWith(AndroidJUnit4.class)
-public class FetchWakatimeDataTest {
+public class FetchWakatimeDataWrapperTest {
 
     private static final String FULL_NAME = "Gurupad Mamadapur";
     private static final String USERNAME = "Gurupad";
@@ -34,15 +34,15 @@ public class FetchWakatimeDataTest {
 
     @Test
     public void testExecute() throws IOException {
-        WakatimeData wakatimeData = fetchWakatimeData.execute();
+        WakatimeDataWrapper wakatimeDataWrapper = fetchWakatimeData.execute();
 
-        assertNotNull(wakatimeData);
+        assertNotNull(wakatimeDataWrapper);
 
         //check stats
-        assertTrue(wakatimeData.getStatsResponse().getStatsData().getUsername().equals(USERNAME));
-        assertNotNull(wakatimeData.getProjectStatsList());
+        assertTrue(wakatimeDataWrapper.getStatsResponse().getStatsData().getUsername().equals(USERNAME));
+        assertNotNull(wakatimeDataWrapper.getProjectStatsList());
         //check user data
-        assertTrue(wakatimeData.getUserResponse().getProfileData().getFullName().equals(FULL_NAME));
+        assertTrue(wakatimeDataWrapper.getUserResponse().getProfileData().getFullName().equals(FULL_NAME));
 
     }
 

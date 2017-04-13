@@ -31,7 +31,7 @@ import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
 
-import io.github.protino.codewatch.model.WakatimeData;
+import io.github.protino.codewatch.model.WakatimeDataWrapper;
 import io.github.protino.codewatch.model.firebase.Goals;
 import io.github.protino.codewatch.model.firebase.LanguageGoal;
 import io.github.protino.codewatch.model.firebase.ProjectGoal;
@@ -204,10 +204,10 @@ public class FirebaseTestActivity extends AppCompatActivity {
     public void transform(View view) {
         SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(this);
         String data = sharedPreferences.getString(PREF_WAKATIME_DATA_UPDATED, null);
-        WakatimeData wakatimeData = new Gson().fromJson(data, WakatimeData.class);
+        WakatimeDataWrapper wakatimeDataWrapper = new Gson().fromJson(data, WakatimeDataWrapper.class);
 
         User user = new User();
-        ProfileData profileData = wakatimeData.getUserResponse().getProfileData();
+        ProfileData profileData = wakatimeDataWrapper.getUserResponse().getProfileData();
         user.setEmail(profileData.getEmail());
         user.setDisplayName(profileData.getFullName());
         //user.setAchievements(0); // TODO: 16-03-2017 Store as achievements as auth data
@@ -221,7 +221,7 @@ public class FirebaseTestActivity extends AppCompatActivity {
         // Todo : Add generic language goals here
 
         Stats stats = new Stats();
-        StatsData statsData = wakatimeData.getStatsResponse().getStatsData();
+        StatsData statsData = wakatimeDataWrapper.getStatsResponse().getStatsData();
         stats.setUpToDate(statsData.getIsUpToDate());
         stats.setStartDate(statsData.getStart());
         stats.setEndDate(statsData.getEnd());
@@ -377,9 +377,9 @@ public class FirebaseTestActivity extends AppCompatActivity {
         @Override
         protected Void doInBackground(Void... params) {
             Timber.i("Starting to fetch");
-            WakatimeData wakatimeData;
+            WakatimeDataWrapper wakatimeDataWrapper;
             try {
-                wakatimeData = new FetchWakatimeData(getApplicationContext()).execute();
+                wakatimeDataWrapper = new FetchWakatimeData(getApplicationContext()).execute();
             } catch (IOException e) {
                 return null;
             }
@@ -387,7 +387,7 @@ public class FirebaseTestActivity extends AppCompatActivity {
             SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(context);
             SharedPreferences.Editor editor = sharedPreferences.edit();
             Gson gson = new Gson();
-            String dataString = gson.toJson(wakatimeData);
+            String dataString = gson.toJson(wakatimeDataWrapper);
             Timber.i("Data converted");
             editor.putString(Constants.PREF_WAKATIME_DATA_UPDATED, dataString);
             editor.commit();

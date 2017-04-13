@@ -15,7 +15,7 @@ import java.util.List;
 import java.util.Map;
 
 import io.github.protino.codewatch.model.AccessToken;
-import io.github.protino.codewatch.model.WakatimeData;
+import io.github.protino.codewatch.model.WakatimeDataWrapper;
 import io.github.protino.codewatch.model.project.ProjectsResponse;
 import io.github.protino.codewatch.model.project.summary.GenericSummaryData;
 import io.github.protino.codewatch.model.project.summary.GenericSummaryResponse;
@@ -66,32 +66,32 @@ public class FetchWakatimeData {
     /**
      * Fetches all the relevant data from Wakatime API
      *
-     * @return {@link WakatimeData} if successful els1e null
+     * @return {@link WakatimeDataWrapper} if successful els1e null
      */
-    public WakatimeData execute() throws IOException {
+    public WakatimeDataWrapper execute() throws IOException {
         if (apiInterface == null) {
             return null;
         }
-        WakatimeData wakatimeData = new WakatimeData();
+        WakatimeDataWrapper wakatimeDataWrapper = new WakatimeDataWrapper();
 
         //User details
         UserResponse userResponse = fetchUserDetails();
-        wakatimeData.setUserResponse(userResponse);
+        wakatimeDataWrapper.setUserResponse(userResponse);
 
         //Stats
-        fetchStatsOnly(wakatimeData);
+        fetchStatsOnly(wakatimeDataWrapper);
 
         //Projects
-        wakatimeData.setProjectsResponse(fetchProjectsList());
-        return wakatimeData;
+        wakatimeDataWrapper.setProjectsResponse(fetchProjectsList());
+        return wakatimeDataWrapper;
     }
 
-    public void fetchStatsOnly(WakatimeData wakatimeData) throws IOException {
+    public void fetchStatsOnly(WakatimeDataWrapper wakatimeDataWrapper) throws IOException {
         if (apiInterface == null) {
             return;
         }
         StatsResponse statsResponse = fetchStats();
-        wakatimeData.setStatsResponse(statsResponse);
+        wakatimeDataWrapper.setStatsResponse(statsResponse);
 
         GenericSummaryResponse genericSummaryResponse = fetchGenericSummaryResponse();
         Map<String, Integer> projectStats;
@@ -103,11 +103,11 @@ public class FetchWakatimeData {
             }
             projectStatsList.add(projectStats);
         }
-        wakatimeData.setProjectStatsList(projectStatsList);
+        wakatimeDataWrapper.setProjectStatsList(projectStatsList);
 
-        wakatimeData.setProjectsResponse(fetchProjectsList());
+        wakatimeDataWrapper.setProjectsResponse(fetchProjectsList());
 
-        wakatimeData.setTodaysTotalSeconds(getTodaysTotalSeconds());
+        wakatimeDataWrapper.setTodaysTotalSeconds(getTodaysTotalSeconds());
 
     }
 

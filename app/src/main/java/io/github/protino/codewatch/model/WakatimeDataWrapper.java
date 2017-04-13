@@ -11,7 +11,7 @@ import io.github.protino.codewatch.model.user.UserResponse;
  * Created by Gurupad Mamadapur on 10-03-2017.
  */
 
-public class WakatimeData {
+public class WakatimeDataWrapper {
 
     private UserResponse userResponse;
     private StatsResponse statsResponse;
@@ -20,7 +20,7 @@ public class WakatimeData {
     private List<Map<String, Integer>> projectStatsList;
     private ProjectsResponse projectsResponse;
 
-    public WakatimeData() {
+    public WakatimeDataWrapper() {
     }
 
     public UserResponse getUserResponse() {

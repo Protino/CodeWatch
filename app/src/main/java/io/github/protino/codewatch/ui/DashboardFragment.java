@@ -53,7 +53,7 @@ import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
 import io.github.protino.codewatch.R;
-import io.github.protino.codewatch.model.WakatimeData;
+import io.github.protino.codewatch.model.WakatimeDataWrapper;
 import io.github.protino.codewatch.model.firebase.Stats;
 import io.github.protino.codewatch.model.firebase.User;
 import io.github.protino.codewatch.remote.FetchWakatimeData;
@@ -502,9 +502,9 @@ public class DashboardFragment extends ChartFragment implements SwipeRefreshLayo
         Integer doInBackground(Void... params) {
             FetchWakatimeData fetchWakatimeData = new FetchWakatimeData(context);
             try {
-                WakatimeData wakatimeData = new WakatimeData();
-                fetchWakatimeData.fetchStatsOnly(wakatimeData);
-                TransformUtils transformUtils = new TransformUtils(wakatimeData, new User());
+                WakatimeDataWrapper wakatimeDataWrapper = new WakatimeDataWrapper();
+                fetchWakatimeData.fetchStatsOnly(wakatimeDataWrapper);
+                TransformUtils transformUtils = new TransformUtils(wakatimeDataWrapper, new User());
                 stats = transformUtils.transformStats().getStats();
                 statsDatabaseRef.setValue(stats);
                 return NONE;
