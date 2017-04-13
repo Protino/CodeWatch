@@ -16,9 +16,7 @@ import io.github.protino.codewatch.model.firebase.User;
 import io.github.protino.codewatch.remote.FetchLeaderBoardData;
 import io.github.protino.codewatch.remote.FetchWakatimeData;
 import io.github.protino.codewatch.utils.Constants;
-import io.github.protino.codewatch.utils.Transform;
 import io.github.protino.codewatch.utils.CacheUtils;
-import io.github.protino.codewatch.utils.Constants;
 import io.github.protino.codewatch.utils.TransformUtils;
 import timber.log.Timber;
 
