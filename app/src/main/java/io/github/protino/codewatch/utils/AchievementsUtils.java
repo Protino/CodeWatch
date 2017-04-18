@@ -10,14 +10,24 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.concurrent.TimeUnit;
 
 import io.github.protino.codewatch.model.BadgeItem;
 
 import static io.github.protino.codewatch.utils.Constants.ACHIEVEMENTS_MAP;
+import static io.github.protino.codewatch.utils.Constants.ARDENT;
 import static io.github.protino.codewatch.utils.Constants.BRONZE_BADGE;
 import static io.github.protino.codewatch.utils.Constants.BRONZE_BADGES;
+import static io.github.protino.codewatch.utils.Constants.COMPETITOR;
+import static io.github.protino.codewatch.utils.Constants.DEVOTED;
 import static io.github.protino.codewatch.utils.Constants.GOLD_BADGE;
 import static io.github.protino.codewatch.utils.Constants.GOLD_BADGES;
+import static io.github.protino.codewatch.utils.Constants.HARD_WORKING;
+import static io.github.protino.codewatch.utils.Constants.INSOMNIAC;
+import static io.github.protino.codewatch.utils.Constants.LEADER;
+import static io.github.protino.codewatch.utils.Constants.LOYAL;
+import static io.github.protino.codewatch.utils.Constants.MASTER;
+import static io.github.protino.codewatch.utils.Constants.SANE;
 import static io.github.protino.codewatch.utils.Constants.SILVER_BADGE;
 import static io.github.protino.codewatch.utils.Constants.SILVER_BADGES;
 
@@ -99,5 +109,58 @@ public class AchievementsUtils {
             }
         }
         return count;
+    }
+
+    public static long checkAchievements(int rank, int dailyAverage) {
+        List<Integer> positions = new ArrayList<>();
+
+        //First check achievements related to rank
+        if (rank <= 10) {
+            positions.add(LEADER);
+        }
+        if (rank <= 50) {
+            positions.add(MASTER);
+        }
+        if (rank <= 100) {
+            positions.add(COMPETITOR);
+        }
+
+        //Now, related to daily average
+        //Let's add a tolerance of 15 min
+        dailyAverage += (15 * 60);
+        int hours = (int) TimeUnit.SECONDS.toHours(dailyAverage);
+        if (hours >= 18) {
+            positions.add(INSOMNIAC);
+            positions.add(HARD_WORKING);
+            positions.add(SANE);
+        } else if (hours >= 10) {
+            positions.add(HARD_WORKING);
+            positions.add(SANE);
+        } else if (hours >= 7) {
+            positions.add(SANE);
+        }
+
+        //now set all those bits
+        long newAchievements = 0;
+        for (Integer bitPosition : positions) {
+            newAchievements |= (1L << bitPosition);
+        }
+        return newAchievements;
+    }
+
+    public static long checkUsageAchievements(int consecutiveDays) {
+        List<Integer> positions = new ArrayList<>();
+        long newAchievements = 0;
+        if (consecutiveDays == 30) {
+            positions.add(DEVOTED);
+        } else if (consecutiveDays == 14) {
+            positions.add(ARDENT);
+        } else if (consecutiveDays == 7) {
+            positions.add(LOYAL);
+        }
+        for (Integer bitPosition : positions) {
+            newAchievements |= (1 << bitPosition);
+        }
+        return newAchievements;
     }
 }

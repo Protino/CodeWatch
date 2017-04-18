@@ -62,6 +62,7 @@ public class GoalsDetailFragment extends DialogFragment {
     @BindView(R.id.remainingDays) public TextView remainingDays;
     @BindView(R.id.progressBar) public PerformanceBarView progressBarView;
     @BindView(R.id.goal_chart) public BarChart goalBarChart;
+    @BindColor(R.color.window_background) public int windowColor;
     @BindColor(R.color.green_400) public int green400;
     @BindColor(R.color.red_400) public int red400;
     @BindColor(R.color.colorAccent) public int accentColor;
@@ -133,7 +134,7 @@ public class GoalsDetailFragment extends DialogFragment {
         }
 
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-            toolbar.setElevation(5); //todo check
+            toolbar.setElevation(context.getResources().getDimension(R.dimen.appbar_elevation));
             handleStatusBar();
         }
         toolbar.setNavigationOnClickListener(new View.OnClickListener() {
@@ -170,11 +171,13 @@ public class GoalsDetailFragment extends DialogFragment {
         limitLine.setLineWidth(4f);
         limitLine.setLineColor(blue400);
         limitLine.setTextSize(12f);
-        limitLine.setTextColor(Color.BLACK);
+        limitLine.setTextColor(Color.WHITE);
 
         XAxis xAxis = goalBarChart.getXAxis();
         xAxis.setPosition(XAxis.XAxisPosition.BOTTOM);
         xAxis.setDrawGridLines(false);
+        xAxis.setAxisLineColor(Color.WHITE);
+        xAxis.setTextColor(Color.WHITE);
         xAxis.setGranularity(1f);
         xAxis.setValueFormatter(new FormatUtils().getBarXAxisValueFormatterInstance(referenceTime));
         xAxis.setAxisLineWidth(2f);
@@ -183,15 +186,14 @@ public class GoalsDetailFragment extends DialogFragment {
         leftAxis.removeAllLimitLines();
         leftAxis.addLimitLine(limitLine);
         leftAxis.setDrawGridLines(false);
+        leftAxis.setAxisLineColor(Color.WHITE);
+        leftAxis.setTextColor(Color.WHITE);
         leftAxis.setGranularity(60 * 60);
         leftAxis.setValueFormatter(new IAxisValueFormatter() {
             @Override
             public String getFormattedValue(float value, AxisBase axis) {
-
-                int hours = (int) TimeUnit.SECONDS.toHours((long) Math.ceil(value));
-
-                return (hours == 0)
-                        ? "" : context.getString(R.string.hours, hours);
+                return (value == 0)
+                        ? "" : FormatUtils.getFormattedTime(context, (int) value);
             }
         });
         leftAxis.setAxisLineWidth(2f);
@@ -212,7 +214,7 @@ public class GoalsDetailFragment extends DialogFragment {
         goalBarChart.getAxisRight().setEnabled(false);
         goalBarChart.getLegend().setEnabled(false);
         goalBarChart.getDescription().setEnabled(false);
-        goalBarChart.setBackgroundColor(Color.WHITE);
+        goalBarChart.setBackgroundColor(windowColor);
         goalBarChart.setDrawGridBackground(false);
         goalBarChart.setDragEnabled(false);
         goalBarChart.setScaleEnabled(false);
@@ -224,7 +226,6 @@ public class GoalsDetailFragment extends DialogFragment {
 
         customMarkerView.setChartView(goalBarChart);
 
-
         goalBarChart.setVisibility(View.VISIBLE);
         goalBarChart.animateY(1500, Easing.EasingOption.Linear);
     }
@@ -235,7 +236,7 @@ public class GoalsDetailFragment extends DialogFragment {
         ArrayList<BarEntry> barEntries = new ArrayList<>(progressSoFar.size());
 
         DateTime dateTime = new DateTime();
-        referenceTime = dateTime.plusDays(-6).getMillis();
+        referenceTime = dateTime.minusDays(7).getMillis();
         for (int i = 0; i < progressSoFar.size(); i++) {
             barEntries.add(new BarEntry(i, progressSoFar.get(i)));
         }

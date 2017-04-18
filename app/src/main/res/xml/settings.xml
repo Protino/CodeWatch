@@ -12,9 +12,11 @@
 			android:title="@string/pref_leaderboard_changes"/>
 	</PreferenceCategory>
 	<Preference
+		android:enabled="true"
 		android:key="@string/pref_logout_key"
 		android:title="@string/logout"/>
 	<Preference
+		android:enabled="true"
 		android:key="@string/pref_about_key"
 		android:title="@string/about"/>
 </PreferenceScreen>

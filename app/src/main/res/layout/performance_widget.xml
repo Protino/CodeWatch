@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- As target sdk version > 15, no need to provide extra padding of 8dp -->
+<LinearLayout
+	xmlns:android="http://schemas.android.com/apk/res/android"
+	xmlns:tools="http://schemas.android.com/tools"
+	android:id="@+id/widget"
+	android:layout_width="match_parent"
+	android:layout_height="match_parent"
+	android:background="@color/colorPrimaryDark"
+	android:gravity="center"
+	android:orientation="vertical">
+
+	<TextView
+		android:id="@+id/todays_activity"
+		android:layout_width="wrap_content"
+		android:layout_height="wrap_content"
+		android:paddingBottom="8dp"
+		tools:text="You coded for 3h 5m today"/>
+
+	<ProgressBar
+		android:id="@+id/performance_bar"
+		style="@style/largeProgressBar"
+		android:layout_width="match_parent"
+		android:layout_height="wrap_content"
+		android:paddingBottom="8dp"
+		android:paddingEnd="8dp"
+		android:paddingStart="8dp"
+		tools:progress="50"
+		tools:progressTint="@color/green_400"/>
+
+	<TextView
+		android:id="@+id/daily_average_text"
+		android:layout_width="wrap_content"
+		android:layout_height="wrap_content"
+		tools:text="Daily average - 5h 8m"/>
+</LinearLayout>

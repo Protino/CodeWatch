@@ -50,6 +50,7 @@ import io.github.protino.codewatch.model.BadgeItem;
 import io.github.protino.codewatch.model.ProfileItem;
 import io.github.protino.codewatch.ui.adapter.AchievementsAdapter;
 import io.github.protino.codewatch.utils.AchievementsUtils;
+import io.github.protino.codewatch.utils.CacheUtils;
 import io.github.protino.codewatch.utils.Constants;
 import io.github.protino.codewatch.utils.FormatUtils;
 import timber.log.Timber;
@@ -75,6 +76,7 @@ public class ProfileActivity extends AppCompatActivity implements LoaderManager.
 
     @BindView(R.id.list_languages) RecyclerView languageListView;
     @BindView(R.id.list_achievements) RecyclerView achievementsListView;
+    @BindView(R.id.card_achievements) View achievementsContainer;
 
     @BindView(R.id.toolbar) Toolbar toolbar;
     @BindView(R.id.collapsing_toolbar) CollapsingToolbarLayout collapsingToolbarLayout;
@@ -102,6 +104,10 @@ public class ProfileActivity extends AppCompatActivity implements LoaderManager.
 
         userId = getIntent().getStringExtra(Intent.EXTRA_TEXT);
 
+        if (userId == null) {
+            throw new IllegalArgumentException("User-id not passed");
+        }
+
         setSupportActionBar(toolbar);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         getSupportActionBar().setTitle("");
@@ -125,13 +131,10 @@ public class ProfileActivity extends AppCompatActivity implements LoaderManager.
         achievementsListView.setAdapter(achievementsAdapter);
 
 
-        //Achievements data from firebase rdb
-        //        String firebaseUserId = PreferenceManager.getDefaultSharedPreferences(this)
-        //              .getString(Constants.PREF_FIREBASE_USER_ID, null);
-        String firebaseUserId = "eqtmJPJ4YXdaEUxRQFDVUJIAMqd2";
+        String firebaseUserId = CacheUtils.getFirebaseUserId(this);
         FirebaseDatabase firebaseDatabase = FirebaseDatabase.getInstance();
         achievementDatabaseRef = firebaseDatabase.getReference()
-                .child("achv").child(firebaseUserId).child("data");
+                .child("achv").child(firebaseUserId).child(userId);
     }
 
     @Override
@@ -267,7 +270,12 @@ public class ProfileActivity extends AppCompatActivity implements LoaderManager.
 
                 @Override
                 public void onDataChange(DataSnapshot dataSnapshot) {
-                    long achievements = (long) dataSnapshot.getValue();
+                    Object data = dataSnapshot.getValue();
+                    if (data == null) {
+                        achievementsContainer.setVisibility(View.GONE);
+                        return;
+                    }
+                    long achievements = (long) data;
                     unlockedAchievements = getUnlockedAchievements(achievements);
                     profileItem.setUnlockedAchievements(unlockedAchievements);
                     List<BadgeItem> allBadges = new ArrayList<>();
@@ -282,7 +290,12 @@ public class ProfileActivity extends AppCompatActivity implements LoaderManager.
                             badgeItemList.add(badgeItem);
                         }
                     }
-                    achievementsAdapter.swapData(badgeItemList);
+                    if (badgeItemList.size() == 0) {
+                        achievementsContainer.setVisibility(View.GONE);
+                    } else {
+                        achievementsContainer.setVisibility(View.VISIBLE);
+                        achievementsAdapter.swapData(badgeItemList);
+                    }
                 }
 
                 @Override

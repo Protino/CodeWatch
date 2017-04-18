@@ -42,13 +42,14 @@ public final class Constants {
     public static final String WAKATIME_BASE_URL = "https://wakatime.com/";
 
     /* Cache constants */
-    public static final String PREF_WAKATIME_DATA_UPDATED = "WAKATIME_DATA_PREF_KEY";
     public static final String PREF_FIREBASE_USER_DATA = "firebase_user_data_pref_key";
     public static final String PREF_FIREBASE_USER_ID = "firebase_user_id_pref_key";
+    public static final String PREF_WAKATIME_USER_ID = "wakatime_user_pref_key";
     public static final String PREF_FIREBASE_SETUP = "firebase_setup_key";
-    public static final String PREF_LEADERBOARD_UPDATED = "leaderboard_pref_key";
     public static final String PREF_BASIC_USER_DETAILS = "pref_basic_user_detail_key";
     public static final String PREF_USER_LEARNED_DRAWER = "pref_user_learned_drawer";
+    public static final String PREF_APP_LAST_USAGE = "pref_app_last_usage_key";
+    public static final String PREF_START_OF_CONSECUTIVE_DAYS = "pref_start_of_consec_days";
 
     /* Error Codes */
     public static final int NONE = -1;
@@ -80,9 +81,19 @@ public final class Constants {
 
     /* Firebase Constants */
     public static final String WAKATIME_DATA_SYNC_JOB_TAG = "daily_sync_job";
-    public static final int SYNC_TOLERANCE = 60;
     public static final int SYNC_PERIOD = 60 * 60 * 24;
-    public static final String PERIODIC_SYNC_SCHEDULED_KEY = "periodic_sync_scheduled_key";
+    public static final int SYNC_TOLERANCE = SYNC_PERIOD + 60;
+    public static final String PERIODIC_SYNC_SCHEDULE_KEY = "periodic_sync_scheduled_key";
+    public static final String APP_UPDATE_KEY = "force_app_update";
+    public static final String ACTION_DATA_UPDATED = "action_data_updated";
+
+
+    /* Notification Constants */
+    public static final int GOAL_NOTIFICATION_ID = 1;
+    public static final int LEADERBOARD_NOTIFICATION_ID = 3;
+
+    //My wakatime ID
+    public static final String DEVELOPER_ID = "5c93d61f-b71b-4406-8e34-f86755d5df18";
 
 
     /**

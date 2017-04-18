@@ -1,9 +1,14 @@
 package io.github.protino.codewatch.ui;
 
 import android.app.Fragment;
+import android.app.LoaderManager;
+import android.content.CursorLoader;
+import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.Loader;
 import android.content.SharedPreferences;
 import android.content.res.Configuration;
+import android.database.Cursor;
 import android.graphics.Bitmap;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
@@ -14,6 +19,7 @@ import android.support.v4.graphics.drawable.RoundedBitmapDrawable;
 import android.support.v4.graphics.drawable.RoundedBitmapDrawableFactory;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.Gravity;
@@ -24,21 +30,29 @@ import android.widget.TextView;
 
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.request.target.BitmapImageViewTarget;
+import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.Task;
+import com.google.firebase.analytics.FirebaseAnalytics;
+import com.google.firebase.crash.FirebaseCrash;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
+import com.google.firebase.remoteconfig.FirebaseRemoteConfig;
 import com.google.gson.Gson;
+
+import java.util.concurrent.atomic.AtomicInteger;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
-import io.github.protino.codewatch.OnBoardActivity;
 import io.github.protino.codewatch.R;
+import io.github.protino.codewatch.data.LeaderContract;
 import io.github.protino.codewatch.model.user.ProfileData;
 import io.github.protino.codewatch.utils.AchievementsUtils;
 import io.github.protino.codewatch.utils.CacheUtils;
 import io.github.protino.codewatch.utils.Constants;
+import timber.log.Timber;
 
 import static io.github.protino.codewatch.utils.Constants.BRONZE_BADGE;
 import static io.github.protino.codewatch.utils.Constants.GOLD_BADGE;
@@ -52,20 +66,25 @@ import static io.github.protino.codewatch.utils.Constants.SILVER_BADGE;
  */
 
 public class NavigationDrawerActivity extends AppCompatActivity implements
-        NavigationView.OnNavigationItemSelectedListener {
+        NavigationView.OnNavigationItemSelectedListener, LoaderManager.LoaderCallbacks<Cursor> {
 
+    private static final int RANK_LOADER_ID = 99;
     //@formatter:off
     @BindView(R.id.toolbar) public Toolbar toolbar;
     @BindView(R.id.drawer_layout) public DrawerLayout drawerLayout;
     @BindView(R.id.navigationView) public NavigationView navigationView;
     //@formatter:on
+
+    private AtomicInteger mutex = new AtomicInteger();
     private ActionBarDrawerToggle drawerToggler;
     private SharedPreferences sharedPreferences;
     private boolean hasUserLearntDrawer;
-    private String firebaseUid;
-    private DatabaseReference databaseReference;
+    private DatabaseReference achievementsDatabaseRef;
     private ProfileData basicUserData;
     private long currentAchievements;
+    private long newAchievements = 0;
+    private boolean appUsageAchievementsChecked = false;
+
     private ValueEventListener valueEventListener;
 
     private TextView username;
@@ -73,6 +92,11 @@ public class NavigationDrawerActivity extends AppCompatActivity implements
     private TextView goldBadgeCounts;
     private TextView bronzeBadgeCounts;
     private ImageView avatar;
+    private TextView rankText;
+
+    private FirebaseAnalytics firebaseAnalytics;
+    private FirebaseRemoteConfig firebaseRemoteConfig;
+
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -84,16 +108,24 @@ public class NavigationDrawerActivity extends AppCompatActivity implements
             finish();
             return;
         }
+        //Now check if app update is required
+        firebaseRemoteConfig = FirebaseRemoteConfig.getInstance();
+        firebaseRemoteConfig.setDefaults(R.xml.config);
+        testIfAppUpdateIsRequired();
+
+
         setContentView(R.layout.activity_navigation_drawer);
         ButterKnife.bind(this);
 
         sharedPreferences = PreferenceManager.getDefaultSharedPreferences(this);
-        firebaseUid = sharedPreferences.getString(Constants.PREF_FIREBASE_USER_ID, null);
+        String firebaseUid = sharedPreferences.getString(Constants.PREF_FIREBASE_USER_ID, null);
         String basicData = sharedPreferences.getString(Constants.PREF_BASIC_USER_DETAILS, null);
         basicUserData = new Gson().fromJson(basicData, ProfileData.class);
 
         setSupportActionBar(toolbar);
         setupDrawer();
+        mutex.set(0);
+
         if (savedInstanceState == null) {
             MenuItem item = navigationView.getMenu().findItem(R.id.dashboard);
             onNavigationItemSelected(item);
@@ -101,8 +133,12 @@ public class NavigationDrawerActivity extends AppCompatActivity implements
         }
 
         FirebaseDatabase firebaseDatabase = FirebaseDatabase.getInstance();
-        databaseReference = firebaseDatabase.getReference().child("achv").child(firebaseUid);
+        firebaseAnalytics = FirebaseAnalytics.getInstance(this);
+
+        achievementsDatabaseRef = firebaseDatabase.getReference().child("achv").child(firebaseUid);
+        getLoaderManager().initLoader(RANK_LOADER_ID, null, this);
     }
+
 
     @Override
     protected void onResume() {
@@ -116,6 +152,40 @@ public class NavigationDrawerActivity extends AppCompatActivity implements
         super.onPause();
     }
 
+    private void testIfAppUpdateIsRequired() {
+        firebaseRemoteConfig.fetch()
+                .addOnCompleteListener(this, new OnCompleteListener<Void>() {
+                    @Override
+                    public void onComplete(@NonNull Task<Void> task) {
+                        if (task.isSuccessful()) {
+                            firebaseRemoteConfig.activateFetched();
+                        } else {
+                            FirebaseCrash.report(task.getException());
+                        }
+
+                        if (firebaseRemoteConfig.getBoolean(Constants.APP_UPDATE_KEY)) {
+                            showUpdateDialog();
+                        }
+                    }
+                });
+    }
+
+    private void showUpdateDialog() {
+        AlertDialog.Builder builder = new AlertDialog.Builder(this)
+                .setCancelable(false)
+                .setTitle(R.string.update_required)
+                .setMessage(R.string.app_update_message)
+                .setPositiveButton(R.string.update, new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        Timber.d("Update clicked");
+                        //Launch PlayStore ...
+                        finish();
+                    }
+                });
+        builder.create().show();
+    }
+
 
     private void attachValueEventListener() {
         if (valueEventListener == null) {
@@ -123,8 +193,14 @@ public class NavigationDrawerActivity extends AppCompatActivity implements
 
                 @Override
                 public void onDataChange(DataSnapshot dataSnapshot) {
-                    currentAchievements = (long) dataSnapshot.child(basicUserData.getId()).getValue();
-                    bindHeaderViews();
+                    Object data = dataSnapshot.child(basicUserData.getId()).getValue();
+                    if (data != null) {
+                        currentAchievements = (long) data;
+                    } else {
+                        currentAchievements = 0;
+                    }
+                    mutex.incrementAndGet();
+                    onAchievementsLoaded();
                 }
 
                 @Override
@@ -132,12 +208,13 @@ public class NavigationDrawerActivity extends AppCompatActivity implements
                 }
             };
         }
-        databaseReference.addValueEventListener(valueEventListener);
+        achievementsDatabaseRef.addValueEventListener(valueEventListener);
     }
+
 
     private void detachValueEventListener() {
         if (valueEventListener != null) {
-            databaseReference.removeEventListener(valueEventListener);
+            achievementsDatabaseRef.removeEventListener(valueEventListener);
             valueEventListener = null;
         }
     }
@@ -172,6 +249,7 @@ public class NavigationDrawerActivity extends AppCompatActivity implements
 
         username = (TextView) navigationHeader.findViewById(R.id.username);
         avatar = (ImageView) navigationHeader.findViewById(R.id.avatar);
+        rankText = (TextView) navigationHeader.findViewById(R.id.rank);
 
         silverBadgeCounts = (TextView) navigationHeader.findViewById(R.id.silver_badge_count);
         goldBadgeCounts = (TextView) navigationHeader.findViewById(R.id.gold_badge_count);
@@ -181,7 +259,9 @@ public class NavigationDrawerActivity extends AppCompatActivity implements
         navigationHeader.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                startActivity(new Intent(NavigationDrawerActivity.this, ProfileActivity.class));
+                Intent intent = new Intent(NavigationDrawerActivity.this, ProfileActivity.class);
+                intent.putExtra(Intent.EXTRA_TEXT,getWakatimeUid());
+                startActivity(intent);
             }
         });
     }
@@ -231,31 +311,32 @@ public class NavigationDrawerActivity extends AppCompatActivity implements
         String text;
         switch (item.getItemId()) {
             case R.id.dashboard:
-                text = "Dashboard";
+                text = getString(R.string.dashboard_title);
+
                 replaceFragment(new DashboardFragment(), text);
                 break;
             case R.id.goals:
-                text = "Goals";
+                text = getString(R.string.goals_title);
                 replaceFragment(new GoalsFragment(), text);
                 break;
             case R.id.achievements:
-                text = "Achievements";
+                text = getString(R.string.achievements_title);
                 replaceFragment(new AchievementFragment(), text);
                 break;
             case R.id.leaderboards:
-                text = "Leaderboards";
+                text = getString(R.string.leaderboards_title);
                 replaceFragment(new LeaderboardFragment(), text);
                 break;
             case R.id.projects:
-                text = "Projects";
+                text = getString(R.string.projects_title);
                 replaceFragment(new ProjectsFragment(), text);
                 break;
             case R.id.settings:
-                text = "Settings";
+                text = getString(R.string.settings_title);
                 replaceFragment(new SettingsFragment(), text);
                 break;
             default:
-                throw new UnsupportedOperationException("Invalid menu item");
+                break;
         }
         drawerLayout.closeDrawers();
         return true;
@@ -264,6 +345,14 @@ public class NavigationDrawerActivity extends AppCompatActivity implements
     private void replaceFragment(Fragment fragment, String text) {
         getSupportActionBar().setTitle(text);
         getFragmentManager().beginTransaction().replace(R.id.container, fragment).commit();
+
+        Bundle bundle = new Bundle();
+        bundle.putString(FirebaseAnalytics.Param.ITEM_ID, "selection");
+        bundle.putString(FirebaseAnalytics.Param.ITEM_NAME, text);
+        bundle.putString(FirebaseAnalytics.Param.ITEM_CATEGORY, getString(R.string.category_fragment));
+        if (firebaseAnalytics != null) {
+            firebaseAnalytics.logEvent(FirebaseAnalytics.Event.SELECT_CONTENT, bundle);
+        }
     }
 
     @Override
@@ -278,4 +367,54 @@ public class NavigationDrawerActivity extends AppCompatActivity implements
     public String getWakatimeUid() {
         return basicUserData.getId();
     }
+
+    @Override
+    public Loader<Cursor> onCreateLoader(int id, Bundle args) {
+        return new CursorLoader(this,
+                LeaderContract.LeaderEntry.buildProfileUri(getWakatimeUid()),
+                null,
+                null,
+                null,
+                null);
+    }
+
+    @Override
+    public void onLoadFinished(Loader<Cursor> loader, Cursor data) {
+        if (data != null) {
+            if (data.moveToFirst()) {
+                int rank = data.getInt(data.getColumnIndex(LeaderContract.LeaderEntry.COLUMN_RANK));
+                int dailyAverage = data.getInt(data.getColumnIndex(LeaderContract.LeaderEntry.COLUMN_DAILY_AVERAGE));
+                newAchievements |= AchievementsUtils.checkAchievements(rank, dailyAverage);
+                rankText.setText(String.valueOf(rank));
+                mutex.incrementAndGet();
+                onAchievementsLoaded();
+            }
+        }
+    }
+
+    @Override
+    public void onLoaderReset(Loader<Cursor> loader) {
+        //ignore
+    }
+
+    public void newAchievementUnlocked(long newAchievements) {
+        currentAchievements |= newAchievements;
+        if (achievementsDatabaseRef != null) {
+            achievementsDatabaseRef.child(getWakatimeUid()).setValue(currentAchievements);
+            bindHeaderViews();
+        }
+    }
+
+    private void onAchievementsLoaded() {
+        if (mutex.get() == 2) {
+            currentAchievements |= newAchievements;
+            if (!appUsageAchievementsChecked) {
+                newAchievements = AchievementsUtils.checkUsageAchievements(CacheUtils.getConsecutiveDays(this));
+                currentAchievements |= newAchievements;
+            }
+            achievementsDatabaseRef.child(getWakatimeUid()).setValue(currentAchievements);
+            bindHeaderViews();
+        }
+    }
 }
+

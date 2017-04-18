@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="utf-8"?>
+<appwidget-provider
+	xmlns:android="http://schemas.android.com/apk/res/android"
+	android:initialLayout="@layout/performance_widget"
+	android:minHeight="@dimen/widget_height"
+	android:minResizeHeight="@dimen/widget_height"
+	android:minResizeWidth="@dimen/widget_resize_width"
+	android:minWidth="@dimen/widget_min_width"
+	android:resizeMode="horizontal"
+	android:updatePeriodMillis="@integer/widget_update_millis"
+	android:widgetCategory="home_screen">
+</appwidget-provider>

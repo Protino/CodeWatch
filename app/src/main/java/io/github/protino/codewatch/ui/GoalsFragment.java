@@ -48,6 +48,7 @@ import io.github.protino.codewatch.remote.FetchWakatimeData;
 import io.github.protino.codewatch.ui.adapter.GoalsAdapter;
 import io.github.protino.codewatch.ui.dialog.AddGoalFragment;
 import io.github.protino.codewatch.utils.CacheUtils;
+import io.github.protino.codewatch.utils.Constants;
 import timber.log.Timber;
 
 import static io.github.protino.codewatch.utils.Constants.LANGUAGE_GOAL;
@@ -271,6 +272,9 @@ public class GoalsFragment extends Fragment implements
         }
         goalsAdapter.addItem(goalItem);
         goalsDatabaseReference.child(goalItem.getUid()).setValue(goalItem);
+
+        //set on track achievement
+        ((NavigationDrawerActivity) getActivity()).newAchievementUnlocked(1L << Constants.FOCUSED);
     }
 
     private void hideProgressBar(Boolean hide) {

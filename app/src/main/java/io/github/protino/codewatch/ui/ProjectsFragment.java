@@ -234,7 +234,7 @@ public class ProjectsFragment extends Fragment implements SearchView.OnQueryText
     public void sortData() {
         Collections.sort(projectItemList,
                 sortByName.isChecked() ? new NameComparator() : new TimeComparator());
-        projectsAdapter.notifyDataSetChanged();
+        projectsAdapter.swapData(projectItemList);
     }
 
     private void initializeData() {

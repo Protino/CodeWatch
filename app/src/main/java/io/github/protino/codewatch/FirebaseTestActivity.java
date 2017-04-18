@@ -45,8 +45,6 @@ import io.github.protino.codewatch.sync.WakatimeDataSyncJob;
 import io.github.protino.codewatch.utils.Constants;
 import timber.log.Timber;
 
-import static io.github.protino.codewatch.utils.Constants.PREF_WAKATIME_DATA_UPDATED;
-
 public class FirebaseTestActivity extends AppCompatActivity {
 
     private static final String ANONYMOUS = "ANONYMOUS";
@@ -193,15 +191,11 @@ public class FirebaseTestActivity extends AppCompatActivity {
     }
 
     public void fetchData(View view) {
-        SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(this);
-        if (sharedPreferences.getString(PREF_WAKATIME_DATA_UPDATED, null) != null) {
-            new FetchWakatimeDataTask(this).execute();
-        }
     }
 
     public void transform(View view) {
         SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(this);
-        String data = sharedPreferences.getString(PREF_WAKATIME_DATA_UPDATED, null);
+        String data = null;
         WakatimeDataWrapper wakatimeDataWrapper = new Gson().fromJson(data, WakatimeDataWrapper.class);
 
         User user = new User();
@@ -387,7 +381,6 @@ public class FirebaseTestActivity extends AppCompatActivity {
             Gson gson = new Gson();
             String dataString = gson.toJson(wakatimeDataWrapper);
             Timber.i("Data converted");
-            editor.putString(Constants.PREF_WAKATIME_DATA_UPDATED, dataString);
             editor.commit();
             Timber.i("Service completed successfully");
             return null;

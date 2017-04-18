@@ -2,12 +2,14 @@ package io.github.protino.codewatch;
 
 import android.app.Application;
 
+import com.google.android.gms.ads.MobileAds;
 import com.google.firebase.database.FirebaseDatabase;
 
+import io.github.protino.codewatch.utils.CacheUtils;
 import timber.log.Timber;
 
 /**
- * Created by Gurupad Mamadapur on 11-03-2017.
+ * @author Gurupad Mamadapur
  */
 
 public class App extends Application {
@@ -20,6 +22,9 @@ public class App extends Application {
             Timber.plant(new Timber.DebugTree());
         }
         FirebaseDatabase.getInstance().setPersistenceEnabled(true);
+        MobileAds.initialize(getApplicationContext(),getString(R.string.banner_ad_unit_id));
+
+        CacheUtils.updateAppUsage(this);
     }
-//Lifecycle end
+    //Lifecycle end
 }

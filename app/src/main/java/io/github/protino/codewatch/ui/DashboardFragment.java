@@ -34,6 +34,8 @@ import com.github.mikephil.charting.data.PieEntry;
 import com.github.mikephil.charting.formatter.IAxisValueFormatter;
 import com.github.mikephil.charting.highlight.Highlight;
 import com.github.mikephil.charting.listener.OnChartValueSelectedListener;
+import com.google.android.gms.ads.AdRequest;
+import com.google.android.gms.ads.AdView;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
@@ -106,6 +108,8 @@ public class DashboardFragment extends ChartFragment implements SwipeRefreshLayo
     @BindView(R.id.expand_piechart_os) public ImageView expandOs;
     @BindView(R.id.list_os) public RecyclerView osListview;
 
+    @BindView(R.id.adView) public AdView adView;
+
     @BindView(R.id.swipe_refresh) public SwipeRefreshLayout swipeRefreshLayout;
     @BindArray(R.array.chart_colors) public int[] chartColors;
 
@@ -139,6 +143,9 @@ public class DashboardFragment extends ChartFragment implements SwipeRefreshLayo
         setUpActivityChart();
         setListeners();
         swipeRefreshLayout.setRefreshing(true);
+
+        AdRequest adRequest = new AdRequest.Builder().build();
+        adView.loadAd(adRequest);
         return rootView;
     }
 
@@ -209,19 +216,19 @@ public class DashboardFragment extends ChartFragment implements SwipeRefreshLayo
     }
 
     private void setUpPerformanceBar() {
-        final float todaysTotalSeconds = stats.getTodaysTotalSeconds();
-        final float currentDailyAverage = stats.getDailyAverageSeconds();
+        final int todaysTotalSeconds = stats.getTodaysTotalSeconds();
+        final float dailyAverage = stats.getDailyAverageSeconds();
 
-        final float todayLogPercent = (todaysTotalSeconds / currentDailyAverage) * 100f;
+        final float todayLogPercent = (todaysTotalSeconds / dailyAverage) * 100f;
 
-        performanceBarView.setGoal(currentDailyAverage);
         performanceBarView.setProgress(todaysTotalSeconds);
+        performanceBarView.setGoal(dailyAverage);
 
         dailyAverageText.setText(context.getString(R.string.daily_average_format,
-                FormatUtils.getFormattedTime(context, (int) currentDailyAverage)));
+                FormatUtils.getFormattedTime(context, (int) dailyAverage)));
         todaysLogPercentText.setText(context.getString(R.string.todays_log_percent_text, todayLogPercent));
         todaysLogTimeText.setText(context.getString(R.string.todays_total_log_time,
-                FormatUtils.getFormattedTime(context, (int) todaysTotalSeconds)));
+                FormatUtils.getFormattedTime(context, todaysTotalSeconds)));
     }
 
     private void setUpActivityChart() {
@@ -255,7 +262,6 @@ public class DashboardFragment extends ChartFragment implements SwipeRefreshLayo
         leftAxis.setTextColor(Color.WHITE);
         leftAxis.setAxisLineColor(Color.WHITE);
 
-        //-7 because x entry starts from 1 and not 0
         long referenceTime = new DateTime().plusDays(-7).getMillis();
         XAxis xAxis = lineChart.getXAxis();
         xAxis.setPosition(XAxis.XAxisPosition.BOTTOM);
@@ -340,10 +346,18 @@ public class DashboardFragment extends ChartFragment implements SwipeRefreshLayo
     }
 
     private Map<String, List<Entry>> transformProjectData(List<Map<String, Integer>> pairList) {
-        Map<String, List<Entry>> listMap = new HashMap<>();
-        Map<String, Integer> timeSpentMap = new HashMap<>();
+        final Map<String, List<Entry>> listMap = new HashMap<>();
+        final Map<String, Integer> timeSpentMap = new HashMap<>();
+
+        /*
+         When on a holiday or zero seconds have been logged
+         pairList does not contain sequential indices */
+
         for (int i = 0; i < pairList.size(); i++) {
             Map<String, Integer> map = pairList.get(i);
+            if (map == null) {
+                continue;
+            }
             for (Map.Entry<String, Integer> entry : map.entrySet()) {
                 List<Entry> totalSeconds = listMap.get(entry.getKey());
                 if (totalSeconds != null) {

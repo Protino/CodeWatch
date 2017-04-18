@@ -34,7 +34,6 @@ import io.github.protino.codewatch.R;
 import io.github.protino.codewatch.model.BadgeItem;
 import io.github.protino.codewatch.ui.adapter.AchievementsAdapter;
 import io.github.protino.codewatch.utils.CacheUtils;
-import timber.log.Timber;
 
 import static io.github.protino.codewatch.utils.AchievementsUtils.createBadgeItems;
 import static io.github.protino.codewatch.utils.AchievementsUtils.getUnlockedAchievements;
@@ -151,7 +150,6 @@ public class AchievementFragment extends Fragment {
                     unlockedAchievementsList = getUnlockedAchievements(currentAchievements);
                     badgeItemList = loadData();
                     achievementsAdapter.swapData(badgeItemList);
-                    Timber.d(unlockedAchievementsList.toString());
                 }
 
                 @Override

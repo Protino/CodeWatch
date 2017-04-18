@@ -292,7 +292,6 @@ public class PerformanceBarView extends View {
     public void setBarBorderColor(int barBorderColor) {
         this.barBorderColor = barBorderColor;
         invalidateAndRequest();
-
     }
 
     /**
@@ -383,6 +382,7 @@ public class PerformanceBarView extends View {
     public void setGoal(float goal) {
         this.goal = goal;
         calculateChange();
+        progressBarRight = getWidth() * (change / 100) - barBorderThickness - getPaddingRight();
         invalidateAndRequest();
     }
 
@@ -396,6 +396,7 @@ public class PerformanceBarView extends View {
     public void setProgress(float progress) {
         this.progress = progress;
         calculateChange();
+        progressBarRight = getWidth() * (change / 100) - barBorderThickness - getPaddingRight();
         invalidateAndRequest();
     }
 

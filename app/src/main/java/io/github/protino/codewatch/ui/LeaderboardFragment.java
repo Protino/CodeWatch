@@ -13,6 +13,7 @@ import android.database.Cursor;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
+import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -61,7 +62,7 @@ import timber.log.Timber;
  */
 
 public class LeaderboardFragment extends Fragment implements DialogInterface.OnShowListener,
-        LoaderManager.LoaderCallbacks<Cursor>, LeadersAdapter.OnItemSelectedListener {
+        LoaderManager.LoaderCallbacks<Cursor>, LeadersAdapter.OnItemSelectedListener, SwipeRefreshLayout.OnRefreshListener {
 
 
     private static final int LOADER_ID = 100;
@@ -69,7 +70,7 @@ public class LeaderboardFragment extends Fragment implements DialogInterface.OnS
     @BindView(R.id.leaders_list) RecyclerView recyclerView;
     @BindArray(R.array.languages) String[] validLanguages;
     @BindView(R.id.error_text) TextView errorText;
-    @BindView(R.id.progressBarLayout) View progressBarLayout;
+    @BindView(R.id.swipe_refresh) SwipeRefreshLayout swipeRefreshLayout;
     //@formatter:on
 
     private Dialog dialog;
@@ -102,6 +103,7 @@ public class LeaderboardFragment extends Fragment implements DialogInterface.OnS
         context = getActivity();
         filterState = new FilterState();
 
+
         leadersAdapter = new LeadersAdapter(context, new ArrayList<>());
         leadersAdapter.setOnItemSelectedListener(this);
 
@@ -118,7 +120,7 @@ public class LeaderboardFragment extends Fragment implements DialogInterface.OnS
         dialog = builder.create();
         dialog.setOnShowListener(this);
         loadResultsFromProvider();
-
+        swipeRefreshLayout.setOnRefreshListener(this);
         return rootView;
     }
 
@@ -138,9 +140,6 @@ public class LeaderboardFragment extends Fragment implements DialogInterface.OnS
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
-            case R.id.load:
-                new StoreToDbTask(context).execute();
-                return true;
             case R.id.find_me:
                 //get current user id
                 String sampleId = "5c93d61f-b71b-4406-8e34-f86755d5df18";
@@ -247,11 +246,11 @@ public class LeaderboardFragment extends Fragment implements DialogInterface.OnS
     }
 
     private void loadFilteredChanges() {
-        hideProgressBar(false);
+        swipeRefreshLayout.setRefreshing(true);
         if (filterState.getCurrentFilterLanguage().equals(FilterState.EMPTY)) {
             //change adapter data to use normal data
             leadersAdapter.swapData(buildDataItems(defaultLeaderItems));
-            hideProgressBar(true);
+            swipeRefreshLayout.setRefreshing(false);
             setActionBarTitle("Leaderboard");
             return;
         }
@@ -266,7 +265,7 @@ public class LeaderboardFragment extends Fragment implements DialogInterface.OnS
         if (itemList.size() >= LeadersAdapter.TOPPER_VIEW_THRESHOLD) {
             TopperItem topperItem = new TopperItem(itemList.subList(0, 3));
             resultList.add(topperItem);
-            resultList.addAll(itemList.subList(4, itemList.size()));
+            resultList.addAll(itemList.subList(3, itemList.size()));
         } else {
             resultList.addAll(itemList);
         }
@@ -279,15 +278,8 @@ public class LeaderboardFragment extends Fragment implements DialogInterface.OnS
         filteredLeaderItems = new ArrayList<>();
     }
 
-    public void hideProgressBar(boolean hide) {
-        recyclerView.setVisibility(hide ? View.VISIBLE : View.GONE);
-        progressBarLayout.setVisibility(hide ? View.GONE : View.VISIBLE);
-        errorText.setVisibility(View.GONE);
-    }
-
     public void displayErrorText(String text) {
-        recyclerView.setVisibility(View.GONE);
-        progressBarLayout.setVisibility(View.GONE);
+        swipeRefreshLayout.setVisibility(View.GONE);
         errorText.setText(text);
         errorText.setVisibility(View.VISIBLE);
     }
@@ -301,6 +293,11 @@ public class LeaderboardFragment extends Fragment implements DialogInterface.OnS
         Intent intent = new Intent(context, ProfileActivity.class);
         intent.putExtra(Intent.EXTRA_TEXT, userId);
         startActivity(intent);
+    }
+
+    @Override
+    public void onRefresh() {
+        new StoreToDbTask(context).execute();
     }
 
     private class FilterState {
@@ -340,7 +337,7 @@ public class LeaderboardFragment extends Fragment implements DialogInterface.OnS
 
         @Override
         protected void onPreExecute() {
-            hideProgressBar(false);
+            swipeRefreshLayout.setRefreshing(true);
             super.onPreExecute();
         }
 
@@ -388,7 +385,7 @@ public class LeaderboardFragment extends Fragment implements DialogInterface.OnS
         protected void onPostExecute(List<Object> result) {
             //notify changes to the adapter
             leadersAdapter.swapData(result);
-            hideProgressBar(true);
+            swipeRefreshLayout.setRefreshing(false);
             setActionBarTitle("Leaderboard");
         }
     }
@@ -430,7 +427,7 @@ public class LeaderboardFragment extends Fragment implements DialogInterface.OnS
                 displayErrorText(context.getString(R.string.empty_leaderboard, filterLanguage));
             } else {
                 leadersAdapter.swapData(result);
-                hideProgressBar(true);
+                swipeRefreshLayout.setRefreshing(false);
                 recyclerView.scrollToPosition(0);
             }
         }
@@ -446,7 +443,7 @@ public class LeaderboardFragment extends Fragment implements DialogInterface.OnS
         @Override
         protected void onPreExecute() {
             super.onPreExecute();
-            hideProgressBar(false);
+            swipeRefreshLayout.setRefreshing(true);
         }
 
         @Override
@@ -460,10 +457,10 @@ public class LeaderboardFragment extends Fragment implements DialogInterface.OnS
         protected void onPostExecute(Boolean result) {
             super.onPostExecute(result);
             if (result) {
-                loadResultsFromProvider();
+                //loadResultsFromProvider();
             } else {
-                hideProgressBar(true);
-                displayErrorText("Network error"); //Display message appropriate to the result code
+                swipeRefreshLayout.setRefreshing(true);
+                displayErrorText(context.getString(R.string.internet_error_message)); //Display message appropriate to the result code
             }
         }
     }

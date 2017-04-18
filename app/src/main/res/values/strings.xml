@@ -2,9 +2,8 @@
 	<string name="app_name">CodeWatch</string>
 
 	<!-- Related to login-->
-	<string name="LOGIN_HOST">callback</string>
-	<string name="APP_SCHEME">codewatch</string>
-	<string name="PROFILE_HOST">profile</string>
+	<string name="login_host">callback</string>
+	<string name="app_scheme">codewatch</string>
 
 	<string name="drawer_close">Close drawer</string>
 	<string name="drawer_open">Open drawer</string>
@@ -18,28 +17,28 @@
 
 	<string name="CD_PROGRESS">
 		You\'ve logged
-		<xliff:g example="2" name="quantity">%.2f</xliff:g>%% of your daily average.
+		<xliff:g name="quantity" example="2">%.2f</xliff:g>%% of your daily average.
 	</string>
 	<string name="performance_title">Performance</string>
 	<string name="default_time_format">
-		<xliff:g example="7" name="hours">%1$d</xliff:g> h
-		<xliff:g example="10" name="minutes">%2$d</xliff:g> m
+		<xliff:g name="hours" example="7">%1$d</xliff:g>h
+		<xliff:g name="minutes" example="10">%2$d</xliff:g>m
 	</string>
 	<string name="daily_average_format">
 		Daily average -
-		<xliff:g example="3 h 5 m" name="time">%s</xliff:g>
+		<xliff:g name="time" example="3h 5m">%s</xliff:g>
 		<!-- above format is dependent on default_time_format-->
 	</string>
 	<string name="todays_log_percent_text">
 		Today you logged
-		<xliff:g example="45.32" name="quantity">%.2f</xliff:g>
+		<xliff:g name="quantity" example="45.32">%.2f</xliff:g>
 		%% of your daily average.
 	</string>
 	<string name="todays_total_log_time">
-		You coded for <xliff:g example="7 h 5 m" name="time">%s</xliff:g> today.
+		You coded for <xliff:g name="time" example="7h 5m">%s</xliff:g> today.
 	</string>
 	<string name="total_project_time">
-		You spent <xliff:g example="7 h 5 m" name="time">%s</xliff:g> on this project over a week.
+		You spent <xliff:g name="time" example="7h 5m">%s</xliff:g> on this project over a week.
 	</string>
 	<string name="card_languages_header">Languages</string>
 	<string name="card_editors_header">Editors</string>
@@ -47,11 +46,11 @@
 	<string name="percent_format"><xliff:g name="percent">%.2f</xliff:g>%%</string>
 	<string name="language_goal">
 		Code in <xliff:g name="name">%1$s</xliff:g> for
-		<xliff:g example="3 hrs 5 min" name="time">%2$d</xliff:g> h daily.
+		<xliff:g name="time" example="3">%2$d</xliff:g> h daily.
 	</string>
 	<string name="project_deadline_goal">
 		Finish <xliff:g name="project_name">%1$s</xliff:g> by
-		<xliff:g example="4 Jun" name="date">%2$s</xliff:g>. <!-- Don't worry date is translated -->
+		<xliff:g name="date" example="4 Jun">%2$s</xliff:g>. <!-- Don't worry date is translated -->
 	</string>
 	<string name="project_daily_goal">
 		Spend <xliff:g name="time">%1$d</xliff:g> h on
@@ -81,7 +80,7 @@
 	</string-array>
 
 	<!-- bar chart -->
-	<string name="hours">%d h</string>
+	<string name="hours">%dh</string>
 	<string name="goal">Goal</string>
 	<string name="deadline_reached">Deadline reached</string>
 	<string name="marker_text">
@@ -106,7 +105,7 @@
 	<string name="menu_sort_by_name_title">By name</string>
 	<string name="menu_search_title">Search</string>
 	<string name="search_hint">Search by project name…</string>
-	<string name="seconds">%d s</string>
+	<string name="seconds">%ds</string>
 	<string name="menu_sort_by_locked">By locked</string>
 	<string name="menu_sort_by_unlocked">By unlocked</string>
 	<string name="pref_notification_title">Notifications</string>
@@ -114,7 +113,7 @@
 	<string name="pref_leaderboard_changes">Leaderboard changes</string>
 	<string name="logout">Logout</string>
 	<string name="about">About</string>
-	<string name="developed_by">Developed %s</string>
+	<string name="developed_by">Developed by Gurupad Mamadapur</string>
 	<string name="powered_by">Powered by <a href="https://wakatime.com">WakaTime</a></string>
 	<string name="pref_about_key" translatable="false">about</string>
 	<string name="pref_logout_key" translatable="false">logout</string>
@@ -131,4 +130,34 @@
 	<string name="share_error">Sorry couldn\'t share the image</string>
 	<string name="stats_updating_error_message">Your stats are being calculated</string>
 	<string name="loading_goal_details">Loading goal details…</string>
+	<string name="confirm_mail">Please confirm you email</string>
+	<string name="goals_reminder">Goals reminder</string>
+	<string name="finish_project_today">Finish %s today.</string>
+	<string name="finish_project_within">
+		Finish <xliff:g id="projectName">%1$s</xliff:g> within
+		<xliff:g id="days">%2$d</xliff:g> day/s.
+	</string>
+	<string name="leaderboard_notification_text">
+		Position <xliff:g id="rank">%1$d</xliff:g> on the leaderboard
+		today with daily average of <xliff:g id="average">%2$s</xliff:g>.
+	</string>
+	<string name="app_share_text">Check out CodeWatch, an awesome productivity app that tracks your coding activity and makes you an effective programmer! - [app link]</string>
+	<string name="unknown_error_message">Unkown error occured</string>
+	<string name="settings_title">Settings</string>
+	<string name="projects_title">Projects</string>
+	<string name="leaderboards_title">Leaderboards</string>
+	<string name="achievements_title">Achievements</string>
+	<string name="goals_title">Goals</string>
+	<string name="dashboard_title">Dashboard</string>
+	<string name="category_fragment">fragment</string>
+	<string name="update_required">Update app</string>
+	<string name="app_update_message">Please update the app in order to use the application</string>
+	<string name="update">Update</string>
+
+	<string name="progress_description">
+		<xliff:g example="70">%.2f</xliff:g>%% of daily average coded.
+	</string>
+
+	<!-- AdMob id -->
+	<string name="banner_ad_unit_id">ca-app-pub-3940256099942544/6300978111</string>
 </resources>

@@ -3,4 +3,9 @@
 	<dimen name="navigation_drawer_width">320dp</dimen>
 	<dimen name="chart_default_height">300dp</dimen>
 	<dimen name="pie_chart_default_height">300dp</dimen>
+	<dimen name="progress_bar_height">22dp</dimen>
+	<dimen name="widget_height">40dp</dimen>
+	<dimen name="widget_resize_width">180dp</dimen>
+	<dimen name="widget_min_width">250dp</dimen>
+	<dimen name="appbar_elevation">4dp</dimen>
 </resources>
