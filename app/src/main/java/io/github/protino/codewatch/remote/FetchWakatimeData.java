@@ -1,5 +1,6 @@
 package io.github.protino.codewatch.remote;
 
+import android.annotation.SuppressLint;
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.preference.PreferenceManager;
@@ -53,6 +54,7 @@ public class FetchWakatimeData {
         setDates();
     }
 
+    @SuppressLint("SimpleDateFormat")
     private void setDates() {
         Calendar calendar = Calendar.getInstance();
         SimpleDateFormat simpleDateFormat = new SimpleDateFormat(dateFormat);
@@ -129,8 +131,7 @@ public class FetchWakatimeData {
 
     public Integer getTodaysTotalSeconds() throws IOException {
         GenericSummaryResponse response = apiInterface.getSummary(yesterday, endDate).execute().body();
-        int todaysTotalSeconds = response.getData().get(1).getGrandTotal().getTotalSeconds();
-        return todaysTotalSeconds;
+        return response.getData().get(1).getGrandTotal().getTotalSeconds();
     }
 
     /*

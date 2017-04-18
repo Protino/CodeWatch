@@ -201,7 +201,7 @@ public class ProjectDetailsFragment extends ChartFragment {
         ArrayList<BarEntry> barEntries = new ArrayList<>(progressSoFar.size());
 
         DateTime dateTime = new DateTime();
-        referenceTime = dateTime.plusDays(-6).getMillis();
+        referenceTime = dateTime.minusDays(7).getMillis();
         int totalSeconds = 0;
         for (int i = 0; i < progressSoFar.size(); i++) {
             int progress = progressSoFar.get(i);

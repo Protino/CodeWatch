@@ -307,6 +307,10 @@ public class GoalsFragment extends Fragment implements
                 int i = 0;
                 start = System.currentTimeMillis();
                 for (GenericSummaryData data : dataList) {
+                    if (data.getLanguages() == null || data.getLanguages().size() == 0) {
+                        timeSpentList.add(i++, 0);
+                        continue;
+                    }
                     for (Language language : data.getLanguages()) {
                         if (language.getName().equals(languageName)) {
                             timeSpentList.add(i++, language.getTotalSeconds());
