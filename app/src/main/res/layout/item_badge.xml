@@ -21,6 +21,8 @@
 		android:layout_width="0dp"
 		android:layout_height="wrap_content"
 		android:layout_gravity="center_vertical|end"
+		android:layout_marginLeft="8dp"
+		android:layout_marginStart="8dp"
 		android:layout_weight="1"
 		android:textColor="@color/white_1000"
 		tools:text="Use CodeWatch for more than 10 days"/>

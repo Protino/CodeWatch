@@ -5,6 +5,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
+import android.support.design.widget.Snackbar;
 import android.support.v4.view.MenuItemCompat;
 import android.support.v7.widget.DividerItemDecoration;
 import android.support.v7.widget.LinearLayoutManager;
@@ -33,6 +34,7 @@ import java.util.concurrent.atomic.AtomicInteger;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
+import butterknife.Unbinder;
 import icepick.Icepick;
 import icepick.State;
 import io.github.protino.codewatch.R;
@@ -40,6 +42,7 @@ import io.github.protino.codewatch.model.ProjectItem;
 import io.github.protino.codewatch.model.firebase.Project;
 import io.github.protino.codewatch.ui.adapter.ProjectsAdapter;
 import io.github.protino.codewatch.utils.CacheUtils;
+import io.github.protino.codewatch.utils.NetworkUtils;
 
 /**
  * @author Gurupad Mamadapur
@@ -68,6 +71,8 @@ public class ProjectsFragment extends Fragment implements SearchView.OnQueryText
     private ValueEventListener projectValueEventListener;
     private ValueEventListener timeSpentValueEventListner;
     private HashMap<String, Long> timeSpentMap;
+    private View rootView;
+    private Unbinder unbinder;
 
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
@@ -86,10 +91,10 @@ public class ProjectsFragment extends Fragment implements SearchView.OnQueryText
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
 
-        Icepick.restoreInstanceState(this,savedInstanceState);
+        Icepick.restoreInstanceState(this, savedInstanceState);
 
-        View rootView = inflater.inflate(R.layout.fragment_projects, container, false);
-        ButterKnife.bind(this, rootView);
+        rootView = inflater.inflate(R.layout.fragment_projects, container, false);
+        unbinder = ButterKnife.bind(this, rootView);
         hideProgressBar(false);
         context = getActivity();
         if (savedInstanceState == null) {
@@ -121,6 +126,12 @@ public class ProjectsFragment extends Fragment implements SearchView.OnQueryText
     public void onPause() {
         detachValueEventListener();
         super.onPause();
+    }
+
+    @Override
+    public void onDestroyView() {
+        unbinder.unbind();
+        super.onDestroyView();
     }
 
     @Override
@@ -273,6 +284,10 @@ public class ProjectsFragment extends Fragment implements SearchView.OnQueryText
 
     @Override
     public void onItemSelected(String projectName) {
+        if (!NetworkUtils.isNetworkUp(context)) {
+            Snackbar.make(rootView, R.string.internet_error_message, Snackbar.LENGTH_LONG).show();
+            return;
+        }
         Intent intent = new Intent(getActivity(), ProjectDetailActivity.class);
         intent.putExtra(Intent.EXTRA_TEXT, projectName);
         getActivity().startActivity(intent);

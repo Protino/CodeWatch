@@ -19,6 +19,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Toast;
 
+import com.google.firebase.crash.FirebaseCrash;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
@@ -53,6 +54,7 @@ import io.github.protino.codewatch.ui.adapter.GoalsAdapter;
 import io.github.protino.codewatch.ui.dialog.AddGoalFragment;
 import io.github.protino.codewatch.utils.CacheUtils;
 import io.github.protino.codewatch.utils.Constants;
+import io.github.protino.codewatch.utils.NetworkUtils;
 import timber.log.Timber;
 
 import static io.github.protino.codewatch.utils.Constants.LANGUAGE_GOAL;
@@ -265,6 +267,11 @@ public class GoalsFragment extends Fragment implements
 
     @Override
     public void onGoalItemClicked(GoalItem goalItem) {
+        if (!NetworkUtils.isNetworkUp(context)) {
+            displayInternetErrorSnackBar();
+            return;
+        }
+
         goalDetailProgressDialog = new ProgressDialog(context);
         goalDetailProgressDialog.setMessage(context.getString(R.string.loading_goal_details));
         goalDetailProgressDialog.setCancelable(false);
@@ -331,6 +338,10 @@ public class GoalsFragment extends Fragment implements
         deleteGoalItem(goalItem.getUid());
     }
 
+    private void displayInternetErrorSnackBar() {
+        Snackbar.make(rootView, R.string.internet_error_message, Snackbar.LENGTH_LONG).show();
+    }
+
     private class FetchTimeSpentOnLanguageTask extends AsyncTask<Void, Void, List<Integer>> {
 
         private GoalItem goalItem;
@@ -364,7 +375,10 @@ public class GoalsFragment extends Fragment implements
                 Timber.d("Parse time - " + (System.currentTimeMillis() - start));
                 return timeSpentList;
             } catch (IOException e) {
-                Timber.e(e);
+                FirebaseCrash.report(e);
+                return null;
+            } catch (Exception e) {
+                FirebaseCrash.report(e);
                 return null;
             }
         }
@@ -380,6 +394,7 @@ public class GoalsFragment extends Fragment implements
                 onGoalDetailsDownloaded(gsonData, goalItem);
             } else {
                 goalDetailProgressDialog.dismiss();
+                displayInternetErrorSnackBar();
             }
         }
     }
@@ -404,19 +419,27 @@ public class GoalsFragment extends Fragment implements
                 }
                 return timeSpentList;
             } catch (IOException e) {
-                e.printStackTrace();
+                FirebaseCrash.report(e);
+                return null;
+            } catch (Exception e) {
+                FirebaseCrash.report(e);
                 return null;
             }
         }
 
         @Override
         protected void onPostExecute(List<Integer> list) {
-            ProjectGoal projectGoal = new ProjectGoal();
-            projectGoal.setProjectName(goalItem.getName());
-            projectGoal.setDaily((int) goalItem.getData());
-            projectGoal.setProgressSoFar(list);
-            String dataString = new Gson().toJson(projectGoal, ProjectGoal.class);
-            onGoalDetailsDownloaded(dataString, goalItem);
+            if (list != null) {
+                ProjectGoal projectGoal = new ProjectGoal();
+                projectGoal.setProjectName(goalItem.getName());
+                projectGoal.setDaily((int) goalItem.getData());
+                projectGoal.setProgressSoFar(list);
+                String dataString = new Gson().toJson(projectGoal, ProjectGoal.class);
+                onGoalDetailsDownloaded(dataString, goalItem);
+            } else {
+                displayInternetErrorSnackBar();
+                goalDetailProgressDialog.dismiss();
+            }
         }
     }
 }

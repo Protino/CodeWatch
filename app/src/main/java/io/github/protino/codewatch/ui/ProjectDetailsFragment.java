@@ -8,6 +8,7 @@ import android.graphics.drawable.Drawable;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
+import android.support.design.widget.Snackbar;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.widget.RecyclerView;
 import android.util.SparseBooleanArray;
@@ -15,6 +16,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
+import android.widget.ScrollView;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -32,6 +34,7 @@ import com.github.mikephil.charting.data.PieEntry;
 import com.github.mikephil.charting.formatter.IAxisValueFormatter;
 import com.github.mikephil.charting.highlight.Highlight;
 import com.github.mikephil.charting.listener.OnChartValueSelectedListener;
+import com.google.firebase.crash.FirebaseCrash;
 
 import org.joda.time.DateTime;
 
@@ -75,11 +78,13 @@ public class ProjectDetailsFragment extends ChartFragment {
     @BindView(R.id.piechart_languages) public PieChart pieChartLanguages;
     @BindView(R.id.expand_piechart_language) public ImageView expandLanguages;
     @BindView(R.id.list_languages) public RecyclerView languagesListview;
+    @State public Float languageHighlightedEntryX = null;
 
     //editors
     @BindView(R.id.piechart_editors) public PieChart pieChartEditors;
     @BindView(R.id.expand_piechart_editors) public ImageView expandEditors;
     @BindView(R.id.list_editors) public RecyclerView editorsListView;
+    @State public Float editorHighlightedEntryX = null;
 
     //os
     @BindView(R.id.piechart_os) public PieChart pieChartOs;
@@ -87,10 +92,15 @@ public class ProjectDetailsFragment extends ChartFragment {
     @BindView(R.id.list_os) public RecyclerView osListview;
     @BindArray(R.array.chart_colors) public int[] chartColors;
     @BindColor(R.color.blue_400) public int blue400;
+    @State public Float osHighlightedEntryX = null;
+
     @State(ProjectBundler.class) public Project project;
     @State public String projectName;
+    @State public Integer scrollPosition;
+
 
     @BindView(R.id.content) View content;
+    @BindView(R.id.scroll_view) ScrollView scrollView;
     @BindView(R.id.progressBarLayout) View progressBarLayout;
     @BindView(R.id.barchart) BarChart barChart;
     @BindView(R.id.activity_total) TextView activityTotal;
@@ -101,6 +111,7 @@ public class ProjectDetailsFragment extends ChartFragment {
 
     private long referenceTime;
     private Unbinder unbinder;
+    private View rootView;
 
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
@@ -113,7 +124,7 @@ public class ProjectDetailsFragment extends ChartFragment {
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         Icepick.restoreInstanceState(this, savedInstanceState);
-        View rootView = inflater.inflate(R.layout.fragment_project_detail, container, false);
+        rootView = inflater.inflate(R.layout.fragment_project_detail, container, false);
         unbinder = ButterKnife.bind(this, rootView);
         context = getActivity();
         hideProgressBar(false);
@@ -121,12 +132,21 @@ public class ProjectDetailsFragment extends ChartFragment {
         setChartColors(chartColors);
         setContext(context);
 
-        if (savedInstanceState == null) {
+        if (project == null) {
             new FetchProjectDetails().execute(projectName);
         } else {
             hideProgressBar(true);
             displayData();
         }
+        if (scrollPosition != null && scrollView != null) {
+            scrollView.post(new Runnable() {
+                @Override
+                public void run() {
+                    scrollView.scrollTo(0, scrollPosition);
+                }
+            });
+        }
+
         return rootView;
     }
 
@@ -158,6 +178,19 @@ public class ProjectDetailsFragment extends ChartFragment {
         pieChartOs.animateXY(1500, 1500);
 
         setListeners();
+
+        isExpandedMap.clear();
+        if (languageHighlightedEntryX != null) {
+            pieChartLanguages.highlightValue(new Highlight(languageHighlightedEntryX, Float.NaN, 0), true);
+        }
+
+        if (editorHighlightedEntryX != null) {
+            pieChartEditors.highlightValue(new Highlight(editorHighlightedEntryX, Float.NaN, 0), true);
+        }
+
+        if (osHighlightedEntryX != null) {
+            pieChartOs.highlightValue(new Highlight(osHighlightedEntryX, Float.NaN, 0), true);
+        }
     }
 
     private void setUpBarChart() {
@@ -220,6 +253,9 @@ public class ProjectDetailsFragment extends ChartFragment {
     @Override
     public void onSaveInstanceState(Bundle outState) {
         super.onSaveInstanceState(outState);
+        if (scrollView != null) {
+            scrollPosition = scrollView.getScrollY();
+        }
         Icepick.saveInstanceState(this, outState);
     }
 
@@ -377,7 +413,10 @@ public class ProjectDetailsFragment extends ChartFragment {
                 Timber.d("Parse time " + String.valueOf(System.currentTimeMillis() - start));
 
             } catch (IOException e) {
-                e.printStackTrace();
+                FirebaseCrash.report(e);
+                return null;
+            } catch (Exception e) {
+                FirebaseCrash.report(e);
                 return null;
             }
             return project;
@@ -400,8 +439,12 @@ public class ProjectDetailsFragment extends ChartFragment {
         @Override
         protected void onPostExecute(Project result) {
             hideProgressBar(true);
-            project = result;
-            displayData();
+            if (result != null) {
+                project = result;
+                displayData();
+            } else {
+                Snackbar.make(rootView, R.string.internet_error_message, Snackbar.LENGTH_LONG).show();
+            }
         }
     }
 
@@ -424,18 +467,21 @@ public class ProjectDetailsFragment extends ChartFragment {
                     if (!isExpandedMap.get(expandLanguages.getId())) {
                         onExpand(expandLanguages);
                     }
+                    languageHighlightedEntryX = h.getX();
                     resetAdapter(languagesListview, languageListAdapter, ((PieEntry) e).getLabel());
                     break;
                 case OS_CHART_ID:
                     if (!isExpandedMap.get(expandOs.getId())) {
                         onExpand(expandOs);
                     }
+                    osHighlightedEntryX = h.getX();
                     resetAdapter(osListview, osListAdapter, ((PieEntry) e).getLabel());
                     break;
                 case EDITORS_CHART_ID:
                     if (!isExpandedMap.get(expandEditors.getId())) {
                         onExpand(expandEditors);
                     }
+                    editorHighlightedEntryX = h.getX();
                     resetAdapter(editorsListView, editorsListAdapter, ((PieEntry) e).getLabel());
                     break;
                 default: //common code
@@ -447,12 +493,15 @@ public class ProjectDetailsFragment extends ChartFragment {
         public void onNothingSelected() {
             switch (CHART_ID) {
                 case LANGUAGE_CHART_ID:
+                    languageHighlightedEntryX = null;
                     onExpand(expandLanguages);
                     break;
                 case OS_CHART_ID:
+                    osHighlightedEntryX = null;
                     onExpand(expandOs);
                     break;
                 case EDITORS_CHART_ID:
+                    editorHighlightedEntryX = null;
                     onExpand(expandEditors);
                     break;
                 default:

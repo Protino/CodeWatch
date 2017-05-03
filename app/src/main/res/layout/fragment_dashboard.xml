@@ -43,8 +43,6 @@
 						android:layout_width="match_parent"
 						android:layout_height="match_parent"
 						android:paddingBottom="16dp"
-						android:paddingEnd="16dp"
-						android:paddingStart="16dp"
 						android:paddingTop="8dp">
 
 						<TextView
@@ -53,6 +51,8 @@
 							android:layout_width="wrap_content"
 							android:layout_height="wrap_content"
 							android:paddingBottom="16dp"
+							android:paddingEnd="16dp"
+							android:paddingStart="16dp"
 							android:paddingTop="8dp"
 							android:text="@string/card_activity_header"/>
 
@@ -64,7 +64,10 @@
 							android:layout_alignParentRight="true"
 							android:background="?attr/selectableItemBackgroundBorderless"
 							android:clickable="true"
-							android:padding="8dp"
+							android:paddingBottom="8dp"
+							android:paddingEnd="16dp"
+							android:paddingStart="16dp"
+							android:paddingTop="8dp"
 							android:src="@drawable/ic_share_white_24dp"/>
 
 						<com.github.mikephil.charting.charts.LineChart
@@ -79,6 +82,8 @@
 							android:layout_height="wrap_content"
 							android:layout_below="@id/linechart_activity"
 							android:gravity="center"
+							android:paddingEnd="16dp"
+							android:paddingStart="16dp"
 							android:paddingTop="16dp"
 							tools:text="Coded 45 hrs in total this week"/>
 					</RelativeLayout>

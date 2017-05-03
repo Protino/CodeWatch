@@ -2,7 +2,10 @@ package io.github.protino.codewatch.ui;
 
 import android.content.Context;
 import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
+import android.graphics.Canvas;
 import android.graphics.Color;
+import android.graphics.Paint;
 import android.graphics.drawable.Drawable;
 import android.os.AsyncTask;
 import android.os.Bundle;
@@ -144,16 +147,6 @@ public class DashboardFragment extends ChartFragment implements SwipeRefreshLayo
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setRetainInstance(true);
-        Icepick.restoreInstanceState(this, savedInstanceState);
-
-        if (scrollPosition != null && scrollView != null) {
-            scrollView.post(new Runnable() {
-                @Override
-                public void run() {
-                    scrollView.scrollTo(0, scrollPosition);
-                }
-            });
-        }
     }
 
     @Override
@@ -171,6 +164,8 @@ public class DashboardFragment extends ChartFragment implements SwipeRefreshLayo
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, Bundle savedInstanceState) {
         rootView = inflater.inflate(R.layout.fragment_dashboard, container, false);
         ButterKnife.bind(this, rootView);
+        Icepick.restoreInstanceState(this, savedInstanceState);
+
         context = getActivity();
         setContext(context);
         setChartColors(chartColors);
@@ -188,6 +183,15 @@ public class DashboardFragment extends ChartFragment implements SwipeRefreshLayo
 
         AdRequest adRequest = new AdRequest.Builder().build();
         adView.loadAd(adRequest);
+
+        if (scrollPosition != null && scrollView != null) {
+            scrollView.post(new Runnable() {
+                @Override
+                public void run() {
+                    scrollView.scrollTo(0, scrollPosition);
+                }
+            });
+        }
         return rootView;
     }
 
@@ -223,13 +227,62 @@ public class DashboardFragment extends ChartFragment implements SwipeRefreshLayo
                 break;
         }
         if (bitmap != null) {
+            //add watermark
+            bitmap = addWaterMark(bitmap);
+
             try {
                 FileProviderUtils.shareBitmap(context, bitmap);
             } catch (IOException e) {
                 Timber.d(e, "IO Error while saving image");
                 Toast.makeText(context, R.string.share_error, Toast.LENGTH_SHORT).show();
             }
+            bitmap.recycle();
         }
+    }
+
+    private Bitmap addWaterMark(Bitmap src) {
+
+        int height = src.getHeight() + UiUtils.dpToPx(32 + 8);
+        int width = src.getWidth();
+
+        Bitmap result = Bitmap.createBitmap(width, height, src.getConfig());
+        Canvas canvas = new Canvas(result);
+        canvas.drawBitmap(src, 0, 0, null);
+
+        int darkGrey = context.getResources().getColor(R.color.grey_900);
+        Bitmap appIcon = BitmapFactory.decodeResource(context.getResources(), R.mipmap.ic_launcher);
+        appIcon = Bitmap.createScaledBitmap(appIcon, UiUtils.dpToPx(32), UiUtils.dpToPx(32), false);
+
+        Paint backgroundPaint = new Paint();
+        backgroundPaint.setColor(Color.WHITE);
+        backgroundPaint.setAntiAlias(true);
+        backgroundPaint.setShadowLayer(6, 2, 2, darkGrey);
+
+        Paint textPaint = new Paint();
+        textPaint.setColor(darkGrey);
+        textPaint.setAntiAlias(true);
+        textPaint.setTextSize(UiUtils.dpToPx(16));
+        textPaint.setFakeBoldText(true);
+
+        Paint appIconPaint = new Paint();
+        appIconPaint.setAntiAlias(true);
+        appIconPaint.setFilterBitmap(true);
+        appIconPaint.setDither(true);
+
+        float srcHeight = src.getHeight();
+        int _4dp = UiUtils.dpToPx(4);
+
+        String watermarkText = context.getString(R.string.app_name);
+        Paint.FontMetrics fontMetrics = textPaint.getFontMetrics();
+        float watermarkTextY = srcHeight + (height - srcHeight) / 2f + (fontMetrics.descent - fontMetrics.ascent) / 2f;
+
+        canvas.drawRect(0, srcHeight, width, height, backgroundPaint);
+        canvas.drawText(watermarkText, (_4dp) * 2 + appIcon.getWidth(), watermarkTextY, textPaint);
+        canvas.drawBitmap(appIcon, _4dp, _4dp + srcHeight, appIconPaint);
+
+        appIcon.recycle();
+        src.recycle();
+        return result;
     }
 
     private void attachValueEventListener() {
@@ -328,6 +381,7 @@ public class DashboardFragment extends ChartFragment implements SwipeRefreshLayo
         lineChart.setPinchZoom(false);
         lineChart.setDoubleTapToZoomEnabled(false);
         lineChart.setDrawBorders(false);
+        lineChart.setExtraOffsets(16, 0, 16, 0);
 
         customMarkerView.setChartView(lineChart);
     }
@@ -367,7 +421,6 @@ public class DashboardFragment extends ChartFragment implements SwipeRefreshLayo
         if (osHighlightedEntryX != null) {
             pieChartOs.highlightValue(new Highlight(osHighlightedEntryX, Float.NaN, 0), true);
         }
-
     }
 
     private void bindActivityChart() {
