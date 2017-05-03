@@ -145,11 +145,9 @@
 	<string name="unknown_error_message">Unkown error occured</string>
 	<string name="settings_title">Settings</string>
 	<string name="projects_title">Projects</string>
-	<string name="leaderboards_title">Leaderboards</string>
 	<string name="achievements_title">Achievements</string>
 	<string name="goals_title">Goals</string>
 	<string name="dashboard_title">Dashboard</string>
-	<string name="category_fragment">fragment</string>
 	<string name="update_required">Update app</string>
 	<string name="app_update_message">Please update the app in order to use the application</string>
 	<string name="update">Update</string>
@@ -160,4 +158,5 @@
 
 	<!-- AdMob id -->
 	<string name="banner_ad_unit_id">ca-app-pub-3940256099942544/6300978111</string>
+	<string name="undo">Undo</string>
 </resources>

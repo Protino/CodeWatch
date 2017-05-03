@@ -62,14 +62,16 @@ public class GoalsDetailFragment extends DialogFragment {
     @BindView(R.id.remainingDays) public TextView remainingDays;
     @BindView(R.id.progressBar) public PerformanceBarView progressBarView;
     @BindView(R.id.goal_chart) public BarChart goalBarChart;
+    @BindView(R.id.toolbar) Toolbar toolbar;
+    @BindView(R.id.status_bar) View statusBar;
+
+    @BindColor(R.color.blue_400) public int blue400;
     @BindColor(R.color.window_background) public int windowColor;
     @BindColor(R.color.green_400) public int green400;
     @BindColor(R.color.red_400) public int red400;
     @BindColor(R.color.colorAccent) public int accentColor;
-    @BindColor(R.color.blue_400) public int blue400;
-    @BindView(R.id.toolbar) Toolbar toolbar;
-    @BindView(R.id.status_bar) View statusBar;
     //@formatter:on
+
     private GoalItem goalItem;
     private int goalType;
     private LanguageGoal languageGoal;
@@ -135,8 +137,8 @@ public class GoalsDetailFragment extends DialogFragment {
 
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
             toolbar.setElevation(context.getResources().getDimension(R.dimen.appbar_elevation));
-            handleStatusBar();
         }
+        handleStatusBar();
         toolbar.setNavigationOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {

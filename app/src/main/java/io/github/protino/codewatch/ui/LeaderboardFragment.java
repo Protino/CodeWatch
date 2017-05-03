@@ -14,6 +14,7 @@ import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.widget.SwipeRefreshLayout;
+import android.support.v7.app.ActionBar;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -52,6 +53,7 @@ import io.github.protino.codewatch.model.DefaultLeaderItem;
 import io.github.protino.codewatch.model.TopperItem;
 import io.github.protino.codewatch.remote.FetchLeaderBoardData;
 import io.github.protino.codewatch.ui.adapter.LeadersAdapter;
+import io.github.protino.codewatch.utils.CacheUtils;
 import io.github.protino.codewatch.utils.Constants;
 import io.github.protino.codewatch.utils.LanguageValidator;
 import io.github.protino.codewatch.utils.UiUtils;
@@ -84,7 +86,9 @@ public class LeaderboardFragment extends Fragment implements DialogInterface.OnS
     private CheckBox filteredCheckbox;
     private Context context;
     private LeadersAdapter leadersAdapter;
+
     private FilterState filterState;
+    private String userId;
 
 
     @Override
@@ -102,7 +106,7 @@ public class LeaderboardFragment extends Fragment implements DialogInterface.OnS
 
         context = getActivity();
         filterState = new FilterState();
-
+        userId = CacheUtils.getWakatimeUserId(context);
 
         leadersAdapter = new LeadersAdapter(context, new ArrayList<>());
         leadersAdapter.setOnItemSelectedListener(this);
@@ -141,10 +145,8 @@ public class LeaderboardFragment extends Fragment implements DialogInterface.OnS
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
             case R.id.find_me:
-                //get current user id
-                String sampleId = "5c93d61f-b71b-4406-8e34-f86755d5df18";
                 //search in the data
-                int position = leadersAdapter.getItemPositionById(sampleId);
+                int position = leadersAdapter.getItemPositionById(userId);
                 if (position == -1) {
                     Toast.makeText(context, R.string.not_found, Toast.LENGTH_SHORT).show();
                 } else {
@@ -166,6 +168,11 @@ public class LeaderboardFragment extends Fragment implements DialogInterface.OnS
     public void onDestroyView() {
         unbinder.unbind();
         super.onDestroyView();
+    }
+
+    @Override
+    public void onDestroy() {
+        super.onDestroy();
     }
 
     @Override
@@ -251,7 +258,7 @@ public class LeaderboardFragment extends Fragment implements DialogInterface.OnS
             //change adapter data to use normal data
             leadersAdapter.swapData(buildDataItems(defaultLeaderItems));
             swipeRefreshLayout.setRefreshing(false);
-            setActionBarTitle("Leaderboard");
+            setActionBarTitle(context.getString(R.string.leaderboards));
             return;
         }
 
@@ -285,7 +292,10 @@ public class LeaderboardFragment extends Fragment implements DialogInterface.OnS
     }
 
     private void setActionBarTitle(String title) {
-        ((NavigationDrawerActivity) getActivity()).getSupportActionBar().setTitle(title);
+        ActionBar actionBar = ((NavigationDrawerActivity) getActivity()).getSupportActionBar();
+        if (actionBar != null) {
+            actionBar.setTitle(title);
+        }
     }
 
     @Override
@@ -344,39 +354,44 @@ public class LeaderboardFragment extends Fragment implements DialogInterface.OnS
         @Override
         protected List<Object> doInBackground(Cursor... params) {
             long start = System.currentTimeMillis();
+            try {
+                data = params[0];
+                initializeData();
 
-            data = params[0];
-            initializeData();
+                DefaultLeaderItem defaultLeaderItem;
+                Map<String, Integer> languageMap;
+                for (data.moveToFirst(); !data.isAfterLast(); data.moveToNext()) {
+                    defaultLeaderItem = new DefaultLeaderItem();
+                    defaultLeaderItem.setUserId(data.getString(Constants.COL_USER_ID));
+                    defaultLeaderItem.setDisplayName(data.getString(Constants.COL_DISPLAY_NAME));
+                    defaultLeaderItem.setTotalSeconds(data.getInt(Constants.COL_TOTAL_SECONDS));
+                    defaultLeaderItem.setDailyAverage(data.getInt(Constants.COL_DAILY_AVERAGE));
+                    defaultLeaderItem.setRank(data.getInt(Constants.COL_RANK));
 
-            DefaultLeaderItem defaultLeaderItem;
-            Map<String, Integer> languageMap;
-            for (data.moveToFirst(); !data.isAfterLast(); data.moveToNext()) {
-                defaultLeaderItem = new DefaultLeaderItem();
-                defaultLeaderItem.setUserId(data.getString(Constants.COL_USER_ID));
-                defaultLeaderItem.setDisplayName(data.getString(Constants.COL_DISPLAY_NAME));
-                defaultLeaderItem.setTotalSeconds(data.getInt(Constants.COL_TOTAL_SECONDS));
-                defaultLeaderItem.setDailyAverage(data.getInt(Constants.COL_DAILY_AVERAGE));
-
-                languageMap = new HashMap<>();
-                String jsonData = data.getString(Constants.COL_LANGUAGE_STATS);
-                try {
-                    JSONObject jsonObject = new JSONObject(jsonData);
-                    Iterator<String> keys = jsonObject.keys();
-                    while ((keys.hasNext())) {
-                        String key = keys.next();
-                        Integer totalSeconds = jsonObject.getInt(key);
-                        languageMap.put(key, totalSeconds);
+                    languageMap = new HashMap<>();
+                    String jsonData = data.getString(Constants.COL_LANGUAGE_STATS);
+                    try {
+                        JSONObject jsonObject = new JSONObject(jsonData);
+                        Iterator<String> keys = jsonObject.keys();
+                        while ((keys.hasNext())) {
+                            String key = keys.next();
+                            Integer totalSeconds = jsonObject.getInt(key);
+                            languageMap.put(key, totalSeconds);
+                        }
+                    } catch (JSONException e) {
+                        e.printStackTrace();
+                        Timber.e(e, " Unexpected JSONException!");
                     }
-                } catch (JSONException e) {
-                    e.printStackTrace();
-                    Timber.e(e, " Unexpected JSONException!");
-                }
 
-                defaultLeaderItem.setLanguageStats(languageMap);
-                defaultLeaderItem.setPhotoUrl(data.getString(Constants.COL_PHOTO_URL));
-                defaultLeaderItems.add(defaultLeaderItem);
+                    defaultLeaderItem.setLanguageStats(languageMap);
+                    defaultLeaderItem.setPhotoUrl(data.getString(Constants.COL_PHOTO_URL));
+                    defaultLeaderItems.add(defaultLeaderItem);
+                }
+                Timber.d(String.valueOf(System.currentTimeMillis() - start));
+            } catch (Exception e) {
+                //ignore, probably caused by closing the fragment
+                Timber.d(e);
             }
-            Timber.d(String.valueOf(System.currentTimeMillis() - start));
 
             return buildDataItems(defaultLeaderItems);
         }
@@ -384,9 +399,13 @@ public class LeaderboardFragment extends Fragment implements DialogInterface.OnS
         @Override
         protected void onPostExecute(List<Object> result) {
             //notify changes to the adapter
-            leadersAdapter.swapData(result);
-            swipeRefreshLayout.setRefreshing(false);
-            setActionBarTitle("Leaderboard");
+            try {
+                leadersAdapter.swapData(result);
+                swipeRefreshLayout.setRefreshing(false);
+                setActionBarTitle(context.getString(R.string.leaderboards));
+            } catch (NullPointerException e) {
+                Timber.d(e);
+            }
         }
     }
 
@@ -423,12 +442,16 @@ public class LeaderboardFragment extends Fragment implements DialogInterface.OnS
 
         @Override
         protected void onPostExecute(List<Object> result) {
-            if (result.isEmpty()) {
-                displayErrorText(context.getString(R.string.empty_leaderboard, filterLanguage));
-            } else {
-                leadersAdapter.swapData(result);
-                swipeRefreshLayout.setRefreshing(false);
-                recyclerView.scrollToPosition(0);
+            try {
+                if (result.isEmpty()) {
+                    displayErrorText(context.getString(R.string.empty_leaderboard, filterLanguage));
+                } else {
+                    leadersAdapter.swapData(result);
+                    swipeRefreshLayout.setRefreshing(false);
+                    recyclerView.scrollToPosition(0);
+                }
+            } catch (NullPointerException e) {
+                Timber.e(e);
             }
         }
     }
@@ -456,9 +479,7 @@ public class LeaderboardFragment extends Fragment implements DialogInterface.OnS
         @Override
         protected void onPostExecute(Boolean result) {
             super.onPostExecute(result);
-            if (result) {
-                //loadResultsFromProvider();
-            } else {
+            if (!result) {
                 swipeRefreshLayout.setRefreshing(true);
                 displayErrorText(context.getString(R.string.internet_error_message)); //Display message appropriate to the result code
             }

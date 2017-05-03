@@ -12,6 +12,7 @@ android {
         testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
         buildConfigField 'String', 'CLIENT_ID', CLIENT_ID
         buildConfigField 'String', 'CLIENT_SECRET', CLIENT_SECRET
+        buildConfigField 'String', 'API_KEY', API_KEY
     }
     buildTypes {
         release {
@@ -25,7 +26,11 @@ android {
 }
 ext {
     supportLibraryVersion = "25.0.1"
-    firebaseVersion = "10.0.1"
+    firebaseVersion = "9.8.0"
+}
+
+repositories{
+    maven {url "https://clojars.org/repo/"}
 }
 
 dependencies {
@@ -56,6 +61,9 @@ dependencies {
     compile "com.google.firebase:firebase-crash:${firebaseVersion}"
     compile "com.google.firebase:firebase-config:${firebaseVersion}"
     compile "com.google.firebase:firebase-ads:${firebaseVersion}"
+
+    compile 'frankiesardo:icepick:3.2.0'
+    provided 'frankiesardo:icepick-processor:3.2.0'
 
     compile 'com.firebase:firebase-jobdispatcher:0.5.2'
     compile 'joda-time:joda-time:2.9.9'

@@ -174,12 +174,15 @@ public class OnBoardActivity extends AppCompatActivity {
 
     @SuppressLint("ApplySharedPref")
     private void onSetupComplete() {
-        //schedule daily sync at 1:00 am local time
+        //download whole leaderboards data asynchronously
+        new FetchLeaderBoardDataAsync(this).execute();
+
+        //schedule daily sync at 3:00 am local time
         FirebaseJobDispatcher dispatcher = new FirebaseJobDispatcher(new GooglePlayDriver(this));
 
         DateTime now = new DateTime();
-        DateTime tomorrow = now.plusDays(1).withTimeAtStartOfDay().plusHours(1);
-        int windowStart = Hours.hoursBetween(now, tomorrow).getHours();
+        DateTime tomorrow = now.plusDays(1).withTimeAtStartOfDay().plusHours(3);
+        int windowStart = Hours.hoursBetween(now, tomorrow).getHours() * 60 * 60;
         Job synJob = dispatcher.newJobBuilder()
                 .setService(SyncScheduler.class)
                 .setTag(Constants.PERIODIC_SYNC_SCHEDULE_KEY)
@@ -247,10 +250,6 @@ public class OnBoardActivity extends AppCompatActivity {
             FirebaseDatabase firebaseDatabase = FirebaseDatabase.getInstance();
             DatabaseReference databaseReference = firebaseDatabase.getReference().child("users");
             databaseReference.child(firebaseUid).setValue(user);
-
-            //also download leaderboard data
-            FetchLeaderBoardData fetchLeaderBoardData = new FetchLeaderBoardData(context);
-            fetchLeaderBoardData.execute();
             return Constants.NONE;
         }
 
@@ -305,6 +304,11 @@ public class OnBoardActivity extends AppCompatActivity {
             ProfileData data = null;
             try {
                 data = fetchWakatimeData.fetchUserDetails().getProfileData();
+                String isEmailConfirmed = data.getIsEmailConfirmed();
+                if (isEmailConfirmed != null && !isEmailConfirmed.isEmpty() && !isEmailConfirmed.equals("null")) {
+                    data.setRank(new FetchLeaderBoardData(context).fetchUserRank());
+                }
+
                 String gsonString = new Gson().toJson(data, ProfileData.class);
                 SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(context);
                 SharedPreferences.Editor editor = sharedPreferences.edit();
@@ -326,6 +330,20 @@ public class OnBoardActivity extends AppCompatActivity {
             } else {
                 initializeFirebaseUser(profileData);
             }
+        }
+    }
+
+    private class FetchLeaderBoardDataAsync extends AsyncTask<Void, Void, Void> {
+        private Context context;
+
+        private FetchLeaderBoardDataAsync(Context context) {
+            this.context = context;
+        }
+
+        @Override
+        protected Void doInBackground(Void... params) {
+            new FetchLeaderBoardData(context).execute();
+            return null;
         }
     }
 }

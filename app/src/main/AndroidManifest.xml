@@ -36,6 +36,7 @@
 				android:value=".ui.NavigationDrawerActivity"/>
 		</activity>
 		<activity
+			android:configChanges="orientation"
 			android:name=".ui.NavigationDrawerActivity"
 			android:theme="@style/AppTheme.Drawer">
 			<intent-filter>

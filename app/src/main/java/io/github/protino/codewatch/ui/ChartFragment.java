@@ -36,7 +36,6 @@ public abstract class ChartFragment extends Fragment {
 
 
     public static final int LANGUAGE_CHART_ID = 1;
-    public static final int ACTIVITY_CHART_ID = 2;
     public static final int OS_CHART_ID = 3;
     public static final int EDITORS_CHART_ID = 4;
     protected StatsAdapter editorsListAdapter;

@@ -2,6 +2,7 @@ package io.github.protino.codewatch.ui.adapter;
 
 import android.content.Context;
 import android.support.v7.widget.RecyclerView;
+import android.util.Pair;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -75,6 +76,11 @@ public class GoalsAdapter extends RecyclerView.Adapter<GoalsAdapter.GoalsViewHol
         notifyDataSetChanged();
     }
 
+    public void addItem(int position, GoalItem goalItem) {
+        dataList.add(position, goalItem);
+        notifyItemInserted(position);
+    }
+
     public boolean isDuplicate(GoalItem goalItem) {
 
         if (goalItem == null) {
@@ -108,6 +114,17 @@ public class GoalsAdapter extends RecyclerView.Adapter<GoalsAdapter.GoalsViewHol
 
     public String getItem(int adapterPosition) {
         return dataList.get(adapterPosition).getUid();
+    }
+
+    public Pair<GoalItem, Integer> getItemByUid(String uid) {
+        //naive search, as the list is small
+        for (int i = 0; i < dataList.size(); i++) {
+            GoalItem goalItem = dataList.get(i);
+            if (goalItem.getUid().equals(uid)) {
+                return new Pair<>(goalItem, i);
+            }
+        }
+        return null;
     }
 
 

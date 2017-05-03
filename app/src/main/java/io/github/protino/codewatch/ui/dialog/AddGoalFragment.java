@@ -32,7 +32,6 @@ public class AddGoalFragment extends DialogFragment {
             String mapString = getArguments().getString(Intent.EXTRA_TEXT);
             bundle = new Bundle();
             bundle.putString(Intent.EXTRA_TEXT, mapString);
-
         } catch (Exception e) {
             throw new IllegalArgumentException("Project names not set.");
         }

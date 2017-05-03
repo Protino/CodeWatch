@@ -17,6 +17,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
+import android.widget.ScrollView;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -36,6 +37,7 @@ import com.github.mikephil.charting.highlight.Highlight;
 import com.github.mikephil.charting.listener.OnChartValueSelectedListener;
 import com.google.android.gms.ads.AdRequest;
 import com.google.android.gms.ads.AdView;
+import com.google.firebase.crash.FirebaseCrash;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
@@ -54,6 +56,8 @@ import butterknife.BindArray;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
+import icepick.Icepick;
+import icepick.State;
 import io.github.protino.codewatch.R;
 import io.github.protino.codewatch.model.WakatimeDataWrapper;
 import io.github.protino.codewatch.model.firebase.Stats;
@@ -83,7 +87,6 @@ import static io.github.protino.codewatch.utils.Constants.UNKNOWN_ERROR;
 public class DashboardFragment extends ChartFragment implements SwipeRefreshLayout.OnRefreshListener {
 
     private static final int LANGUAGE_CHART_ID = 1;
-    private static final int ACTIVITY_CHART_ID = 2;
     private static final int OS_CHART_ID = 3;
     private static final int EDITORS_CHART_ID = 4;
 
@@ -91,40 +94,77 @@ public class DashboardFragment extends ChartFragment implements SwipeRefreshLayo
     //activity
     @BindView(R.id.linechart_activity) public LineChart lineChart;
     @BindView(R.id.activity_total)public TextView todaysLogTimeText;
+
     //performance
     @BindView(R.id.performance_bar)public PerformanceBarView performanceBarView;
     @BindView(R.id.daily_average_text)public TextView dailyAverageText;
     @BindView(R.id.today_log_percent_text) public TextView todaysLogPercentText;
+
     //languages
     @BindView(R.id.piechart_languages) public PieChart pieChartLanguages;
     @BindView(R.id.expand_piechart_language)public ImageView expandLanguages;
     @BindView(R.id.list_languages) public RecyclerView languagesListview;
+    @State public Float languageHighlightedEntryX = null;
+
     //editors
     @BindView(R.id.piechart_editors)public PieChart pieChartEditors;
     @BindView(R.id.expand_piechart_editors) public ImageView expandEditors;
     @BindView(R.id.list_editors) public RecyclerView editorsListView;
+    @State public Float editorHighlightedEntryX = null;
+
     //os
     @BindView(R.id.piechart_os) public PieChart pieChartOs;
     @BindView(R.id.expand_piechart_os) public ImageView expandOs;
     @BindView(R.id.list_os) public RecyclerView osListview;
+    @State public Float osHighlightedEntryX = null;
 
     @BindView(R.id.adView) public AdView adView;
+    @BindView(R.id.scroll_view) public ScrollView scrollView;
 
     @BindView(R.id.swipe_refresh) public SwipeRefreshLayout swipeRefreshLayout;
     @BindArray(R.array.chart_colors) public int[] chartColors;
 
+    @State public String firebaseUid;
+    @State public Integer scrollPosition;
     //@formatter:on
-    private SparseBooleanArray isExpandedMap = new SparseBooleanArray();
-
-    private Context context;
 
     //firebase data
     private Stats stats;
+
+
+    private SparseBooleanArray isExpandedMap = new SparseBooleanArray();
+    private Context context;
     private DatabaseReference statsDatabaseRef;
     private DatabaseReference projectsDatabaseRef;
     private ValueEventListener statsValueEventListener;
-    private Snackbar snackbar;
     private View rootView;
+
+
+    @Override
+    public void onCreate(@Nullable Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        setRetainInstance(true);
+        Icepick.restoreInstanceState(this, savedInstanceState);
+
+        if (scrollPosition != null && scrollView != null) {
+            scrollView.post(new Runnable() {
+                @Override
+                public void run() {
+                    scrollView.scrollTo(0, scrollPosition);
+                }
+            });
+        }
+    }
+
+    @Override
+    public void onSaveInstanceState(Bundle outState) {
+        super.onSaveInstanceState(outState);
+        if (scrollView != null) {
+            scrollPosition = scrollView.getScrollY();
+        }
+
+        Icepick.saveInstanceState(this, outState);
+    }
 
     @Nullable
     @Override
@@ -135,7 +175,9 @@ public class DashboardFragment extends ChartFragment implements SwipeRefreshLayo
         setContext(context);
         setChartColors(chartColors);
 
-        String firebaseUid = CacheUtils.getFirebaseUserId(context);
+        if (savedInstanceState == null) {
+            firebaseUid = CacheUtils.getFirebaseUserId(context);
+        }
         FirebaseDatabase firebaseDatabase = FirebaseDatabase.getInstance();
         statsDatabaseRef = firebaseDatabase.getReference().child("users").child(firebaseUid).child("stats");
         projectsDatabaseRef = firebaseDatabase.getReference().child("users").child(firebaseUid).child("timeSpentOnProjects");
@@ -156,9 +198,9 @@ public class DashboardFragment extends ChartFragment implements SwipeRefreshLayo
     }
 
     @Override
-    public void onDestroyView() {
+    public void onPause() {
         detachValueEventListener();
-        super.onDestroyView();
+        super.onPause();
     }
 
     @OnClick({R.id.share_activity_chart, R.id.share_editors_chart, R.id.share_language_chart, R.id.share_os_chart})
@@ -312,6 +354,20 @@ public class DashboardFragment extends ChartFragment implements SwipeRefreshLayo
         pieChartOs.animateXY(1500, 1500);
 
         setListeners();
+
+        isExpandedMap.clear();
+        if (languageHighlightedEntryX != null) {
+            pieChartLanguages.highlightValue(new Highlight(languageHighlightedEntryX, Float.NaN, 0), true);
+        }
+
+        if (editorHighlightedEntryX != null) {
+            pieChartEditors.highlightValue(new Highlight(editorHighlightedEntryX, Float.NaN, 0), true);
+        }
+
+        if (osHighlightedEntryX != null) {
+            pieChartOs.highlightValue(new Highlight(osHighlightedEntryX, Float.NaN, 0), true);
+        }
+
     }
 
     private void bindActivityChart() {
@@ -319,7 +375,6 @@ public class DashboardFragment extends ChartFragment implements SwipeRefreshLayo
         lineChart.setData(lineData);
         int maxYData = (int) (Math.ceil(lineData.getYMax()) + 7200);
         lineChart.getAxisLeft().setAxisMaximum(maxYData);
-
         lineChart.animateX(1500, Easing.EasingOption.Linear);
     }
 
@@ -327,7 +382,6 @@ public class DashboardFragment extends ChartFragment implements SwipeRefreshLayo
         pieChartLanguages.setOnChartValueSelectedListener(new CustomOnValueSelectedListener(LANGUAGE_CHART_ID));
         pieChartEditors.setOnChartValueSelectedListener(new CustomOnValueSelectedListener(EDITORS_CHART_ID));
         pieChartOs.setOnChartValueSelectedListener(new CustomOnValueSelectedListener(OS_CHART_ID));
-
         swipeRefreshLayout.setOnRefreshListener(this);
     }
 
@@ -437,19 +491,16 @@ public class DashboardFragment extends ChartFragment implements SwipeRefreshLayo
     }
 
     private void showSnackBar(@StringRes final int resId) {
-        snackbar = Snackbar.make(rootView,
-                getString(resId),
-                Snackbar.LENGTH_INDEFINITE);
-        snackbar.setAction(getString(R.string.retry), new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                onRefresh();
-                if (!NetworkUtils.isNetworkUp(context)) {
-                    showSnackBar(resId);
-                }
-            }
-        });
-        snackbar.show();
+        Snackbar.make(rootView, context.getString(resId), Snackbar.LENGTH_INDEFINITE)
+                .setAction(getString(R.string.retry), new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        onRefresh();
+                        if (!NetworkUtils.isNetworkUp(context)) {
+                            showSnackBar(resId);
+                        }
+                    }
+                }).show();
     }
 
     private class CustomOnValueSelectedListener implements OnChartValueSelectedListener {
@@ -465,24 +516,26 @@ public class DashboardFragment extends ChartFragment implements SwipeRefreshLayo
 
         @Override
         public void onValueSelected(Entry e, Highlight h) {
-            Timber.d(e.toString());
             switch (CHART_ID) {
                 case LANGUAGE_CHART_ID:
                     if (!isExpandedMap.get(expandLanguages.getId())) {
                         onExpand(expandLanguages);
                     }
+                    languageHighlightedEntryX = h.getX();
                     resetAdapter(languagesListview, languageListAdapter, ((PieEntry) e).getLabel());
                     break;
                 case OS_CHART_ID:
                     if (!isExpandedMap.get(expandOs.getId())) {
                         onExpand(expandOs);
                     }
+                    osHighlightedEntryX = h.getX();
                     resetAdapter(osListview, osListAdapter, ((PieEntry) e).getLabel());
                     break;
                 case EDITORS_CHART_ID:
                     if (!isExpandedMap.get(expandEditors.getId())) {
                         onExpand(expandEditors);
                     }
+                    editorHighlightedEntryX = h.getX();
                     resetAdapter(editorsListView, editorsListAdapter, ((PieEntry) e).getLabel());
                     break;
                 default: //common code
@@ -494,12 +547,15 @@ public class DashboardFragment extends ChartFragment implements SwipeRefreshLayo
         public void onNothingSelected() {
             switch (CHART_ID) {
                 case LANGUAGE_CHART_ID:
+                    languageHighlightedEntryX = null;
                     onExpand(expandLanguages);
                     break;
                 case OS_CHART_ID:
+                    osHighlightedEntryX = null;
                     onExpand(expandOs);
                     break;
                 case EDITORS_CHART_ID:
+                    editorHighlightedEntryX = null;
                     onExpand(expandEditors);
                     break;
                 default:
@@ -543,7 +599,7 @@ public class DashboardFragment extends ChartFragment implements SwipeRefreshLayo
                     showSnackBar(R.string.stats_updating_error_message);
                     break;
                 case UNKNOWN_ERROR:
-                    // report crash
+                    FirebaseCrash.log("Unknown error occurred while fetching stats - error code" + UNKNOWN_ERROR);
                     break;
                 default:
                     break;

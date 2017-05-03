@@ -33,6 +33,8 @@ import java.util.concurrent.atomic.AtomicInteger;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
+import icepick.Icepick;
+import icepick.State;
 import io.github.protino.codewatch.R;
 import io.github.protino.codewatch.model.ProjectItem;
 import io.github.protino.codewatch.model.firebase.Project;
@@ -46,15 +48,17 @@ import io.github.protino.codewatch.utils.CacheUtils;
 public class ProjectsFragment extends Fragment implements SearchView.OnQueryTextListener, ProjectsAdapter.OnItemSelectedListener {
 
     //@formatter:off
-    @BindView(R.id.projects_list) RecyclerView recyclerView;
-    @BindView(R.id.progressBarLayout) View progressBarLayout;
-    @BindView(R.id.error_text) TextView errorTextView;
+    @BindView(R.id.projects_list) public RecyclerView recyclerView;
+    @BindView(R.id.progressBarLayout) public View progressBarLayout;
+    @BindView(R.id.error_text) public TextView errorTextView;
+    @State public boolean isSortedByName=false;
+    @State public String firebaseUid;
     //@formatter:on
 
     private Context context;
     private ProjectsAdapter projectsAdapter;
     private List<ProjectItem> projectItemList;
-    private AtomicInteger mutex = new AtomicInteger(); //naive synchronization
+    private AtomicInteger mutex; //naive synchronization
 
     private MenuItem sortByTimeSpent;
     private MenuItem sortByName;
@@ -69,16 +73,28 @@ public class ProjectsFragment extends Fragment implements SearchView.OnQueryText
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setHasOptionsMenu(true);
+        setRetainInstance(true);
+    }
+
+    @Override
+    public void onSaveInstanceState(Bundle outState) {
+        super.onSaveInstanceState(outState);
+        Icepick.saveInstanceState(this, outState);
     }
 
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
+
+        Icepick.restoreInstanceState(this,savedInstanceState);
+
         View rootView = inflater.inflate(R.layout.fragment_projects, container, false);
         ButterKnife.bind(this, rootView);
         hideProgressBar(false);
         context = getActivity();
-        String firebaseUid = CacheUtils.getFirebaseUserId(context);
+        if (savedInstanceState == null) {
+            firebaseUid = CacheUtils.getFirebaseUserId(context);
+        }
         FirebaseDatabase firebaseDatabase = FirebaseDatabase.getInstance();
         projectsDatabaseRef = firebaseDatabase.getReference()
                 .child("users").child(firebaseUid).child("projects");
@@ -87,18 +103,24 @@ public class ProjectsFragment extends Fragment implements SearchView.OnQueryText
                 .child("users").child(firebaseUid).child("timeSpentOnProjects"); // case
 
         initializeData();
-        DividerItemDecoration dividerItemDecoration = new DividerItemDecoration(context, DividerItemDecoration.VERTICAL);
         projectsAdapter = new ProjectsAdapter(context, projectItemList);
         projectsAdapter.setOnItemSelectedListener(this);
         recyclerView.setLayoutManager(new LinearLayoutManager(context, LinearLayoutManager.VERTICAL, false));
         recyclerView.setAdapter(projectsAdapter);
-        recyclerView.addItemDecoration(dividerItemDecoration);
+        recyclerView.addItemDecoration(new DividerItemDecoration(context, DividerItemDecoration.VERTICAL));
         return rootView;
     }
 
     @Override
-    public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
-        super.onViewCreated(view, savedInstanceState);
+    public void onResume() {
+        super.onResume();
+        attachValueEventListener();
+    }
+
+    @Override
+    public void onPause() {
+        detachValueEventListener();
+        super.onPause();
     }
 
     @Override
@@ -109,6 +131,9 @@ public class ProjectsFragment extends Fragment implements SearchView.OnQueryText
         sortByName = menu.findItem(R.id.menu_sort_by_name);
         sortByTimeSpent = menu.findItem(R.id.menu_sort_by_time);
 
+        sortByName.setChecked(isSortedByName);
+        sortByTimeSpent.setChecked(isSortedByName);
+
         sortData();
 
         final MenuItem searchItem = menu.findItem(R.id.action_search);
@@ -117,18 +142,6 @@ public class ProjectsFragment extends Fragment implements SearchView.OnQueryText
         searchView.setOnQueryTextListener(this);
     }
 
-    @Override
-    public void onResume() {
-        super.onResume();
-        attachValueEventListener();
-    }
-
-
-    @Override
-    public void onDestroyView() {
-        detachValueEventListener();
-        super.onDestroyView();
-    }
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
@@ -136,10 +149,12 @@ public class ProjectsFragment extends Fragment implements SearchView.OnQueryText
         switch (item.getItemId()) {
             case R.id.menu_sort_by_name:
                 sortByName.setChecked(true);
+                isSortedByName = true;
                 sortData();
                 return true;
             case R.id.menu_sort_by_time:
                 sortByTimeSpent.setChecked(true);
+                isSortedByName = false;
                 sortData();
                 return true;
             default:
@@ -197,6 +212,7 @@ public class ProjectsFragment extends Fragment implements SearchView.OnQueryText
                 }
             };
         }
+        mutex = new AtomicInteger();
         projectTimeSpentRef.addValueEventListener(timeSpentValueEventListner);
         projectsDatabaseRef.addValueEventListener(projectValueEventListener);
 
@@ -233,7 +249,7 @@ public class ProjectsFragment extends Fragment implements SearchView.OnQueryText
 
     public void sortData() {
         Collections.sort(projectItemList,
-                sortByName.isChecked() ? new NameComparator() : new TimeComparator());
+                isSortedByName ? new NameComparator() : new TimeComparator());
         projectsAdapter.swapData(projectItemList);
     }
 

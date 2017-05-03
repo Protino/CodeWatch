@@ -12,6 +12,7 @@ public class DefaultLeaderItem {
     private String userId;
     private String displayName;
     private String photoUrl;
+    private int rank;
 
     //stats
     private int dailyAverage;
@@ -64,5 +65,13 @@ public class DefaultLeaderItem {
 
     public void setDailyAverage(int dailyAverage) {
         this.dailyAverage = dailyAverage;
+    }
+
+    public int getRank() {
+        return rank;
+    }
+
+    public void setRank(int rank) {
+        this.rank = rank;
     }
 }

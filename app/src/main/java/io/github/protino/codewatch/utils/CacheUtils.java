@@ -46,19 +46,24 @@ public class CacheUtils {
 
     /**
      * Checks whether the users is logged in or not
-     *
-     * @param context
      */
     public static boolean isLoggedIn(Context context) {
-        SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(context);
-        String accessTokenJson = sharedPreferences.getString(PREF_ACCESS_TOKEN, null);
-        if (accessTokenJson == null) {
+        AccessToken accessToken = getAccessToken(context);
+        if (accessToken == null) {
             return false;
         }
-        AccessToken accessToken = new Gson().fromJson(accessTokenJson, AccessToken.class);
         long currentTime = (long) (System.currentTimeMillis() / 1e3);
         long expiryTime = accessToken.getRetrievalTime() + accessToken.getExpiresIn() - AccessToken.REFRESH_THRESHOLD;
         return currentTime < expiryTime;
+    }
+
+    public static AccessToken getAccessToken(Context context) {
+        SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(context);
+        String accessTokenJson = sharedPreferences.getString(PREF_ACCESS_TOKEN, null);
+        if (accessTokenJson == null) {
+            return null;
+        }
+        return new Gson().fromJson(accessTokenJson, AccessToken.class);
     }
 
     public static boolean isFireBaseSetup(Context context) {
@@ -73,8 +78,8 @@ public class CacheUtils {
         return PreferenceManager.getDefaultSharedPreferences(context).getString(PREF_FIREBASE_USER_ID, null);
     }
 
-    public static String getWakatimeUserId(Context context){
-        return PreferenceManager.getDefaultSharedPreferences(context).getString(PREF_WAKATIME_USER_ID,null);
+    public static String getWakatimeUserId(Context context) {
+        return PreferenceManager.getDefaultSharedPreferences(context).getString(PREF_WAKATIME_USER_ID, null);
     }
 
     public static void updateAppUsage(Context context) {

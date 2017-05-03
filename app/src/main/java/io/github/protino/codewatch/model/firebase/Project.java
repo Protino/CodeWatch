@@ -1,5 +1,6 @@
 package io.github.protino.codewatch.model.firebase;
 
+import java.io.Serializable;
 import java.util.List;
 import java.util.Map;
 
@@ -7,7 +8,7 @@ import java.util.Map;
  * Created by Gurupad Mamadapur on 11-03-2017.
  */
 
-public class Project {
+public class Project implements Serializable {
 
     private String id;
     private String name;

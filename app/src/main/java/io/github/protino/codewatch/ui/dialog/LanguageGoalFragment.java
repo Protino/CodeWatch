@@ -21,6 +21,8 @@ import butterknife.BindArray;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.Unbinder;
+import icepick.Icepick;
+import icepick.State;
 import io.github.protino.codewatch.R;
 import io.github.protino.codewatch.model.GoalItem;
 import io.github.protino.codewatch.utils.LanguageValidator;
@@ -34,12 +36,26 @@ import static io.github.protino.codewatch.utils.Constants.LANGUAGE_GOAL;
 public class LanguageGoalFragment extends DialogFragment implements DialogInterface.OnShowListener {
 
     //@formatter:off
-    @BindView(R.id.language_autocomplete) AutoCompleteTextView autoCompleteTextView;
-    @BindView(R.id.hours_picker) NumberPicker hoursPicker;
-    @BindArray(R.array.languages) String[] validLanguages;
+    @State public int hoursPicked = 1;
+    @BindView(R.id.language_autocomplete) public AutoCompleteTextView autoCompleteTextView;
+    @BindView(R.id.hours_picker) public NumberPicker hoursPicker;
+    @BindArray(R.array.languages) public String[] validLanguages;
     private Unbinder unbinder;
     private LanguageValidator validator;
     //@formatter:on
+
+
+    @Override
+    public void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        Icepick.restoreInstanceState(this,savedInstanceState);
+    }
+
+    @Override
+    public void onSaveInstanceState(Bundle outState) {
+        super.onSaveInstanceState(outState);
+        Icepick.saveInstanceState(this,outState);
+    }
 
     @SuppressLint("InflateParams")
     @Override
@@ -65,6 +81,7 @@ public class LanguageGoalFragment extends DialogFragment implements DialogInterf
 
         hoursPicker.setMinValue(1);
         hoursPicker.setMaxValue(24);
+        hoursPicker.setValue(hoursPicked);
 
 
         builder.setView(rootView)
@@ -73,6 +90,7 @@ public class LanguageGoalFragment extends DialogFragment implements DialogInterf
 
         AlertDialog dialog = builder.create();
         dialog.setOnShowListener(this);
+
         return dialog;
     }
 
@@ -80,6 +98,9 @@ public class LanguageGoalFragment extends DialogFragment implements DialogInterf
     public void onDestroyView() {
         if (unbinder != null) {
             unbinder.unbind();
+        }
+        if (getDialog() != null && getRetainInstance()) {
+            getDialog().setDismissMessage(null);
         }
         super.onDestroyView();
     }

@@ -47,7 +47,11 @@ import butterknife.BindColor;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
+import butterknife.Unbinder;
+import icepick.Icepick;
+import icepick.State;
 import io.github.protino.codewatch.R;
+import io.github.protino.codewatch.bundler.ProjectBundler;
 import io.github.protino.codewatch.model.firebase.Project;
 import io.github.protino.codewatch.model.project.summary.Editor;
 import io.github.protino.codewatch.model.project.summary.Language;
@@ -83,6 +87,9 @@ public class ProjectDetailsFragment extends ChartFragment {
     @BindView(R.id.list_os) public RecyclerView osListview;
     @BindArray(R.array.chart_colors) public int[] chartColors;
     @BindColor(R.color.blue_400) public int blue400;
+    @State(ProjectBundler.class) public Project project;
+    @State public String projectName;
+
     @BindView(R.id.content) View content;
     @BindView(R.id.progressBarLayout) View progressBarLayout;
     @BindView(R.id.barchart) BarChart barChart;
@@ -91,30 +98,44 @@ public class ProjectDetailsFragment extends ChartFragment {
     private SparseBooleanArray isExpandedMap = new SparseBooleanArray();
 
     private Context context;
-    private Project project;
-    private String projectName;
 
     private long referenceTime;
+    private Unbinder unbinder;
 
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        setRetainInstance(true);
         projectName = getArguments().getString(Intent.EXTRA_TEXT);
     }
 
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
+        Icepick.restoreInstanceState(this, savedInstanceState);
         View rootView = inflater.inflate(R.layout.fragment_project_detail, container, false);
-        ButterKnife.bind(this, rootView);
+        unbinder = ButterKnife.bind(this, rootView);
         context = getActivity();
-        if (project == null) {
-            new FetchProjectDetails().execute(projectName);
-        }
+        hideProgressBar(false);
+
         setChartColors(chartColors);
         setContext(context);
+
+        if (savedInstanceState == null) {
+            new FetchProjectDetails().execute(projectName);
+        } else {
+            hideProgressBar(true);
+            displayData();
+        }
         return rootView;
     }
+
+    @Override
+    public void onDestroyView() {
+        unbinder.unbind();
+        super.onDestroyView();
+    }
+
 
     private void hideProgressBar(boolean hide) {
         progressBarLayout.setVisibility(hide ? View.GONE : View.VISIBLE);
@@ -195,6 +216,13 @@ public class ProjectDetailsFragment extends ChartFragment {
         barChart.setVisibility(View.VISIBLE);
         barChart.animateY(1500, Easing.EasingOption.Linear);
     }
+
+    @Override
+    public void onSaveInstanceState(Bundle outState) {
+        super.onSaveInstanceState(outState);
+        Icepick.saveInstanceState(this, outState);
+    }
+
 
     private BarData generateBarData(List<Integer> progressSoFar) {
 

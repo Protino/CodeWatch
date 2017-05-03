@@ -1,5 +1,4 @@
 <?xml version="1.0" encoding="utf-8"?>
-
 <LinearLayout
 	xmlns:android="http://schemas.android.com/apk/res/android"
 	xmlns:app="http://schemas.android.com/apk/res-auto"
@@ -24,12 +23,12 @@
 
 	<ScrollView
 		android:layout_width="match_parent"
-		android:layout_height="match_parent">
+		android:layout_height="match_parent"
+		android:layout_margin="16dp">
 
 		<LinearLayout
 			android:layout_width="match_parent"
 			android:layout_height="wrap_content"
-			android:layout_margin="16dp"
 			android:orientation="vertical">
 
 			<TextView
@@ -70,30 +69,6 @@
 				android:layout_height="@dimen/chart_default_height"
 				android:visibility="gone"/>
 
-			<!--<LinearLayout-->
-			<!--android:layout_width="match_parent"-->
-			<!--android:layout_height="wrap_content"-->
-			<!--android:layout_marginTop="16dp"-->
-			<!--android:orientation="horizontal">-->
-
-			<!--<ImageButton-->
-			<!--android:id="@+id/edit"-->
-			<!--android:layout_width="0dp"-->
-			<!--android:layout_height="wrap_content"-->
-			<!--android:layout_weight="1"-->
-			<!--android:background="?attr/selectableItemBackgroundBorderless"-->
-			<!--android:padding="8dp"-->
-			<!--android:src="@drawable/ic_edit_black_24dp"/>-->
-
-			<!--<ImageButton-->
-			<!--android:id="@+id/delete"-->
-			<!--android:layout_width="0dp"-->
-			<!--android:layout_height="wrap_content"-->
-			<!--android:layout_weight="1"-->
-			<!--android:background="?attr/selectableItemBackgroundBorderless"-->
-			<!--android:padding="8dp"-->
-			<!--android:src="@drawable/ic_delete_black_24dp"/>-->
-			<!--</LinearLayout>-->
 		</LinearLayout>
 	</ScrollView>
 </LinearLayout>

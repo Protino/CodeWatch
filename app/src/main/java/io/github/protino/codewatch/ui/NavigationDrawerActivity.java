@@ -46,7 +46,10 @@ import java.util.concurrent.atomic.AtomicInteger;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
+import icepick.Icepick;
+import icepick.State;
 import io.github.protino.codewatch.R;
+import io.github.protino.codewatch.bundler.ProfileDataBundler;
 import io.github.protino.codewatch.data.LeaderContract;
 import io.github.protino.codewatch.model.user.ProfileData;
 import io.github.protino.codewatch.utils.AchievementsUtils;
@@ -70,21 +73,23 @@ public class NavigationDrawerActivity extends AppCompatActivity implements
 
     private static final int RANK_LOADER_ID = 99;
     //@formatter:off
+    @State  public String firebaseUid;
     @BindView(R.id.toolbar) public Toolbar toolbar;
     @BindView(R.id.drawer_layout) public DrawerLayout drawerLayout;
     @BindView(R.id.navigationView) public NavigationView navigationView;
-    //@formatter:on
 
-    private AtomicInteger mutex = new AtomicInteger();
+    @State public AtomicInteger mutex = new AtomicInteger();
+    @State public boolean hasUserLearntDrawer;
+    @State(ProfileDataBundler.class) public ProfileData basicUserData;
+    @State public long currentAchievements;
+    @State public long newAchievements = 0;
+    @State public boolean appUsageAchievementsChecked = false;
+    //@formatter:on
     private ActionBarDrawerToggle drawerToggler;
     private SharedPreferences sharedPreferences;
-    private boolean hasUserLearntDrawer;
-    private DatabaseReference achievementsDatabaseRef;
-    private ProfileData basicUserData;
-    private long currentAchievements;
-    private long newAchievements = 0;
-    private boolean appUsageAchievementsChecked = false;
 
+
+    private DatabaseReference achievementsDatabaseRef;
     private ValueEventListener valueEventListener;
 
     private TextView username;
@@ -101,36 +106,44 @@ public class NavigationDrawerActivity extends AppCompatActivity implements
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        if (!CacheUtils.isLoggedIn(this) || !CacheUtils.isFireBaseSetup(this)) {
-            Intent intent = new Intent(this, OnBoardActivity.class);
-            intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
-            startActivity(intent);
-            finish();
-            return;
-        }
-        //Now check if app update is required
-        firebaseRemoteConfig = FirebaseRemoteConfig.getInstance();
-        firebaseRemoteConfig.setDefaults(R.xml.config);
-        testIfAppUpdateIsRequired();
+        Icepick.restoreInstanceState(this, savedInstanceState);
 
+        if (savedInstanceState == null) {
+
+            // TODO: 18-04-2017 Move these checks to another launcher activity
+
+            // Login checks
+            if (!CacheUtils.isLoggedIn(this) || !CacheUtils.isFireBaseSetup(this)) {
+                Intent intent = new Intent(this, OnBoardActivity.class);
+                intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+                startActivity(intent);
+                finish();
+                return;
+            }
+
+            //Now check if app update is required
+            firebaseRemoteConfig = FirebaseRemoteConfig.getInstance();
+            firebaseRemoteConfig.setDefaults(R.xml.config);
+            testIfAppUpdateIsRequired();
+        }
 
         setContentView(R.layout.activity_navigation_drawer);
         ButterKnife.bind(this);
-
-        sharedPreferences = PreferenceManager.getDefaultSharedPreferences(this);
-        String firebaseUid = sharedPreferences.getString(Constants.PREF_FIREBASE_USER_ID, null);
-        String basicData = sharedPreferences.getString(Constants.PREF_BASIC_USER_DETAILS, null);
-        basicUserData = new Gson().fromJson(basicData, ProfileData.class);
-
         setSupportActionBar(toolbar);
-        setupDrawer();
-        mutex.set(0);
+        sharedPreferences = PreferenceManager.getDefaultSharedPreferences(this);
 
         if (savedInstanceState == null) {
+            firebaseUid = sharedPreferences.getString(Constants.PREF_FIREBASE_USER_ID, null);
+            String basicData = sharedPreferences.getString(Constants.PREF_BASIC_USER_DETAILS, null);
+            basicUserData = new Gson().fromJson(basicData, ProfileData.class);
+
             MenuItem item = navigationView.getMenu().findItem(R.id.dashboard);
             onNavigationItemSelected(item);
             item.setChecked(true);
         }
+
+        setupDrawer();
+        mutex.set(0);
 
         FirebaseDatabase firebaseDatabase = FirebaseDatabase.getInstance();
         firebaseAnalytics = FirebaseAnalytics.getInstance(this);
@@ -138,7 +151,6 @@ public class NavigationDrawerActivity extends AppCompatActivity implements
         achievementsDatabaseRef = firebaseDatabase.getReference().child("achv").child(firebaseUid);
         getLoaderManager().initLoader(RANK_LOADER_ID, null, this);
     }
-
 
     @Override
     protected void onResume() {
@@ -150,6 +162,12 @@ public class NavigationDrawerActivity extends AppCompatActivity implements
     protected void onPause() {
         detachValueEventListener();
         super.onPause();
+    }
+
+    @Override
+    protected void onSaveInstanceState(Bundle outState) {
+        Icepick.saveInstanceState(this, outState);
+        super.onSaveInstanceState(outState);
     }
 
     private void testIfAppUpdateIsRequired() {
@@ -251,6 +269,9 @@ public class NavigationDrawerActivity extends AppCompatActivity implements
         avatar = (ImageView) navigationHeader.findViewById(R.id.avatar);
         rankText = (TextView) navigationHeader.findViewById(R.id.rank);
 
+        int rank = basicUserData.getRank();
+        rankText.setText(rank != -1 ? String.valueOf(rank) : "-");
+
         silverBadgeCounts = (TextView) navigationHeader.findViewById(R.id.silver_badge_count);
         goldBadgeCounts = (TextView) navigationHeader.findViewById(R.id.gold_badge_count);
         bronzeBadgeCounts = (TextView) navigationHeader.findViewById(R.id.bronze_badge_count);
@@ -260,7 +281,7 @@ public class NavigationDrawerActivity extends AppCompatActivity implements
             @Override
             public void onClick(View v) {
                 Intent intent = new Intent(NavigationDrawerActivity.this, ProfileActivity.class);
-                intent.putExtra(Intent.EXTRA_TEXT,getWakatimeUid());
+                intent.putExtra(Intent.EXTRA_TEXT, getWakatimeUid());
                 startActivity(intent);
             }
         });
@@ -268,6 +289,9 @@ public class NavigationDrawerActivity extends AppCompatActivity implements
 
     private void bindHeaderViews() {
         username.setText(basicUserData.getDisplayName());
+        if (!basicUserData.getPhotoPublic()) {
+            basicUserData.setPhoto(null);
+        }
         Glide.with(this)
                 .load(basicUserData.getPhoto())
                 .asBitmap()
@@ -312,7 +336,6 @@ public class NavigationDrawerActivity extends AppCompatActivity implements
         switch (item.getItemId()) {
             case R.id.dashboard:
                 text = getString(R.string.dashboard_title);
-
                 replaceFragment(new DashboardFragment(), text);
                 break;
             case R.id.goals:
@@ -324,7 +347,7 @@ public class NavigationDrawerActivity extends AppCompatActivity implements
                 replaceFragment(new AchievementFragment(), text);
                 break;
             case R.id.leaderboards:
-                text = getString(R.string.leaderboards_title);
+                text = getString(R.string.leaderboards);
                 replaceFragment(new LeaderboardFragment(), text);
                 break;
             case R.id.projects:
@@ -347,9 +370,9 @@ public class NavigationDrawerActivity extends AppCompatActivity implements
         getFragmentManager().beginTransaction().replace(R.id.container, fragment).commit();
 
         Bundle bundle = new Bundle();
-        bundle.putString(FirebaseAnalytics.Param.ITEM_ID, "selection");
+        bundle.putString(FirebaseAnalytics.Param.ITEM_ID, Constants.FA_ITEM_ID);
         bundle.putString(FirebaseAnalytics.Param.ITEM_NAME, text);
-        bundle.putString(FirebaseAnalytics.Param.ITEM_CATEGORY, getString(R.string.category_fragment));
+        bundle.putString(FirebaseAnalytics.Param.ITEM_CATEGORY, Constants.FA_CATEGORY_FRAGMENT);
         if (firebaseAnalytics != null) {
             firebaseAnalytics.logEvent(FirebaseAnalytics.Event.SELECT_CONTENT, bundle);
         }
@@ -386,15 +409,15 @@ public class NavigationDrawerActivity extends AppCompatActivity implements
                 int dailyAverage = data.getInt(data.getColumnIndex(LeaderContract.LeaderEntry.COLUMN_DAILY_AVERAGE));
                 newAchievements |= AchievementsUtils.checkAchievements(rank, dailyAverage);
                 rankText.setText(String.valueOf(rank));
-                mutex.incrementAndGet();
-                onAchievementsLoaded();
             }
         }
+        mutex.incrementAndGet();
+        onAchievementsLoaded();
     }
 
     @Override
     public void onLoaderReset(Loader<Cursor> loader) {
-        //ignore
+        mutex = new AtomicInteger();
     }
 
     public void newAchievementUnlocked(long newAchievements) {
@@ -411,6 +434,7 @@ public class NavigationDrawerActivity extends AppCompatActivity implements
             if (!appUsageAchievementsChecked) {
                 newAchievements = AchievementsUtils.checkUsageAchievements(CacheUtils.getConsecutiveDays(this));
                 currentAchievements |= newAchievements;
+                appUsageAchievementsChecked = true;
             }
             achievementsDatabaseRef.child(getWakatimeUid()).setValue(currentAchievements);
             bindHeaderViews();

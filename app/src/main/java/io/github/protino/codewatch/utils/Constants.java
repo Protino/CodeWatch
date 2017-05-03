@@ -67,6 +67,8 @@ public final class Constants {
     public static final int COL_LANGUAGE_STATS = 4;
     public static final int COL_PHOTO_URL = 5;
     public static final int COL_DAILY_AVERAGE = 6;
+    public static final int COL_RANK = 7;
+
 
     public static final String[] LEADER_COLUMNS = {
             LeaderContract.LeaderEntry._ID,
@@ -75,9 +77,10 @@ public final class Constants {
             LeaderContract.LeaderEntry.COLUMN_TOTAL_SECONDS,
             LeaderContract.LeaderEntry.COLUMN_LANGUAGE_STATS,
             LeaderContract.LeaderEntry.COLUMN_PHOTO,
-            LeaderContract.LeaderEntry.COLUMN_DAILY_AVERAGE
+            LeaderContract.LeaderEntry.COLUMN_DAILY_AVERAGE,
+            LeaderContract.LeaderEntry.COLUMN_RANK
     };
-    public static final String LEADER_SORT_ORDER = LeaderContract.LeaderEntry.COLUMN_TOTAL_SECONDS + " DESC";
+    public static final String LEADER_SORT_ORDER = LeaderContract.LeaderEntry.COLUMN_RANK + " ASC";
 
     /* Firebase Constants */
     public static final String WAKATIME_DATA_SYNC_JOB_TAG = "daily_sync_job";
@@ -131,6 +134,8 @@ public final class Constants {
     public static final int[] GOLD_BADGES = new int[]{DEVOTED, INSOMNIAC, LEADER};
     public static final int[] SILVER_BADGES = new int[]{ARDENT, HARD_WORKING, MASTER};
     public static final int[] BRONZE_BADGES = new int[]{COMPETITOR, SANE, LOYAL, CURIOUS, FOCUSED};
+    public static final String FA_CATEGORY_FRAGMENT = "category_fragment";
+    public static final String FA_ITEM_ID = "fragment_item_id";
 
 
     static {

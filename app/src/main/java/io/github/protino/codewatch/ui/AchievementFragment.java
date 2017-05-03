@@ -15,7 +15,6 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 
-import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
@@ -30,6 +29,8 @@ import java.util.Map;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
+import icepick.Icepick;
+import icepick.State;
 import io.github.protino.codewatch.R;
 import io.github.protino.codewatch.model.BadgeItem;
 import io.github.protino.codewatch.ui.adapter.AchievementsAdapter;
@@ -50,6 +51,9 @@ public class AchievementFragment extends Fragment {
 
     //@formatter:off
     @BindView(R.id.list_achievements) RecyclerView recyclerView;
+    @State boolean isSortedByUnLocked = true;
+    @State public String firebaseUserId;
+    @State public String uid;
     //@formatter:on
 
     private Context context;
@@ -63,7 +67,6 @@ public class AchievementFragment extends Fragment {
     private MenuItem sortByLocked;
 
     private DatabaseReference achievementsDatabase;
-    private FirebaseAuth firebaseAuth;
     private ValueEventListener achievementsChildListener;
 
     private Map<Integer, Pair<String, String>> bronzeBadges;
@@ -73,13 +76,28 @@ public class AchievementFragment extends Fragment {
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        Icepick.restoreInstanceState(this, savedInstanceState);
+        setRetainInstance(true);
         setHasOptionsMenu(true);
-        String firebaseUserId = CacheUtils.getFirebaseUserId(getActivity());
+    }
+
+    @Override
+    public void onSaveInstanceState(Bundle outState) {
+        Icepick.saveInstanceState(this, outState);
+        super.onSaveInstanceState(outState);
+    }
+
+    @Override
+    public void onActivityCreated(@Nullable Bundle savedInstanceState) {
+        super.onActivityCreated(savedInstanceState);
 
         // TODO: 13-04-2017 Do all database reading in the activity and read from there
-        String uid = ((NavigationDrawerActivity) getActivity()).getWakatimeUid();
+
+        if (savedInstanceState == null) {
+            firebaseUserId = CacheUtils.getFirebaseUserId(getActivity());
+            uid = ((NavigationDrawerActivity) getActivity()).getWakatimeUid();
+        }
         FirebaseDatabase firebaseDatabase = FirebaseDatabase.getInstance();
-        firebaseAuth = FirebaseAuth.getInstance();
         achievementsDatabase = firebaseDatabase.getReference().child("achv").child(firebaseUserId).child(uid);
     }
 
@@ -107,7 +125,7 @@ public class AchievementFragment extends Fragment {
 
         recyclerView.setLayoutManager(new LinearLayoutManager(context, LinearLayoutManager.VERTICAL, false));
         recyclerView.setAdapter(achievementsAdapter);
-        recyclerView.addItemDecoration(new DividerItemDecoration(context, DividerItemDecoration.HORIZONTAL));
+        recyclerView.addItemDecoration(new DividerItemDecoration(context, DividerItemDecoration.VERTICAL));
         return rootView;
     }
 
@@ -125,12 +143,12 @@ public class AchievementFragment extends Fragment {
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
             case R.id.menu_sort_by_locked:
-                sortByLocked(false);
-                achievementsAdapter.swapData(badgeItemList);
+                sortByUnLocked(false);
                 sortByLocked.setChecked(true);
+                achievementsAdapter.swapData(badgeItemList);
                 return true;
             case R.id.menu_sort_by_unlocked:
-                sortByLocked(true);
+                sortByUnLocked(true);
                 sortByUnlocked.setChecked(true);
                 achievementsAdapter.swapData(badgeItemList);
                 return true;
@@ -150,6 +168,7 @@ public class AchievementFragment extends Fragment {
                     unlockedAchievementsList = getUnlockedAchievements(currentAchievements);
                     badgeItemList = loadData();
                     achievementsAdapter.swapData(badgeItemList);
+                    onOptionsItemSelected(isSortedByUnLocked ? sortByUnlocked : sortByLocked);
                 }
 
                 @Override
@@ -168,7 +187,7 @@ public class AchievementFragment extends Fragment {
         }
     }
 
-    private void sortByLocked(boolean reverse) {
+    private void sortByUnLocked(boolean reverse) {
         Collections.sort(badgeItemList, new Comparator<BadgeItem>() {
             @Override
             public int compare(BadgeItem o1, BadgeItem o2) {
@@ -180,6 +199,7 @@ public class AchievementFragment extends Fragment {
         if (reverse) {
             Collections.reverse(badgeItemList);
         }
+        isSortedByUnLocked = reverse;
     }
 
     private void setUpBadgeItemData() {

@@ -9,9 +9,11 @@ import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.design.widget.FloatingActionButton;
+import android.support.design.widget.Snackbar;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.helper.ItemTouchHelper;
+import android.util.Pair;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -36,6 +38,8 @@ import java.util.List;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
+import icepick.Icepick;
+import icepick.State;
 import io.github.protino.codewatch.R;
 import io.github.protino.codewatch.model.GoalItem;
 import io.github.protino.codewatch.model.firebase.LanguageGoal;
@@ -67,27 +71,40 @@ public class GoalsFragment extends Fragment implements
     private static final String ADD_GOAL_TAG = "ADD_GOAL_TAG";
     private static final String GD_TAG = "GOAL_DETAIL_TAG";
     //@formatter:off
-    @BindView(R.id.goals_list) RecyclerView recyclerView;
-    @BindView(R.id.progressBar) View progressBar;
-    @BindView(R.id.add_goal) FloatingActionButton fab;
-    //@formatter:on
+    @BindView(R.id.goals_list) public RecyclerView recyclerView;
+    @BindView(R.id.progressBar) public View progressBar;
 
+    @BindView(R.id.add_goal) public FloatingActionButton fab;
+    @State public String firebaseUid;
+    //@formatter:on
     private View rootView;
     private GoalsAdapter goalsAdapter;
     private Context context;
-
     //data
     private List<GoalItem> goalItemList;
     private List<String> projectNames; //project id is irrelevant
-
     private DatabaseReference projectsDatabaseReference;
     private DatabaseReference goalsDatabaseReference;
-
     private ValueEventListener projectValueEventListener;
     private ValueEventListener goalValueEventListener;
     private ProgressDialog goalDetailProgressDialog;
+    private Pair<GoalItem, Integer> tempGoalItem;
+    private boolean isReverted = false;
 
     public GoalsFragment() {
+    }
+
+    @Override
+    public void onCreate(@Nullable Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        setRetainInstance(true);
+        Icepick.restoreInstanceState(this, savedInstanceState);
+    }
+
+    @Override
+    public void onSaveInstanceState(Bundle outState) {
+        super.onSaveInstanceState(outState);
+        Icepick.saveInstanceState(this, outState);
     }
 
     @Nullable
@@ -100,6 +117,9 @@ public class GoalsFragment extends Fragment implements
 
         context = getActivity();
 
+        if (savedInstanceState == null) {
+            firebaseUid = CacheUtils.getFirebaseUserId(context);
+        }
         initializeData();
         goalsAdapter = new GoalsAdapter(context, goalItemList);
         goalsAdapter.setGoalItemClickListener(this);
@@ -181,8 +201,6 @@ public class GoalsFragment extends Fragment implements
         goalItemList = new ArrayList<>();
         projectNames = new ArrayList<>();
 
-        String firebaseUid = CacheUtils.getFirebaseUserId(context);
-
         FirebaseDatabase firebaseDatabase = FirebaseDatabase.getInstance();
         projectsDatabaseReference = firebaseDatabase.getReference()
                 .child("users").child(firebaseUid).child("projects");
@@ -206,8 +224,32 @@ public class GoalsFragment extends Fragment implements
         }).attachToRecyclerView(recyclerView);
     }
 
-    private void deleteGoalItem(String uid) {
-        goalsDatabaseReference.child(uid).removeValue();
+    private void deleteGoalItem(final String uid) {
+        tempGoalItem = goalsAdapter.getItemByUid(uid);
+
+        //temporary delete
+        goalsAdapter.deleteItem(tempGoalItem.second);
+
+        isReverted = false;
+        Snackbar.make(rootView, "Goal deleted", Snackbar.LENGTH_LONG)
+                .setAction(R.string.undo, new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        //revert the changes
+                        goalsAdapter.addItem(tempGoalItem.second, tempGoalItem.first);
+                        isReverted = true;
+                    }
+                })
+                .setCallback(new Snackbar.Callback() {
+                    @Override
+                    public void onDismissed(Snackbar snackbar, int event) {
+                        //permanent deletion, if not reverted
+                        if (!isReverted) {
+                            goalsDatabaseReference.child(uid).removeValue();
+                        }
+                        super.onDismissed(snackbar, event);
+                    }
+                }).show();
     }
 
     @OnClick({R.id.add_goal})
@@ -225,6 +267,8 @@ public class GoalsFragment extends Fragment implements
     public void onGoalItemClicked(GoalItem goalItem) {
         goalDetailProgressDialog = new ProgressDialog(context);
         goalDetailProgressDialog.setMessage(context.getString(R.string.loading_goal_details));
+        goalDetailProgressDialog.setCancelable(false);
+        goalDetailProgressDialog.setCanceledOnTouchOutside(false);
         goalDetailProgressDialog.show();
 
         switch (goalItem.getType()) {

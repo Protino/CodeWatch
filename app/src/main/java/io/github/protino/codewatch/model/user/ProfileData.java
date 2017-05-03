@@ -1,10 +1,11 @@
-
 package io.github.protino.codewatch.model.user;
 
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
 
-public class ProfileData {
+import java.io.Serializable;
+
+public class ProfileData implements Serializable {
 
     @SerializedName("created_at")
     @Expose
@@ -78,6 +79,8 @@ public class ProfileData {
     @SerializedName("website")
     @Expose
     private String website;
+
+    private int rank = -1;
 
     public String getCreatedAt() {
         return createdAt;
@@ -271,4 +274,11 @@ public class ProfileData {
         this.website = website;
     }
 
+    public int getRank() {
+        return rank;
+    }
+
+    public void setRank(int rank) {
+        this.rank = rank;
+    }
 }

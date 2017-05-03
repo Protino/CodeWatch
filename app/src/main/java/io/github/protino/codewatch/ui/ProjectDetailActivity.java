@@ -7,6 +7,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.MenuItem;
 
+import icepick.Icepick;
 import io.github.protino.codewatch.R;
 
 /**
@@ -20,6 +21,8 @@ public class ProjectDetailActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_project);
 
+        Icepick.restoreInstanceState(this, savedInstanceState);
+
         String projectName = getIntent().getStringExtra(Intent.EXTRA_TEXT);
 
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
@@ -28,11 +31,19 @@ public class ProjectDetailActivity extends AppCompatActivity {
         setSupportActionBar(toolbar);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
-        ProjectDetailsFragment fragment = new ProjectDetailsFragment();
-        Bundle bundle = new Bundle();
-        bundle.putString(Intent.EXTRA_TEXT, projectName);
-        fragment.setArguments(bundle);
-        getFragmentManager().beginTransaction().replace(R.id.container, fragment).commit();
+        if (savedInstanceState == null) {
+            ProjectDetailsFragment fragment = new ProjectDetailsFragment();
+            Bundle bundle = new Bundle();
+            bundle.putString(Intent.EXTRA_TEXT, projectName);
+            fragment.setArguments(bundle);
+            getFragmentManager().beginTransaction().replace(R.id.container, fragment).commit();
+        }
+    }
+
+    @Override
+    protected void onSaveInstanceState(Bundle outState) {
+        super.onSaveInstanceState(outState);
+        Icepick.saveInstanceState(this, outState);
     }
 
     @Override

@@ -273,6 +273,8 @@ public class WakatimeDataSyncJob extends JobService {
                 if (!result) {
                     Timber.e("LeaderboardSyncTask failed");
                     needsReschedule = true;
+                } else {
+
                 }
             } catch (Exception e) {
                 Timber.d(e, "LeaderboardSyncTask failed");

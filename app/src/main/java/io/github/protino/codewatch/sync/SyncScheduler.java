@@ -18,6 +18,16 @@ public class SyncScheduler extends JobService {
 
         FirebaseJobDispatcher dispatcher = new FirebaseJobDispatcher(new GooglePlayDriver(this));
 
+        /* Schedule the job once now*/
+        Job oneTimeJob = dispatcher.newJobBuilder()
+                .setService(WakatimeDataSyncJob.class)
+                .setTag("OneTimeJob")
+                .setTrigger(Trigger.executionWindow(0, 60))
+                .setRetryStrategy(RetryStrategy.DEFAULT_LINEAR)
+                .build();
+        dispatcher.mustSchedule(oneTimeJob);
+
+        /* Schedule a recurring job everyday */
         Job synJob = dispatcher.newJobBuilder()
                 .setService(WakatimeDataSyncJob.class)
                 .setTag(Constants.WAKATIME_DATA_SYNC_JOB_TAG)

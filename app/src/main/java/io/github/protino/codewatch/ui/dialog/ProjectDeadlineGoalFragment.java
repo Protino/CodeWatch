@@ -1,6 +1,7 @@
 package io.github.protino.codewatch.ui.dialog;
 
 import android.annotation.SuppressLint;
+import android.app.DatePickerDialog;
 import android.app.Dialog;
 import android.app.DialogFragment;
 import android.content.DialogInterface;
@@ -9,6 +10,7 @@ import android.os.Bundle;
 import android.support.v7.app.AlertDialog;
 import android.view.View;
 import android.widget.ArrayAdapter;
+import android.widget.DatePicker;
 import android.widget.Spinner;
 import android.widget.TextView;
 
@@ -29,6 +31,8 @@ import java.util.UUID;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
+import icepick.Icepick;
+import icepick.State;
 import io.github.protino.codewatch.R;
 import io.github.protino.codewatch.model.GoalItem;
 
@@ -38,22 +42,24 @@ import static io.github.protino.codewatch.utils.Constants.PROJECT_DEADLINE_GOAL;
  * @author Gurupad Mamadapur
  */
 
-public class ProjectDeadlineGoalFragment extends DialogFragment {
+public class ProjectDeadlineGoalFragment extends DialogFragment implements DatePickerDialog.OnDateSetListener {
 
     public static final String DPD_TAG = "DATE_PICKER_TAG";
     public static final String dateFormat = "MMM dd yy";
+    @State
+    public long deadlineDate = -1;
     //@formatter:off
     @BindView(R.id.spinner) Spinner spinner;
     @BindView(R.id.date) TextView date;
     //@formatter:on
     private Calendar calendar = Calendar.getInstance();
-    private long deadlineDate;
     private List<String> projectNames;
     private SimpleDateFormat simpleDateFormat;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        Icepick.restoreInstanceState(this, savedInstanceState);
         try {
             String dataString = getArguments().getString(Intent.EXTRA_TEXT);
             Type type = new TypeToken<List<String>>() {
@@ -62,6 +68,29 @@ public class ProjectDeadlineGoalFragment extends DialogFragment {
         } catch (Exception e) {
             throw new IllegalArgumentException("Project names list not set.");
         }
+    }
+
+    @Override
+    public void onStart() {
+        super.onStart();
+        EventBus.getDefault().register(this);
+    }
+
+    @Override
+    public void onStop() {
+        EventBus.getDefault().unregister(this);
+        super.onStop();
+    }
+
+    @Override
+    public void onDestroyView() {
+        super.onDestroyView();
+    }
+
+    @Override
+    public void onSaveInstanceState(Bundle outState) {
+        Icepick.saveInstanceState(this, outState);
+        super.onSaveInstanceState(outState);
     }
 
     @SuppressLint("InflateParams")
@@ -74,8 +103,13 @@ public class ProjectDeadlineGoalFragment extends DialogFragment {
         calendar.add(Calendar.DATE, 1);
         simpleDateFormat = new SimpleDateFormat(dateFormat, Locale.getDefault());
 
-        deadlineDate = calendar.getTime().getTime();
-        date.setText(simpleDateFormat.format(calendar.getTime()));
+        if (savedInstanceState == null) {
+            deadlineDate = calendar.getTime().getTime();
+            date.setText(simpleDateFormat.format(calendar.getTime()));
+        } else {
+            date.setText(simpleDateFormat.format(new Date(deadlineDate)));
+        }
+
 
         AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
 
@@ -117,12 +151,18 @@ public class ProjectDeadlineGoalFragment extends DialogFragment {
 
     @OnClick(R.id.date)
     public void onDateClick() {
-        //launch calendar
-        DatePickerFragment datePickerFragment = new DatePickerFragment();
-        Bundle bundle = new Bundle();
-        bundle.putLong(Intent.EXTRA_TEXT, deadlineDate);
-        datePickerFragment.setArguments(bundle);
-        datePickerFragment.show(getFragmentManager(), DPD_TAG);
+
+        final Calendar calendar = Calendar.getInstance();
+        calendar.setTime(new Date(deadlineDate));
+
+        DatePickerDialog datePickerDialog =
+                new DatePickerDialog(getActivity(),
+                        this,
+                        calendar.get(Calendar.YEAR),
+                        calendar.get(Calendar.MONTH),
+                        calendar.get(Calendar.DAY_OF_MONTH));
+        datePickerDialog.getDatePicker().setMinDate(System.currentTimeMillis());
+        datePickerDialog.show();
     }
 
     @Subscribe
@@ -132,14 +172,9 @@ public class ProjectDeadlineGoalFragment extends DialogFragment {
     }
 
     @Override
-    public void onStart() {
-        super.onStart();
-        EventBus.getDefault().register(this);
-    }
-
-    @Override
-    public void onStop() {
-        EventBus.getDefault().unregister(this);
-        super.onStop();
+    public void onDateSet(DatePicker view, int year, int month, int dayOfMonth) {
+        Calendar calendar = Calendar.getInstance();
+        calendar.set(year, month, dayOfMonth);
+        EventBus.getDefault().post(calendar);
     }
 }
