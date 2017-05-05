@@ -15,6 +15,7 @@
 		android:layout_width="wrap_content"
 		android:layout_height="wrap_content"
 		android:paddingBottom="@dimen/content_spacing_normal"
+		android:textColor="@color/white_1000"
 		tools:text="You coded for 3h 5m today"/>
 
 	<ProgressBar
@@ -32,5 +33,6 @@
 		android:id="@+id/daily_average_text"
 		android:layout_width="wrap_content"
 		android:layout_height="wrap_content"
+		android:textColor="@color/white_1000"
 		tools:text="Daily average - 5h 8m"/>
 </LinearLayout>

@@ -30,16 +30,12 @@ import android.widget.TextView;
 
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.request.target.BitmapImageViewTarget;
-import com.google.android.gms.tasks.OnCompleteListener;
-import com.google.android.gms.tasks.Task;
 import com.google.firebase.analytics.FirebaseAnalytics;
-import com.google.firebase.crash.FirebaseCrash;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
-import com.google.firebase.remoteconfig.FirebaseRemoteConfig;
 import com.google.gson.Gson;
 
 import java.util.concurrent.atomic.AtomicInteger;
@@ -100,32 +96,12 @@ public class NavigationDrawerActivity extends AppCompatActivity implements
     private TextView rankText;
 
     private FirebaseAnalytics firebaseAnalytics;
-    private FirebaseRemoteConfig firebaseRemoteConfig;
 
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         Icepick.restoreInstanceState(this, savedInstanceState);
-
-        if (savedInstanceState == null) {
-
-            // TODO: 18-04-2017 Move these checks to another launcher activity
-
-            // Login checks
-            if (!CacheUtils.isLoggedIn(this) || !CacheUtils.isFireBaseSetup(this)) {
-                Intent intent = new Intent(this, OnBoardActivity.class);
-                intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
-                startActivity(intent);
-                finish();
-                return;
-            }
-
-            //Now check if app update is required
-            firebaseRemoteConfig = FirebaseRemoteConfig.getInstance();
-            firebaseRemoteConfig.setDefaults(R.xml.config);
-            testIfAppUpdateIsRequired();
-        }
 
         setContentView(R.layout.activity_navigation_drawer);
         ButterKnife.bind(this);
@@ -170,39 +146,7 @@ public class NavigationDrawerActivity extends AppCompatActivity implements
         super.onSaveInstanceState(outState);
     }
 
-    private void testIfAppUpdateIsRequired() {
-        firebaseRemoteConfig.fetch()
-                .addOnCompleteListener(this, new OnCompleteListener<Void>() {
-                    @Override
-                    public void onComplete(@NonNull Task<Void> task) {
-                        if (task.isSuccessful()) {
-                            firebaseRemoteConfig.activateFetched();
-                        } else {
-                            FirebaseCrash.report(task.getException());
-                        }
 
-                        if (firebaseRemoteConfig.getBoolean(Constants.APP_UPDATE_KEY)) {
-                            showUpdateDialog();
-                        }
-                    }
-                });
-    }
-
-    private void showUpdateDialog() {
-        AlertDialog.Builder builder = new AlertDialog.Builder(this)
-                .setCancelable(false)
-                .setTitle(R.string.update_required)
-                .setMessage(R.string.app_update_message)
-                .setPositiveButton(R.string.update, new DialogInterface.OnClickListener() {
-                    @Override
-                    public void onClick(DialogInterface dialog, int which) {
-                        Timber.d("Update clicked");
-                        //Launch PlayStore ...
-                        finish();
-                    }
-                });
-        builder.create().show();
-    }
 
 
     private void attachValueEventListener() {

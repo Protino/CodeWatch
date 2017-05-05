@@ -41,5 +41,6 @@
 	<dimen name="navigation_header_top_padding">36dp</dimen>
 	<dimen name="user_rank_avatar_dimen">100dp</dimen>
 	<dimen name="new_user_text_size">18sp</dimen>
+	<dimen name="splash_logo_dimen">72dp</dimen>
 
 </resources>

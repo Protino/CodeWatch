@@ -206,7 +206,7 @@ public class OnBoardActivity extends AppCompatActivity {
         dispatcher.mustSchedule(synJob);
 
         sharedPreferences.edit().putBoolean(Constants.PREF_FIREBASE_SETUP, true).commit();
-        startActivity(new Intent(this, NavigationDrawerActivity.class));
+        startActivity(new Intent(this, PreChecksActivity.class));
         finish();
     }
 

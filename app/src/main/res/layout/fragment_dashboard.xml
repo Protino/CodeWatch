@@ -27,6 +27,7 @@
 			android:id="@+id/scroll_view"
 			android:layout_width="match_parent"
 			android:layout_height="wrap_content"
+			android:paddingBottom="@dimen/content_spacing_large"
 			android:scrollbarSize="0dp"
 			android:scrollbars="none">
 
@@ -69,6 +70,7 @@
 					android:layout_width="match_parent"
 					android:layout_height="wrap_content"
 					android:layout_below="@id/card_editors_stats"
+					android:layout_marginBottom="@dimen/content_spacing_large"
 					android:layout_marginTop="@dimen/content_spacing_large"/>
 			</RelativeLayout>
 		</ScrollView>

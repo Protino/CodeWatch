@@ -3,4 +3,5 @@
 	<dimen name="content_spacing_extra_large">128dp</dimen>
 	<dimen name="extra_side_margin">64dp</dimen>
 	<dimen name="keyLine">24dp</dimen>
+	<dimen name="about_app_logo_hw">256dp</dimen>
 </resources>

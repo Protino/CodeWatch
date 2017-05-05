@@ -177,4 +177,7 @@
 		to get coding metrics, insights and much more.
 	</string>
 	<string name="change_account">Change account</string>
+	<string name="go_back_CD">Go back</string>
+	<string name="share_the_app_CD">Share the app</string>
+	<string name="app_logo_CD">App logo</string>
 </resources>
