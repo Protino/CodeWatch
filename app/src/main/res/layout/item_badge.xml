@@ -5,8 +5,8 @@
 	android:layout_width="match_parent"
 	android:layout_height="?attr/listPreferredItemHeight"
 	android:background="@color/grey_900"
-	android:paddingEnd="16dp"
-	android:paddingStart="16dp">
+	android:paddingEnd="@dimen/keyLine"
+	android:paddingStart="@dimen/keyLine">
 
 	<io.github.protino.codewatch.ui.widget.BadgeView
 		android:id="@+id/badge"
@@ -21,8 +21,8 @@
 		android:layout_width="0dp"
 		android:layout_height="wrap_content"
 		android:layout_gravity="center_vertical|end"
-		android:layout_marginLeft="8dp"
-		android:layout_marginStart="8dp"
+		android:layout_marginLeft="@dimen/content_spacing_normal"
+		android:layout_marginStart="@dimen/content_spacing_normal"
 		android:layout_weight="1"
 		android:textColor="@color/white_1000"
 		tools:text="Use CodeWatch for more than 10 days"/>

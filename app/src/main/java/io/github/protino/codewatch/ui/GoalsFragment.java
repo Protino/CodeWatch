@@ -36,6 +36,7 @@ import java.lang.reflect.Type;
 import java.util.ArrayList;
 import java.util.List;
 
+import butterknife.BindBool;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
@@ -75,8 +76,8 @@ public class GoalsFragment extends Fragment implements
     //@formatter:off
     @BindView(R.id.goals_list) public RecyclerView recyclerView;
     @BindView(R.id.progressBar) public View progressBar;
-
     @BindView(R.id.add_goal) public FloatingActionButton fab;
+    @BindBool(R.bool.isLargeDevice) public boolean isLargeDevice;
     @State public String firebaseUid;
     //@formatter:on
     private View rootView;
@@ -310,9 +311,13 @@ public class GoalsFragment extends Fragment implements
         fragment.setOnDeleteListener(this);
         fragment.setArguments(bundle);
 
-        FragmentTransaction fragmentTransaction = getActivity().getFragmentManager().beginTransaction();
-        fragmentTransaction.setTransition(FragmentTransaction.TRANSIT_FRAGMENT_OPEN);
-        fragmentTransaction.add(android.R.id.content, fragment).addToBackStack(null).commit();
+        if (isLargeDevice) {
+            fragment.show(getActivity().getFragmentManager(), GD_TAG);
+        } else {
+            FragmentTransaction fragmentTransaction = getActivity().getFragmentManager().beginTransaction();
+            fragmentTransaction.setTransition(FragmentTransaction.TRANSIT_FRAGMENT_OPEN);
+            fragmentTransaction.add(android.R.id.content, fragment).addToBackStack(null).commit();
+        }
     }
 
     @Subscribe

@@ -159,4 +159,22 @@
 	<!-- AdMob id -->
 	<string name="banner_ad_unit_id">ca-app-pub-3940256099942544/6300978111</string>
 	<string name="undo">Undo</string>
+	<string name="wakatime_logo">Wakatime logo</string>
+
+	<string name="profile_image_CD">Profile image</string>
+	<string name="share_your_coding_activity_CD">Share your coding activity</string>
+	<string name="share_your_language_stats_CD">Share your language stats</string>
+	<string name="share_your_editor_stats_CD">Share your editor stats</string>
+	<string name="share_your_os_stats_CD">Share your os stats</string>
+	<string name="expand_os_chart_details_CD">Expand os chart details</string>
+	<string name="expand_editor_stats_CD">Expand editor chart details</string>
+	<string name="expand_language_chart_details_CD">Expand language chart details</string>
+	<string name="share_your_project_activity_CD">Share your project activity</string>
+	<string name="new_user_error_text">
+		Looks like you are new to wakatime.com \n \n
+		Please install a wakatime plugin on your
+		<![CDATA[<a href="https://wakatime.com/editors">favourite editors</a>]]>
+		to get coding metrics, insights and much more.
+	</string>
+	<string name="change_account">Change account</string>
 </resources>

@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <ScrollView
 	xmlns:android="http://schemas.android.com/apk/res/android"
+	xmlns:app="http://schemas.android.com/apk/res-auto"
 	android:id="@+id/scroll_view"
 	android:layout_width="match_parent"
 	android:layout_height="match_parent"
@@ -27,40 +28,48 @@
 				android:layout_height="wrap_content"/>
 		</LinearLayout>
 
-		<LinearLayout
+		<android.support.v7.widget.GridLayout
 			android:id="@+id/content"
 			android:layout_width="match_parent"
 			android:layout_height="wrap_content"
-			android:orientation="vertical"
 			android:layout_margin="@dimen/keyLine"
-			android:visibility="gone">
+			android:visibility="visible"
+			app:columnCount="3">
 
 			<include
 				android:id="@+id/card_activity"
-				layout="@layout/card_project_activity"/>
+				layout="@layout/card_project_activity"
+				android:layout_width="match_parent"
+				android:layout_height="wrap_content"
+				android:layout_marginEnd="@dimen/extra_side_margin"
+				android:layout_marginStart="@dimen/extra_side_margin"
+				android:layout_marginBottom="@dimen/content_spacing_large"
+				app:layout_columnSpan="3"/>
 
 			<include
 				android:id="@+id/card_languages_stats"
 				layout="@layout/card_language_stats"
-				android:layout_width="match_parent"
+				android:layout_width="0dp"
 				android:layout_height="wrap_content"
-				android:layout_marginTop="@dimen/content_spacing_large"/>
+				android:layout_marginEnd="@dimen/content_spacing_large"
+				android:layout_marginRight="@dimen/content_spacing_large"
+				app:layout_columnWeight="1"/>
 
 			<include
-
 				android:id="@+id/card_editors_stats"
 				layout="@layout/card_editor_stats"
-				android:layout_width="match_parent"
+				android:layout_width="0dp"
 				android:layout_height="wrap_content"
-				android:layout_marginTop="@dimen/content_spacing_large"/>
+				android:layout_marginEnd="@dimen/content_spacing_large"
+				android:layout_marginRight="@dimen/content_spacing_large"
+				app:layout_columnWeight="1"/>
 
 			<include
-
 				android:id="@+id/card_os_stats"
 				layout="@layout/card_os_stats"
-				android:layout_width="match_parent"
+				android:layout_width="0dp"
 				android:layout_height="wrap_content"
-				android:layout_marginTop="@dimen/content_spacing_large"/>
-		</LinearLayout>
+				app:layout_columnWeight="1"/>
+		</android.support.v7.widget.GridLayout>
 	</FrameLayout>
 </ScrollView>

@@ -2,9 +2,7 @@
 	xmlns:android="http://schemas.android.com/apk/res/android"
 	xmlns:ads="http://schemas.android.com/apk/res-auto"
 	android:layout_width="match_parent"
-	android:layout_height="match_parent"
-	android:layout_marginEnd="@dimen/extra_side_margin"
-	android:layout_marginStart="@dimen/extra_side_margin">
+	android:layout_height="match_parent">
 
 
 	<com.google.android.gms.ads.AdView
@@ -30,14 +28,19 @@
 			android:scrollbarSize="0dp"
 			android:scrollbars="none">
 
+
 			<RelativeLayout
 				android:layout_width="match_parent"
 				android:layout_height="wrap_content"
-				android:layout_margin="@dimen/keyLine">
+				android:padding="@dimen/keyLine">
 
 				<include
 					android:id="@+id/card_activity"
-					layout="@layout/card_coding_activity"/>
+					layout="@layout/card_coding_activity"
+					android:layout_width="match_parent"
+					android:layout_height="wrap_content"
+					android:layout_marginEnd="@dimen/extra_side_margin"
+					android:layout_marginStart="@dimen/extra_side_margin"/>
 
 				<include
 					android:id="@+id/card_performance"
@@ -45,31 +48,42 @@
 					android:layout_width="match_parent"
 					android:layout_height="wrap_content"
 					android:layout_below="@id/card_activity"
+					android:layout_marginEnd="@dimen/extra_side_margin"
+					android:layout_marginStart="@dimen/extra_side_margin"
 					android:layout_marginTop="@dimen/content_spacing_large"/>
 
-				<include
-					android:id="@+id/card_languages_stats"
-					layout="@layout/card_language_stats"
+				<LinearLayout
 					android:layout_width="match_parent"
 					android:layout_height="wrap_content"
 					android:layout_below="@id/card_performance"
-					android:layout_marginTop="@dimen/content_spacing_large"/>
+					android:layout_marginTop="@dimen/content_spacing_large"
+					android:baselineAligned="false">
 
-				<include
-					android:id="@+id/card_editors_stats"
-					layout="@layout/card_editor_stats"
-					android:layout_width="match_parent"
-					android:layout_height="wrap_content"
-					android:layout_below="@id/card_languages_stats"
-					android:layout_marginTop="@dimen/content_spacing_large"/>
+					<include
+						android:id="@+id/card_languages_stats"
+						layout="@layout/card_language_stats"
+						android:layout_width="0dp"
+						android:layout_height="wrap_content"
+						android:layout_marginEnd="@dimen/content_spacing_large"
+						android:layout_marginRight="@dimen/content_spacing_large"
+						android:layout_weight="1"/>
 
-				<include
-					android:id="@+id/card_os_stats"
-					layout="@layout/card_os_stats"
-					android:layout_width="match_parent"
-					android:layout_height="wrap_content"
-					android:layout_below="@id/card_editors_stats"
-					android:layout_marginTop="@dimen/content_spacing_large"/>
+					<include
+						android:id="@+id/card_editors_stats"
+						layout="@layout/card_editor_stats"
+						android:layout_width="0dp"
+						android:layout_height="wrap_content"
+						android:layout_marginEnd="@dimen/content_spacing_large"
+						android:layout_marginRight="@dimen/content_spacing_large"
+						android:layout_weight="1"/>
+
+					<include
+						android:id="@+id/card_os_stats"
+						layout="@layout/card_os_stats"
+						android:layout_width="0dp"
+						android:layout_height="wrap_content"
+						android:layout_weight="1"/>
+				</LinearLayout>
 			</RelativeLayout>
 		</ScrollView>
 	</android.support.v4.widget.SwipeRefreshLayout>

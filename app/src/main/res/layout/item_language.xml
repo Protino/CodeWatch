@@ -6,8 +6,8 @@
 	android:layout_height="wrap_content"
 	android:minHeight="?attr/listPreferredItemHeight"
 	android:orientation="horizontal"
-	android:paddingEnd="16dp"
-	android:paddingStart="16dp">
+	android:paddingEnd="@dimen/keyLine"
+	android:paddingStart="@dimen/keyLine">
 
 	<TextView
 		android:id="@+id/name"

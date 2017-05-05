@@ -11,8 +11,7 @@
 		android:layout_width="wrap_content"
 		android:layout_height="wrap_content"
 		android:background="@drawable/marker_background"
-		android:elevation="4dp"
-		android:padding="8dp"
+		android:padding="@dimen/content_spacing_normal"
 		android:textColor="@android:color/white"
 		tools:text="18 hrs 14 min on 14 July 2016"/>
 </FrameLayout>

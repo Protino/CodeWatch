@@ -5,28 +5,29 @@
 	android:id="@+id/navigationHeader"
 	android:layout_width="match_parent"
 	android:layout_height="wrap_content"
-	android:paddingTop="16dp">
+	android:paddingTop="@dimen/keyLine">
 
 	<FrameLayout
 		android:id="@+id/avatarContainer"
 		android:layout_width="match_parent"
 		android:layout_height="wrap_content"
-		android:paddingTop="36dp">
+		android:paddingTop="@dimen/navigation_header_top_padding">
 
 		<ImageView
 			android:id="@+id/avatar"
-			android:layout_width="100dp"
-			android:layout_height="100dp"
+			android:layout_width="@dimen/user_rank_avatar_dimen"
+			android:layout_height="@dimen/user_rank_avatar_dimen"
 			android:layout_gravity="center"
-			android:padding="8dp"
+			android:contentDescription="@string/profile_image_CD"
+			android:padding="@dimen/content_spacing_normal"
 			android:src="@drawable/ic_account_circle_white_24dp"/>
 
 		<android.support.v7.widget.CardView
 			android:layout_width="wrap_content"
 			android:layout_height="wrap_content"
 			android:layout_gravity="center|bottom"
-			android:minHeight="22dp"
-			android:minWidth="22dp"
+			android:minHeight="@dimen/rank_text_container_dimen"
+			android:minWidth="@dimen/rank_text_container_dimen"
 			app:cardBackgroundColor="@color/white_1000">
 
 			<!-- Purposefully setting the text size in dp instead of sp-->
@@ -35,9 +36,9 @@
 				android:layout_width="wrap_content"
 				android:layout_height="wrap_content"
 				android:layout_gravity="center"
-				android:padding="2dp"
+				android:padding="@dimen/rank_container_text_padding"
 				android:textColor="@color/black_1000"
-				android:textSize="12dp"
+				android:textSize="@dimen/rank_text_size"
 				android:textStyle="bold"
 				tools:ignore="SpUsage"
 				tools:text="56"/>
@@ -49,21 +50,21 @@
 		android:layout_width="match_parent"
 		android:layout_height="wrap_content"
 		android:layout_below="@+id/avatarContainer"
-		android:layout_marginTop="16dp"
+		android:layout_marginTop="@dimen/content_spacing_large"
 		android:gravity="center"
 		android:orientation="horizontal"
-		android:padding="8dp">
+		android:padding="@dimen/content_spacing_normal">
 
 		<TextView
 			android:id="@+id/gold_badge_count"
 			android:layout_width="wrap_content"
 			android:layout_height="wrap_content"
 			android:drawableLeft="@drawable/gold_circle"
-			android:drawablePadding="8dp"
+			android:drawablePadding="@dimen/content_spacing_normal"
 			android:drawableStart="@drawable/gold_circle"
 			android:gravity="center"
-			android:paddingEnd="16dp"
-			android:paddingStart="16dp"
+			android:paddingEnd="@dimen/content_spacing_large"
+			android:paddingStart="@dimen/content_spacing_large"
 			android:textColor="@android:color/white"
 			tools:text="45"/>
 
@@ -72,11 +73,11 @@
 			android:layout_width="wrap_content"
 			android:layout_height="wrap_content"
 			android:drawableLeft="@drawable/silver_circle"
-			android:drawablePadding="8dp"
+			android:drawablePadding="@dimen/content_spacing_normal"
 			android:drawableStart="@drawable/silver_circle"
 			android:gravity="center"
-			android:paddingEnd="16dp"
-			android:paddingStart="16dp"
+			android:paddingEnd="@dimen/content_spacing_large"
+			android:paddingStart="@dimen/content_spacing_large"
 			android:textColor="@android:color/white"
 			tools:text="3"/>
 
@@ -85,22 +86,23 @@
 			android:layout_width="wrap_content"
 			android:layout_height="wrap_content"
 			android:drawableLeft="@drawable/bronze_circle"
-			android:drawablePadding="8dp"
+			android:drawablePadding="@dimen/content_spacing_normal"
 			android:drawableStart="@drawable/bronze_circle"
 			android:gravity="center"
-			android:paddingEnd="16dp"
-			android:paddingStart="16dp"
+			android:paddingEnd="@dimen/content_spacing_large"
+			android:paddingStart="@dimen/content_spacing_large"
 			android:textColor="@android:color/white"
 			tools:text="12"/>
 	</LinearLayout>
 
 	<TextView
 		android:id="@+id/username"
+		style="@style/Base.TextAppearance.AppCompat.Title"
 		android:layout_width="match_parent"
 		android:layout_height="wrap_content"
 		android:layout_below="@+id/badge_container"
 		android:gravity="center"
-		android:padding="8dp"
+		android:padding="@dimen/content_spacing_normal"
 		android:textColor="@android:color/white"
 		tools:text="Gurupad Mamadapur"/>
 </RelativeLayout>

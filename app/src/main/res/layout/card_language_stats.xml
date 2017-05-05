@@ -1,0 +1,72 @@
+<?xml version="1.0" encoding="utf-8"?>
+<android.support.v7.widget.CardView
+	xmlns:android="http://schemas.android.com/apk/res/android"
+	android:layout_width="wrap_content"
+	android:layout_height="wrap_content">
+
+	<RelativeLayout
+		android:layout_width="match_parent"
+		android:layout_height="wrap_content"
+		android:paddingBottom="@dimen/card_padding"
+		android:paddingEnd="@dimen/card_padding"
+		android:paddingStart="@dimen/card_padding"
+		android:paddingTop="@dimen/content_spacing_normal">
+
+
+		<ImageView
+			android:id="@+id/share_language_chart"
+			android:layout_width="wrap_content"
+			android:layout_height="wrap_content"
+			android:layout_alignParentEnd="true"
+			android:layout_alignParentRight="true"
+			android:background="?attr/selectableItemBackgroundBorderless"
+			android:clickable="true"
+			android:contentDescription="@string/share_your_language_stats_CD"
+			android:padding="@dimen/content_spacing_normal"
+			android:src="@drawable/ic_share_white_24dp"/>
+
+		<TextView
+			android:id="@+id/title_languages"
+			style="@style/Base.TextAppearance.AppCompat.Title"
+			android:layout_width="wrap_content"
+			android:layout_height="wrap_content"
+			android:layout_alignParentLeft="true"
+			android:layout_alignParentStart="true"
+			android:layout_toLeftOf="@id/share_language_chart"
+			android:layout_toStartOf="@id/share_language_chart"
+			android:paddingBottom="@dimen/card_padding"
+			android:paddingTop="@dimen/content_spacing_normal"
+			android:text="@string/card_languages_header"/>
+
+
+		<com.github.mikephil.charting.charts.PieChart
+			android:id="@+id/piechart_languages"
+			android:layout_width="match_parent"
+			android:layout_height="@dimen/pie_chart_default_height"
+			android:layout_below="@id/title_languages"/>
+
+		<LinearLayout
+			android:layout_width="match_parent"
+			android:layout_height="wrap_content"
+			android:layout_below="@id/piechart_languages"
+			android:orientation="vertical"
+			android:paddingTop="@dimen/content_spacing_normal">
+
+			<ImageView
+				android:id="@+id/expand_piechart_language"
+				android:layout_width="wrap_content"
+				android:layout_height="wrap_content"
+				android:layout_gravity="center"
+				android:background="?attr/selectableItemBackgroundBorderless"
+				android:clickable="true"
+				android:contentDescription="@string/expand_language_chart_details_CD"
+				android:src="@drawable/ic_expand_more_white_24dp"/>
+
+			<android.support.v7.widget.RecyclerView
+				android:id="@+id/list_languages"
+				android:layout_width="match_parent"
+				android:layout_height="wrap_content"
+				android:visibility="gone"/>
+		</LinearLayout>
+	</RelativeLayout>
+</android.support.v7.widget.CardView>

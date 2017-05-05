@@ -11,7 +11,11 @@ import android.support.annotation.NonNull;
 import android.support.annotation.StringRes;
 import android.support.design.widget.Snackbar;
 import android.support.v7.app.AppCompatActivity;
+import android.text.Html;
+import android.text.method.LinkMovementMethod;
 import android.view.View;
+import android.widget.Button;
+import android.widget.TextView;
 
 import com.firebase.jobdispatcher.Constraint;
 import com.firebase.jobdispatcher.FirebaseJobDispatcher;
@@ -39,6 +43,7 @@ import java.io.IOException;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
+import butterknife.OnClick;
 import io.github.protino.codewatch.R;
 import io.github.protino.codewatch.event.LoginEvent;
 import io.github.protino.codewatch.model.WakatimeDataWrapper;
@@ -57,6 +62,10 @@ public class OnBoardActivity extends AppCompatActivity {
     //@formatter:off
     @BindView(R.id.login_content) View loginContent;
     @BindView(R.id.setup_content) View setupContent;
+    @BindView(R.id.new_user_text) TextView newUserErrorText;
+    @BindView(R.id.new_user) View newUserContent;
+    @BindView(R.id.retry) Button retry;
+    @BindView(R.id.change_account) Button changeAccount;
     //@formatter:on
     private FirebaseAuth firebaseAuth;
     private SharedPreferences sharedPreferences;
@@ -73,9 +82,11 @@ public class OnBoardActivity extends AppCompatActivity {
         if (!CacheUtils.isLoggedIn(this)) {
             loginContent.setVisibility(View.VISIBLE);
             setupContent.setVisibility(View.GONE);
+            newUserContent.setVisibility(View.GONE);
         } else {
             loginContent.setVisibility(View.GONE);
             setupContent.setVisibility(View.VISIBLE);
+            newUserContent.setVisibility(View.GONE);
             setUpForFirstTimeUse();
         }
     }
@@ -113,6 +124,7 @@ public class OnBoardActivity extends AppCompatActivity {
     private void setUpForFirstTimeUse() {
         loginContent.setVisibility(View.GONE);
         setupContent.setVisibility(View.VISIBLE);
+        newUserContent.setVisibility(View.GONE);
         new FetchBasicUserDetails(this).execute();
     }
 
@@ -198,14 +210,37 @@ public class OnBoardActivity extends AppCompatActivity {
         finish();
     }
 
-    private void emailNotConfirmed() {
-        setupContent.setVisibility(View.INVISIBLE);
-        displaySnackBar(R.string.confirm_mail, new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
+    private void handleNewUser(boolean emailConfirmed) {
+        setupContent.setVisibility(View.GONE);
+        loginContent.setVisibility(View.GONE);
+        if (!emailConfirmed) {
+            displaySnackBar(R.string.confirm_mail, new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    new FetchBasicUserDetails(OnBoardActivity.this).execute();
+                }
+            });
+        }
+        newUserErrorText.setText(Html.fromHtml(getString(R.string.new_user_error_text)));
+        newUserErrorText.setMovementMethod(LinkMovementMethod.getInstance());
+        newUserContent.setVisibility(View.VISIBLE);
+    }
+
+    @OnClick({R.id.retry, R.id.change_account})
+    public void onClick(View view) {
+        switch (view.getId()) {
+            case R.id.retry:
                 new FetchBasicUserDetails(OnBoardActivity.this).execute();
-            }
-        });
+                break;
+            case R.id.change_account:
+                CacheUtils.clearLoginInfo(this);
+                loginContent.setVisibility(View.VISIBLE);
+                setupContent.setVisibility(View.GONE);
+                newUserContent.setVisibility(View.GONE);
+                break;
+            default://ignore
+                break;
+        }
     }
 
     public void displaySnackBar(@StringRes int errorTextId, View.OnClickListener onClickListener) {
@@ -292,6 +327,7 @@ public class OnBoardActivity extends AppCompatActivity {
         protected void onPreExecute() {
             super.onPreExecute();
             setupContent.setVisibility(View.VISIBLE);
+            newUserContent.setVisibility(View.GONE);
             if (snackbar != null) {
                 snackbar.dismiss();
             }
@@ -308,6 +344,7 @@ public class OnBoardActivity extends AppCompatActivity {
                 if (isEmailConfirmed != null && !isEmailConfirmed.isEmpty() && !isEmailConfirmed.equals("null")) {
                     data.setRank(new FetchLeaderBoardData(context).fetchUserRank());
                 }
+
 
                 String gsonString = new Gson().toJson(data, ProfileData.class);
                 SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(context);
@@ -326,7 +363,11 @@ public class OnBoardActivity extends AppCompatActivity {
             String isEmailConfirmed = profileData.getIsEmailConfirmed();
             if (isEmailConfirmed == null || isEmailConfirmed.isEmpty() || isEmailConfirmed.equals("null")) {
                 //ask user check their inbox and confirm mail
-                emailNotConfirmed();
+                handleNewUser(false);
+            } else if (profileData.getLastHeartbeat() == null
+                    || profileData.getLastHeartbeat() == null
+                    || profileData.getLastPluginName() == null) {
+                handleNewUser(true);
             } else {
                 initializeFirebaseUser(profileData);
             }

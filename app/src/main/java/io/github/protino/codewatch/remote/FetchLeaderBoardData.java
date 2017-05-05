@@ -52,7 +52,7 @@ public class FetchLeaderBoardData {
      */
     public boolean execute() {
         long start = System.currentTimeMillis();
-        List<String> jsonDataList = fetchLeaderBoardJson(false);
+        List<String> jsonDataList = fetchLeaderBoardJson();
         if (jsonDataList == null || jsonDataList.isEmpty()) {
             return false;
         }
@@ -77,7 +77,7 @@ public class FetchLeaderBoardData {
      *
      * todo: Remove all this when revamping the app for play store release
      */
-    private List<String> fetchLeaderBoardJson(boolean fetchUserRankOnly) {
+    private List<String> fetchLeaderBoardJson() {
         HttpsURLConnection urlConnection = null;
         BufferedReader reader = null;
 
@@ -245,7 +245,7 @@ public class FetchLeaderBoardData {
         HttpsURLConnection urlConnection = null;
         BufferedReader reader = null;
 
-        String jsonStr = null;
+        String jsonStr;
         try {
 
             final String LEADER_PATH = "leaders";
@@ -294,6 +294,7 @@ public class FetchLeaderBoardData {
             if (currentUser == null) {
                 return -1;
             } else {
+                //if is a new user, it'll result throw JSONException, because rank=null
                 return currentUser.getInt("rank");
             }
 

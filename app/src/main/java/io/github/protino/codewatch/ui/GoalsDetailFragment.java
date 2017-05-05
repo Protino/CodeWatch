@@ -32,6 +32,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.TimeUnit;
 
+import butterknife.BindBool;
 import butterknife.BindColor;
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -70,6 +71,7 @@ public class GoalsDetailFragment extends DialogFragment {
     @BindColor(R.color.green_400) public int green400;
     @BindColor(R.color.red_400) public int red400;
     @BindColor(R.color.colorAccent) public int accentColor;
+    @BindBool(R.bool.isLargeDevice) public boolean isLargeDevice;
     //@formatter:on
 
     private GoalItem goalItem;
@@ -138,7 +140,10 @@ public class GoalsDetailFragment extends DialogFragment {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
             toolbar.setElevation(context.getResources().getDimension(R.dimen.appbar_elevation));
         }
-        handleStatusBar();
+        if(isLargeDevice) {
+            handleStatusBar();
+        }
+
         toolbar.setNavigationOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {

@@ -20,23 +20,33 @@
 			android:fitsSystemWindows="true"
 			app:contentScrim="?attr/colorPrimary"
 			app:expandedTitleTextAppearance="@style/CollapsedAppBarTextStyle"
-			app:layout_scrollFlags="scroll|exitUntilCollapsed">
+			app:layout_scrollFlags="scroll|exitUntilCollapsed|enterAlwaysCollapsed">
 
 			<LinearLayout
 				android:id="@+id/userDetailsContainer"
 				android:layout_width="match_parent"
 				android:layout_height="wrap_content"
-				android:layout_marginBottom="16dp"
-				android:gravity="center"
-				android:orientation="vertical"
-				android:paddingBottom="@dimen/keyLine"
+				android:layout_marginBottom="@dimen/user_detail_container_extra_margin"
+				android:layout_marginEnd="@dimen/extra_side_margin"
+				android:layout_marginStart="@dimen/extra_side_margin"
+				android:baselineAligned="false"
+				android:gravity="center_vertical"
+				android:padding="@dimen/keyLine"
 				app:layout_collapseMode="parallax">
 
 				<include
-					layout="@layout/avatar_container"/>
+					layout="@layout/avatar_container"
+					android:layout_width="0dp"
+					android:layout_height="wrap_content"
+					android:layout_weight="@integer/avatar_container_weight"
+					android:gravity="center_vertical"/>
 
 				<include
-					layout="@layout/user_details"/>
+					layout="@layout/user_details"
+					android:layout_width="0dp"
+					android:layout_height="wrap_content"
+					android:layout_weight="@integer/user_details_weight"
+					android:gravity="center_vertical"/>
 			</LinearLayout>
 
 			<android.support.v7.widget.Toolbar

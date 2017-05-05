@@ -6,8 +6,8 @@
               android:background="?android:attr/selectableItemBackground"
               android:gravity="center"
               android:minHeight="?attr/listPreferredItemHeight"
-              android:paddingEnd="16dp"
-              android:paddingStart="16dp">
+              android:paddingEnd="@dimen/keyLine"
+              android:paddingStart="@dimen/keyLine">
 
 	<TextView
 		android:id="@+id/project_name"

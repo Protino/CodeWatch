@@ -5,8 +5,8 @@
 	android:id="@+id/item_leader_root"
 	android:layout_width="match_parent"
 	android:layout_height="wrap_content"
-	android:layout_marginEnd="16dp"
-	android:layout_marginStart="16dp"
+	android:layout_marginEnd="@dimen/keyLine"
+	android:layout_marginStart="@dimen/keyLine"
 	android:gravity="center_vertical"
 	android:minHeight="?android:listPreferredItemHeight"
 	android:weightSum="10">
@@ -23,18 +23,18 @@
 		android:id="@+id/avatar"
 		android:layout_width="0dp"
 		android:layout_height="match_parent"
-		android:layout_marginEnd="8dp"
-		android:layout_marginRight="8dp"
+		android:layout_marginEnd="@dimen/content_spacing_normal"
+		android:layout_marginRight="@dimen/content_spacing_normal"
 		android:layout_weight="1"
 		android:adjustViewBounds="true"
-		tools:src="@drawable/profile_avatar_placeholder"/>
+		tools:src="@drawable/ic_account_circle_white_24dp"/>
 
 	<TextView
 		android:id="@+id/name"
 		android:layout_width="0dp"
 		android:layout_height="wrap_content"
-		android:layout_marginEnd="8dp"
-		android:layout_marginRight="8dp"
+		android:layout_marginEnd="@dimen/content_spacing_normal"
+		android:layout_marginRight="@dimen/content_spacing_normal"
 		android:layout_weight="6"
 		tools:text="Gurupad M Mamadapur"/>
 
@@ -45,6 +45,6 @@
 		android:layout_weight="2"
 		android:fontFamily="sans-serif-condensed"
 		android:gravity="end"
-		android:textSize="14sp"
+		android:textSize="@dimen/leaderboard_total_seconds_text_size"
 		tools:text="88 h 88 m"/>
 </LinearLayout>

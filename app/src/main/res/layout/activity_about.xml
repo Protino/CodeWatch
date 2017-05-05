@@ -21,7 +21,7 @@
 				android:layout_width="wrap_content"
 				android:layout_height="wrap_content"
 				android:background="?attr/selectableItemBackgroundBorderless"
-				android:padding="16dp"
+				android:padding="@dimen/keyLine"
 				android:src="@drawable/ic_arrow_back_white_24dp"/>
 
 			<ImageButton
@@ -30,15 +30,15 @@
 				android:layout_height="wrap_content"
 				android:layout_gravity="end"
 				android:background="?attr/selectableItemBackgroundBorderless"
-				android:padding="16dp"
+				android:padding="@dimen/keyLine"
 				android:src="@drawable/ic_share_white_24dp"/>
 		</FrameLayout>
 
 		<ImageView
 			android:layout_width="150dp"
-			android:layout_height="150dp"
+			android:layout_height="@dimen/about_app_logo_hw"
 			android:layout_gravity="center"
-			android:paddingTop="16dp"
+			android:paddingTop="@dimen/keyLine"
 			android:src="@mipmap/ic_launcher"/>
 
 		<TextView
@@ -46,7 +46,7 @@
 			android:layout_width="match_parent"
 			android:layout_height="wrap_content"
 			android:gravity="center"
-			android:padding="16dp"
+			android:padding="@dimen/keyLine"
 			android:text="@string/app_name"
 			android:textColor="@color/white_1000"/>
 
@@ -56,13 +56,13 @@
 			android:layout_width="match_parent"
 			android:layout_height="wrap_content"
 			android:gravity="center"
-			android:padding="8dp"
+			android:padding="@dimen/content_spacing_normal"
 			android:textColor="@color/white_1000"
 			android:textStyle="italic"/>
 
 		<android.support.v4.widget.Space
 			android:layout_width="match_parent"
-			android:layout_height="64dp"/>
+			android:layout_height="@dimen/content_spacing_extra_large"/>
 
 		<TextView
 			android:id="@+id/powered_by"
@@ -70,7 +70,7 @@
 			android:linksClickable="true"
 			android:layout_height="match_parent"
 			android:gravity="center|bottom"
-			android:padding="16dp"
+			android:padding="@dimen/keyLine"
 			android:text="@string/powered_by"
 			android:textColor="@color/white_1000"/>
 	</LinearLayout>

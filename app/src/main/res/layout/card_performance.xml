@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="utf-8"?>
+<android.support.v7.widget.CardView
+	xmlns:android="http://schemas.android.com/apk/res/android"
+	xmlns:tools="http://schemas.android.com/tools"
+	android:layout_width="wrap_content"
+	android:layout_height="wrap_content">
+
+	<RelativeLayout
+		android:layout_width="match_parent"
+		android:layout_height="match_parent"
+		android:padding="@dimen/card_padding">
+
+		<TextView
+			android:id="@+id/performance_title"
+			style="@style/Base.TextAppearance.AppCompat.Title"
+			android:layout_width="match_parent"
+			android:layout_height="wrap_content"
+			android:paddingBottom="@dimen/content_spacing_normal"
+			android:text="@string/performance_title"/>
+
+		<TextView
+			android:id="@+id/today_log_percent_text"
+			android:layout_width="match_parent"
+			android:layout_height="wrap_content"
+			android:layout_below="@id/performance_title"
+			android:gravity="center"
+			android:paddingBottom="@dimen/content_spacing_normal"
+			tools:text="Today you logged 7% of your daily average"/>
+
+		<io.github.protino.codewatch.ui.widget.PerformanceBarView
+			android:id="@+id/performance_bar"
+			android:layout_width="match_parent"
+			android:layout_height="wrap_content"
+			android:layout_below="@+id/today_log_percent_text"
+			android:layout_marginBottom="@dimen/content_spacing_normal"
+			android:layout_marginTop="@dimen/content_spacing_normal"/>
+
+		<TextView
+			android:id="@+id/daily_average_text"
+			style="@style/Base.TextAppearance.AppCompat.Subhead"
+			android:layout_width="match_parent"
+			android:layout_height="wrap_content"
+			android:layout_below="@id/performance_bar"
+			android:gravity="center"
+			tools:text="Daily average - 3 hrs 5 min"/>
+	</RelativeLayout>
+</android.support.v7.widget.CardView>

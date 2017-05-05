@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="utf-8"?>
+<FrameLayout
+	xmlns:android="http://schemas.android.com/apk/res/android"
+	xmlns:app="http://schemas.android.com/apk/res-auto"
+	xmlns:tools="http://schemas.android.com/tools"
+	android:id="@+id/avatarContainer"
+	android:layout_width="wrap_content"
+	android:layout_height="wrap_content"
+	android:layout_centerVertical="true"
+	android:paddingTop="@dimen/profile_avatar_top_padding">
+
+	<ImageView
+		android:id="@+id/avatar"
+		android:layout_width="@dimen/profile_avatar_dimen"
+		android:layout_height="@dimen/profile_avatar_dimen"
+		android:layout_gravity="center"
+		android:contentDescription="@string/profile_image_CD"
+		android:padding="@dimen/profile_avatar_padding"
+		android:src="@drawable/ic_account_circle_white_24dp"/>
+
+	<android.support.v7.widget.CardView
+		android:layout_width="wrap_content"
+		android:layout_height="@dimen/profile_rank_container_height"
+		android:layout_gravity="center|bottom"
+		android:minWidth="@dimen/profile_rank_container_min_width"
+		app:cardBackgroundColor="@color/white_1000">
+
+		<!-- Purposefully setting the text size in dp instead of sp-->
+		<TextView
+			android:id="@+id/rank"
+			android:layout_width="wrap_content"
+			android:layout_height="wrap_content"
+			android:layout_gravity="center"
+			android:padding="@dimen/rank_container_text_padding"
+			android:textColor="@color/black_1000"
+			android:textSize="@dimen/rank_text_size"
+			android:textStyle="bold"
+			tools:ignore="SpUsage"
+			tools:text="2"/>
+	</android.support.v7.widget.CardView>
+</FrameLayout>

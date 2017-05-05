@@ -2,10 +2,7 @@ package io.github.protino.codewatch.ui;
 
 import android.content.Context;
 import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
-import android.graphics.Canvas;
 import android.graphics.Color;
-import android.graphics.Paint;
 import android.graphics.drawable.Drawable;
 import android.os.AsyncTask;
 import android.os.Bundle;
@@ -228,7 +225,7 @@ public class DashboardFragment extends ChartFragment implements SwipeRefreshLayo
         }
         if (bitmap != null) {
             //add watermark
-            bitmap = addWaterMark(bitmap);
+            bitmap = UiUtils.addWaterMark(bitmap,context);
 
             try {
                 FileProviderUtils.shareBitmap(context, bitmap);
@@ -238,51 +235,6 @@ public class DashboardFragment extends ChartFragment implements SwipeRefreshLayo
             }
             bitmap.recycle();
         }
-    }
-
-    private Bitmap addWaterMark(Bitmap src) {
-
-        int height = src.getHeight() + UiUtils.dpToPx(32 + 8);
-        int width = src.getWidth();
-
-        Bitmap result = Bitmap.createBitmap(width, height, src.getConfig());
-        Canvas canvas = new Canvas(result);
-        canvas.drawBitmap(src, 0, 0, null);
-
-        int darkGrey = context.getResources().getColor(R.color.grey_900);
-        Bitmap appIcon = BitmapFactory.decodeResource(context.getResources(), R.mipmap.ic_launcher);
-        appIcon = Bitmap.createScaledBitmap(appIcon, UiUtils.dpToPx(32), UiUtils.dpToPx(32), false);
-
-        Paint backgroundPaint = new Paint();
-        backgroundPaint.setColor(Color.WHITE);
-        backgroundPaint.setAntiAlias(true);
-        backgroundPaint.setShadowLayer(6, 2, 2, darkGrey);
-
-        Paint textPaint = new Paint();
-        textPaint.setColor(darkGrey);
-        textPaint.setAntiAlias(true);
-        textPaint.setTextSize(UiUtils.dpToPx(16));
-        textPaint.setFakeBoldText(true);
-
-        Paint appIconPaint = new Paint();
-        appIconPaint.setAntiAlias(true);
-        appIconPaint.setFilterBitmap(true);
-        appIconPaint.setDither(true);
-
-        float srcHeight = src.getHeight();
-        int _4dp = UiUtils.dpToPx(4);
-
-        String watermarkText = context.getString(R.string.app_name);
-        Paint.FontMetrics fontMetrics = textPaint.getFontMetrics();
-        float watermarkTextY = srcHeight + (height - srcHeight) / 2f + (fontMetrics.descent - fontMetrics.ascent) / 2f;
-
-        canvas.drawRect(0, srcHeight, width, height, backgroundPaint);
-        canvas.drawText(watermarkText, (_4dp) * 2 + appIcon.getWidth(), watermarkTextY, textPaint);
-        canvas.drawBitmap(appIcon, _4dp, _4dp + srcHeight, appIconPaint);
-
-        appIcon.recycle();
-        src.recycle();
-        return result;
     }
 
     private void attachValueEventListener() {

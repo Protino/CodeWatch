@@ -8,4 +8,38 @@
 	<dimen name="widget_resize_width">180dp</dimen>
 	<dimen name="widget_min_width">250dp</dimen>
 	<dimen name="appbar_elevation">4dp</dimen>
+	<dimen name="keyLine">16dp</dimen>
+	<dimen name="about_app_logo_hw">150dp</dimen>
+	<dimen name="content_spacing_normal">8dp</dimen>
+	<dimen name="content_spacing_large">16dp</dimen>
+	<dimen name="content_spacing_extra_large">64dp</dimen>
+	<dimen name="login_text_margin">64dp</dimen>
+
+
+	<dimen name="profile_avatar_top_padding">75dp</dimen>
+	<dimen name="profile_avatar_dimen">150dp</dimen>
+	<dimen name="profile_avatar_padding">16dp</dimen>
+	<dimen name="profile_rank_container_height">22dp</dimen>
+
+	<dimen name="profile_rank_container_min_width">22dp</dimen>
+
+	<dimen name="rank_container_text_padding">2dp</dimen>
+	<dimen name="rank_text_size">12dp</dimen>
+	<dimen name="non_first_rank_padding">20dp</dimen>
+	<dimen name="second_rank_avatar_dimen">90dp</dimen>
+	<dimen name="rank_text_container_dimen">22dp</dimen>
+	<dimen name="first_rank_avatar_dimen">100dp</dimen>
+	<dimen name="first_rank_text_container_dimen">24dp</dimen>
+	<dimen name="first_rank_text_size">14dp</dimen>
+	<dimen name="non_first_rank_avatar_dimen">90dp</dimen>
+
+
+	<dimen name="user_detail_container_extra_margin">16dp</dimen>
+	<dimen name="card_padding">16dp</dimen>
+	<dimen name="extra_side_margin">0dp</dimen>
+	<dimen name="leaderboard_total_seconds_text_size">14sp</dimen>
+	<dimen name="navigation_header_top_padding">36dp</dimen>
+	<dimen name="user_rank_avatar_dimen">100dp</dimen>
+	<dimen name="new_user_text_size">18sp</dimen>
+
 </resources>

@@ -6,6 +6,10 @@ import android.os.Bundle;
 import android.preference.Preference;
 import android.preference.PreferenceFragment;
 import android.support.annotation.Nullable;
+import android.view.LayoutInflater;
+import android.view.View;
+import android.view.ViewGroup;
+import android.widget.FrameLayout;
 
 import io.github.protino.codewatch.R;
 import io.github.protino.codewatch.utils.CacheUtils;
@@ -34,6 +38,20 @@ public class SettingsFragment extends PreferenceFragment implements Preference.O
 
         findPreference(prefAboutPageKey).setOnPreferenceClickListener(this);
         findPreference(prefLogoutButtonKey).setOnPreferenceClickListener(this);
+    }
+
+    @Override
+    public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
+        View rootView = super.onCreateView(inflater, container, savedInstanceState);
+        FrameLayout.LayoutParams layoutParams =
+                new FrameLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT);
+
+        int extraSideMargin = (int) context.getResources().getDimension(R.dimen.extra_side_margin);
+        layoutParams.setMargins(extraSideMargin, 0, extraSideMargin, 0);
+        if (rootView != null) {
+            rootView.setLayoutParams(layoutParams);
+        }
+        return rootView;
     }
 
     @Override

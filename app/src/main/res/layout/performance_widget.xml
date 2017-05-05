@@ -14,7 +14,7 @@
 		android:id="@+id/todays_activity"
 		android:layout_width="wrap_content"
 		android:layout_height="wrap_content"
-		android:paddingBottom="8dp"
+		android:paddingBottom="@dimen/content_spacing_normal"
 		tools:text="You coded for 3h 5m today"/>
 
 	<ProgressBar
@@ -22,9 +22,9 @@
 		style="@style/largeProgressBar"
 		android:layout_width="match_parent"
 		android:layout_height="wrap_content"
-		android:paddingBottom="8dp"
-		android:paddingEnd="8dp"
-		android:paddingStart="8dp"
+		android:paddingBottom="@dimen/content_spacing_normal"
+		android:paddingEnd="@dimen/content_spacing_normal"
+		android:paddingStart="@dimen/content_spacing_normal"
 		tools:progress="50"
 		tools:progressTint="@color/green_400"/>
 

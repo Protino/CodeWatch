@@ -3,9 +3,11 @@
               xmlns:tools="http://schemas.android.com/tools"
               android:layout_width="match_parent"
               android:layout_height="match_parent"
-              android:orientation="vertical">
+              android:orientation="vertical"
+              android:padding="@dimen/keyLine">
 
 	<TextView
+		style="@style/Base.TextAppearance.AppCompat.Subhead"
 		android:layout_width="match_parent"
 		android:layout_height="wrap_content"
 		android:text="@string/finish"/>
@@ -14,17 +16,22 @@
 		android:id="@+id/spinner"
 		android:layout_width="match_parent"
 		android:layout_height="wrap_content"
+		android:layout_marginTop="@dimen/content_spacing_normal"
 		android:gravity="center"/>
 
 	<TextView
+		style="@style/Base.TextAppearance.AppCompat.Subhead"
 		android:layout_width="match_parent"
 		android:layout_height="wrap_content"
+		android:layout_marginTop="@dimen/content_spacing_large"
 		android:text="@string/by"/>
 
 	<TextView
 		android:id="@+id/date"
+		style="@style/Base.TextAppearance.AppCompat.Body1"
 		android:layout_width="match_parent"
 		android:layout_height="wrap_content"
+		android:layout_marginTop="@dimen/content_spacing_normal"
 		android:gravity="center"
 		tools:text="14 March 2017"/>
 </LinearLayout>

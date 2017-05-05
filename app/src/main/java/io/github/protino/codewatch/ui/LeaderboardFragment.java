@@ -13,6 +13,7 @@ import android.database.Cursor;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
+import android.support.design.widget.Snackbar;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AlertDialog;
@@ -459,7 +460,7 @@ public class LeaderboardFragment extends Fragment implements DialogInterface.OnS
     private class StoreToDbTask extends AsyncTask<Void, Void, Boolean> {
         private Context context;
 
-        public StoreToDbTask(Context context) {
+        private StoreToDbTask(Context context) {
             this.context = context;
         }
 
@@ -475,13 +476,12 @@ public class LeaderboardFragment extends Fragment implements DialogInterface.OnS
             return fetchLeaderBoardData.execute();
         }
 
-        // TODO: 08-04-2017 Change boolean result to an error code
+        // TODO: 20-05-2017 Change boolean result to an error code
         @Override
         protected void onPostExecute(Boolean result) {
             super.onPostExecute(result);
             if (!result) {
-                swipeRefreshLayout.setRefreshing(true);
-                displayErrorText(context.getString(R.string.internet_error_message)); //Display message appropriate to the result code
+                Snackbar.make(rootView, R.string.internet_error_message, Snackbar.LENGTH_LONG);
             }
         }
     }

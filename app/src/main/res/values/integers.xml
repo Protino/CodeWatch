@@ -1,4 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-	<integer name="widget_update_millis">10800000</integer> <!-- 3 hours - 60*60*3*1000-->
+	<integer name="widget_update_millis">10800000</integer>
+	<integer name="avatar_container_weight">2</integer>
+	<integer name="user_details_weight">3</integer> <!-- 3 hours - 60*60*3*1000-->
 </resources>

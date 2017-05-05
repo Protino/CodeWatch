@@ -2,12 +2,13 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
               android:layout_width="match_parent"
               android:layout_height="match_parent"
+              android:padding="@dimen/keyLine"
               android:animateLayoutChanges="true"
-              android:orientation="vertical"
-              android:padding="16dp">
+              android:orientation="vertical">
 
 	<CheckBox
 		android:id="@+id/filter_rb"
+		style="@style/Base.TextAppearance.AppCompat.Subhead"
 		android:layout_width="match_parent"
 		android:layout_height="wrap_content"
 		android:text="@string/filter_by_language"/>
@@ -16,6 +17,6 @@
 		android:id="@+id/language_autocomplete"
 		android:layout_width="match_parent"
 		android:layout_height="wrap_content"
-		android:layout_marginTop="8dp"
+		android:layout_marginTop="@dimen/content_spacing_normal"
 		android:visibility="gone"/>
 </LinearLayout>

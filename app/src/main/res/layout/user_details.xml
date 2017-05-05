@@ -1,0 +1,64 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+              xmlns:tools="http://schemas.android.com/tools"
+              android:layout_width="match_parent"
+              android:layout_height="wrap_content"
+              android:orientation="vertical">
+
+	<TextView
+		android:id="@+id/username"
+		style="@style/Base.TextAppearance.AppCompat.Headline"
+		android:layout_width="match_parent"
+		android:layout_height="wrap_content"
+		android:gravity="center"
+		android:paddingTop="@dimen/content_spacing_normal"
+		tools:text="Gurupad Mamadapur"/>
+
+	<TextView
+		android:id="@+id/daily_average_text"
+		style="@style/Base.TextAppearance.AppCompat.Subhead"
+		android:layout_width="match_parent"
+		android:layout_height="wrap_content"
+		android:fontFamily="sans-serif-condensed"
+		android:gravity="center"
+		android:paddingTop="@dimen/content_spacing_normal"
+		tools:text="Daily average - 3 hrs 5 m"/>
+	<LinearLayout
+		android:layout_width="wrap_content"
+		android:layout_height="wrap_content"
+		android:layout_gravity="center"
+		android:orientation="vertical"
+		android:paddingTop="@dimen/keyLine">
+
+		<TextView
+			android:id="@+id/email"
+			android:layout_width="wrap_content"
+			android:layout_height="wrap_content"
+			android:drawableLeft="@drawable/ic_email_white_18dp"
+			android:drawablePadding="@dimen/content_spacing_normal"
+			android:drawableStart="@drawable/ic_email_white_18dp"
+			android:padding="@dimen/content_spacing_normal"
+			tools:text="gurupadmadapur@gmail.com"/>
+
+		<TextView
+			android:id="@+id/location"
+			android:layout_width="wrap_content"
+			android:layout_height="wrap_content"
+			android:drawableLeft="@drawable/ic_location_on_white_18dp"
+			android:drawablePadding="@dimen/content_spacing_normal"
+			android:drawableStart="@drawable/ic_location_on_white_18dp"
+			android:padding="@dimen/content_spacing_normal"
+			tools:text="Bangalore, India"/>
+
+
+		<TextView
+			android:id="@+id/website"
+			android:layout_width="wrap_content"
+			android:layout_height="wrap_content"
+			android:drawableLeft="@drawable/ic_link_white_18dp"
+			android:drawablePadding="@dimen/content_spacing_normal"
+			android:drawableStart="@drawable/ic_link_white_18dp"
+			android:padding="@dimen/content_spacing_normal"
+			tools:text="github.com/protino"/>
+	</LinearLayout>
+</LinearLayout>

@@ -64,6 +64,7 @@ import io.github.protino.codewatch.remote.FetchWakatimeData;
 import io.github.protino.codewatch.ui.widget.CustomMarkerView;
 import io.github.protino.codewatch.utils.FileProviderUtils;
 import io.github.protino.codewatch.utils.FormatUtils;
+import io.github.protino.codewatch.utils.UiUtils;
 import timber.log.Timber;
 
 /**
@@ -339,6 +340,8 @@ public class ProjectDetailsFragment extends ChartFragment {
                 break;
         }
         if (bitmap != null) {
+            //add watermark
+            bitmap = UiUtils.addWaterMark(bitmap,context);
             try {
                 FileProviderUtils.shareBitmap(context, bitmap);
             } catch (IOException e) {
