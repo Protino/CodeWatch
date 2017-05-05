@@ -57,6 +57,7 @@ import io.github.protino.codewatch.ui.adapter.LeadersAdapter;
 import io.github.protino.codewatch.utils.CacheUtils;
 import io.github.protino.codewatch.utils.Constants;
 import io.github.protino.codewatch.utils.LanguageValidator;
+import io.github.protino.codewatch.utils.NetworkUtils;
 import io.github.protino.codewatch.utils.UiUtils;
 import timber.log.Timber;
 
@@ -255,6 +256,8 @@ public class LeaderboardFragment extends Fragment implements DialogInterface.OnS
 
     private void loadFilteredChanges() {
         swipeRefreshLayout.setRefreshing(true);
+        swipeRefreshLayout.setVisibility(View.VISIBLE);
+        errorText.setVisibility(View.GONE);
         if (filterState.getCurrentFilterLanguage().equals(FilterState.EMPTY)) {
             //change adapter data to use normal data
             leadersAdapter.swapData(buildDataItems(defaultLeaderItems));
@@ -308,7 +311,12 @@ public class LeaderboardFragment extends Fragment implements DialogInterface.OnS
 
     @Override
     public void onRefresh() {
-        new StoreToDbTask(context).execute();
+        if (NetworkUtils.isNetworkUp(context)) {
+            new StoreToDbTask(context).execute();
+        } else {
+            swipeRefreshLayout.setRefreshing(false);
+            displayErrorText(context.getString(R.string.internet_error_message));
+        }
     }
 
     private class FilterState {
@@ -479,7 +487,6 @@ public class LeaderboardFragment extends Fragment implements DialogInterface.OnS
         // TODO: 20-05-2017 Change boolean result to an error code
         @Override
         protected void onPostExecute(Boolean result) {
-            super.onPostExecute(result);
             if (!result) {
                 Snackbar.make(rootView, R.string.internet_error_message, Snackbar.LENGTH_LONG);
             }

@@ -159,7 +159,7 @@ public class AchievementsUtils {
             positions.add(LOYAL);
         }
         for (Integer bitPosition : positions) {
-            newAchievements |= (1 << bitPosition);
+            newAchievements |= (1L << bitPosition);
         }
         return newAchievements;
     }

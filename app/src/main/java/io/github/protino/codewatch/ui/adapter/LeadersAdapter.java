@@ -43,7 +43,7 @@ public class LeadersAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder
         this.context = context;
         this.dataList = dataList;
         isTopperViewNeeded = dataList.size() >= TOPPER_VIEW_THRESHOLD;
-        rankOffset = (isTopperViewNeeded) ? 3 : 0;
+        rankOffset = (isTopperViewNeeded) ? 3 : 1;
     }
 
     @Override
@@ -127,7 +127,7 @@ public class LeadersAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder
     public void swapData(List<Object> dataList) {
         this.dataList = dataList;
         isTopperViewNeeded = dataList.size() >= TOPPER_VIEW_THRESHOLD;
-        rankOffset = (isTopperViewNeeded) ? 3 : 0;
+        rankOffset = (isTopperViewNeeded) ? 3 : 1;
         notifyDataSetChanged();
     }
 

@@ -225,7 +225,7 @@ public class DashboardFragment extends ChartFragment implements SwipeRefreshLayo
         }
         if (bitmap != null) {
             //add watermark
-            bitmap = UiUtils.addWaterMark(bitmap,context);
+            bitmap = UiUtils.addWaterMark(bitmap, context);
 
             try {
                 FileProviderUtils.shareBitmap(context, bitmap);
@@ -500,6 +500,12 @@ public class DashboardFragment extends ChartFragment implements SwipeRefreshLayo
                 .setAction(getString(R.string.retry), new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
+
+                        //This check is needed when user navigates to other fragments and this fragment is destroyed
+                        if (!isVisible()) {
+                            return;
+                        }
+
                         onRefresh();
                         if (!NetworkUtils.isNetworkUp(context)) {
                             showSnackBar(resId);
@@ -595,7 +601,9 @@ public class DashboardFragment extends ChartFragment implements SwipeRefreshLayo
 
         @Override
         protected void onPostExecute(@Constants.ErrorCodes Integer result) {
-            swipeRefreshLayout.setRefreshing(false);
+            if (swipeRefreshLayout != null) {
+                swipeRefreshLayout.setRefreshing(false);
+            }
             switch (result) {
                 case INTERNET_OFF:
                     showSnackBar(R.string.internet_error_message);

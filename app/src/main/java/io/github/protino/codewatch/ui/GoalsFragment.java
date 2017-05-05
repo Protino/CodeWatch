@@ -34,7 +34,9 @@ import org.greenrobot.eventbus.Subscribe;
 import java.io.IOException;
 import java.lang.reflect.Type;
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 import butterknife.BindBool;
 import butterknife.BindView;
@@ -85,6 +87,7 @@ public class GoalsFragment extends Fragment implements
     private Context context;
     //data
     private List<GoalItem> goalItemList;
+    private Set<String> deletedGoals = new HashSet<>();
     private List<String> projectNames; //project id is irrelevant
     private DatabaseReference projectsDatabaseReference;
     private DatabaseReference goalsDatabaseReference;
@@ -93,6 +96,7 @@ public class GoalsFragment extends Fragment implements
     private ProgressDialog goalDetailProgressDialog;
     private Pair<GoalItem, Integer> tempGoalItem;
     private boolean isReverted = false;
+    private Snackbar deleteSnackbar;
 
     public GoalsFragment() {
     }
@@ -154,7 +158,10 @@ public class GoalsFragment extends Fragment implements
                 public void onDataChange(DataSnapshot dataSnapshot) {
                     goalItemList = new ArrayList<>();
                     for (DataSnapshot child : dataSnapshot.getChildren()) {
-                        goalItemList.add(child.getValue(GoalItem.class));
+                        GoalItem goalItem = child.getValue(GoalItem.class);
+                        if (!deletedGoals.contains(goalItem.getUid())) {
+                            goalItemList.add(goalItem);
+                        }
                     }
                     goalsAdapter.swapData(goalItemList);
                     hideProgressBar(true);
@@ -228,19 +235,25 @@ public class GoalsFragment extends Fragment implements
     }
 
     private void deleteGoalItem(final String uid) {
+        deletedGoals.add(uid);
         tempGoalItem = goalsAdapter.getItemByUid(uid);
 
         //temporary delete
         goalsAdapter.deleteItem(tempGoalItem.second);
 
         isReverted = false;
-        Snackbar.make(rootView, "Goal deleted", Snackbar.LENGTH_LONG)
+        if (deleteSnackbar != null) {
+            isReverted = false;
+            deleteSnackbar.dismiss();
+        }
+        deleteSnackbar = Snackbar.make(rootView, "Goal deleted", Snackbar.LENGTH_LONG)
                 .setAction(R.string.undo, new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
                         //revert the changes
                         goalsAdapter.addItem(tempGoalItem.second, tempGoalItem.first);
                         isReverted = true;
+                        deletedGoals.remove(uid);
                     }
                 })
                 .setCallback(new Snackbar.Callback() {
@@ -252,7 +265,8 @@ public class GoalsFragment extends Fragment implements
                         }
                         super.onDismissed(snackbar, event);
                     }
-                }).show();
+                });
+        deleteSnackbar.show();
     }
 
     @OnClick({R.id.add_goal})

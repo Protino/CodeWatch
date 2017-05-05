@@ -94,9 +94,9 @@ public class CacheUtils {
             editor.putLong(PREF_APP_LAST_USAGE, currentTime);
             editor.putLong(PREF_START_OF_CONSECUTIVE_DAYS, currentTime);
         } else {
-            //First check if it's been more than a day since app last usage
+            //First check if it's been more than a day since last usage
             int days = Days.daysBetween(new DateTime(lastUsageTime), new DateTime(currentTime)).getDays();
-            if (days > 0) {
+            if (days > 1) {
                 editor.putLong(PREF_START_OF_CONSECUTIVE_DAYS, currentTime);
             }
             editor.putLong(PREF_APP_LAST_USAGE, currentTime);
