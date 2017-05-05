@@ -30,6 +30,6 @@ public class TestLeaderContract extends AndroidTestCase {
                 TEST_USER_ID, profileUri.getLastPathSegment());
         assertEquals("Error: Mismatch",
                 profileUri.toString(),
-                "content://io.github.protino.codewatch.app/leader/%2F23g23fv23h4");
+                "content://" + LeaderContract.CONTENT_AUTHORITY + "/leader/%2F23g23fv23h4");
     }
 }

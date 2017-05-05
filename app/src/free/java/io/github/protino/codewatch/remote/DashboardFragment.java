@@ -1,4 +1,4 @@
-package io.github.protino.codewatch.ui;
+package io.github.protino.codewatch.remote;
 
 import android.content.Context;
 import android.graphics.Bitmap;
@@ -62,7 +62,7 @@ import io.github.protino.codewatch.R;
 import io.github.protino.codewatch.model.WakatimeDataWrapper;
 import io.github.protino.codewatch.model.firebase.Stats;
 import io.github.protino.codewatch.model.firebase.User;
-import io.github.protino.codewatch.remote.FetchWakatimeData;
+import io.github.protino.codewatch.ui.ChartFragment;
 import io.github.protino.codewatch.ui.adapter.StatsAdapter;
 import io.github.protino.codewatch.ui.widget.CustomMarkerView;
 import io.github.protino.codewatch.ui.widget.PerformanceBarView;

@@ -20,12 +20,14 @@ import android.content.ContentUris;
 import android.net.Uri;
 import android.provider.BaseColumns;
 
+import io.github.protino.codewatch.BuildConfig;
+
 /**
  * Defines table and column names for the weather database.
  */
 public class LeaderContract {
 
-    public static final String CONTENT_AUTHORITY = "io.github.protino.codewatch.app";
+    public static final String CONTENT_AUTHORITY = BuildConfig.APPLICATION_ID + ".leaderProvider";
 
     public static final Uri BASE_CONTENT_URI = Uri.parse("content://" + CONTENT_AUTHORITY);
 

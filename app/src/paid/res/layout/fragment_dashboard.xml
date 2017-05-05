@@ -1,0 +1,64 @@
+<RelativeLayout
+	xmlns:android="http://schemas.android.com/apk/res/android"
+	android:layout_width="match_parent"
+	android:layout_height="match_parent"
+	android:layout_marginEnd="@dimen/extra_side_margin"
+	android:layout_marginStart="@dimen/extra_side_margin">
+	<android.support.v4.widget.SwipeRefreshLayout
+		android:id="@+id/swipe_refresh"
+		android:layout_width="match_parent"
+		android:layout_height="wrap_content">
+
+		<ScrollView
+			android:id="@+id/scroll_view"
+			android:layout_width="match_parent"
+			android:layout_height="wrap_content"
+			android:paddingBottom="@dimen/content_spacing_large"
+			android:scrollbarSize="0dp"
+			android:scrollbars="none">
+
+			<RelativeLayout
+				android:layout_width="match_parent"
+				android:layout_height="wrap_content"
+				android:layout_margin="@dimen/keyLine">
+
+				<include
+					android:id="@+id/card_activity"
+					layout="@layout/card_coding_activity"/>
+
+				<include
+					android:id="@+id/card_performance"
+					layout="@layout/card_performance"
+					android:layout_width="match_parent"
+					android:layout_height="wrap_content"
+					android:layout_below="@id/card_activity"
+					android:layout_marginTop="@dimen/content_spacing_large"/>
+
+				<include
+					android:id="@+id/card_languages_stats"
+					layout="@layout/card_language_stats"
+					android:layout_width="match_parent"
+					android:layout_height="wrap_content"
+					android:layout_below="@id/card_performance"
+					android:layout_marginTop="@dimen/content_spacing_large"/>
+
+				<include
+					android:id="@+id/card_editors_stats"
+					layout="@layout/card_editor_stats"
+					android:layout_width="match_parent"
+					android:layout_height="wrap_content"
+					android:layout_below="@id/card_languages_stats"
+					android:layout_marginTop="@dimen/content_spacing_large"/>
+
+				<include
+					android:id="@+id/card_os_stats"
+					layout="@layout/card_os_stats"
+					android:layout_width="match_parent"
+					android:layout_height="wrap_content"
+					android:layout_below="@id/card_editors_stats"
+					android:layout_marginBottom="@dimen/content_spacing_large"
+					android:layout_marginTop="@dimen/content_spacing_large"/>
+			</RelativeLayout>
+		</ScrollView>
+	</android.support.v4.widget.SwipeRefreshLayout>
+</RelativeLayout>

@@ -65,10 +65,12 @@
 
 		<provider
 			android:name=".data.LeaderProvider"
-			android:authorities="io.github.protino.codewatch.app"/>
+			android:authorities="${applicationId}.leaderProvider"
+			android:exported="false"/>
+
 		<provider
 			android:name="android.support.v4.content.FileProvider"
-			android:authorities="io.github.protino.codewatch.fileprovider"
+			android:authorities="${applicationId}.fileProvider"
 			android:exported="false"
 			android:grantUriPermissions="true">
 			<meta-data

@@ -10,6 +10,7 @@ import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
 
+import io.github.protino.codewatch.BuildConfig;
 import io.github.protino.codewatch.R;
 
 /**
@@ -28,10 +29,10 @@ public final class FileProviderUtils {
      */
     private static final String IMAGE_EXTENSION = ".png";
 
-    private static final String FILE_PROVIDER_AUTHORITY = "io.github.protino.codewatch.fileprovider";
+    private static final String FILE_PROVIDER_AUTHORITY = BuildConfig.APPLICATION_ID+".fileProvider";
 
     public static void shareBitmap(Context context, Bitmap bitmap) throws IOException {
-        final String imageName = "/"+String.valueOf(System.currentTimeMillis());
+        final String imageName = "/" + String.valueOf(System.currentTimeMillis());
 
         //First save the bitmap to cache directory
         File directory = new File(context.getCacheDir(), CACHE_DIR_NAME);
