@@ -1,3 +1,19 @@
+/*
+ * Copyright 2017 Gurupad Mamadapur
+ *
+ *    Licensed under the Apache License, Version 2.0 (the "License");
+ *    you may not use this file except in compliance with the License.
+ *    You may obtain a copy of the License at
+ *
+ *        http://www.apache.org/licenses/LICENSE-2.0
+ *
+ *    Unless required by applicable law or agreed to in writing, software
+ *    distributed under the License is distributed on an "AS IS" BASIS,
+ *    WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ *    See the License for the specific language governing permissions and
+ *    limitations under the License.
+ */
+
 package io.github.protino.codewatch.model.firebase;
 
 import java.io.Serializable;
@@ -10,19 +26,18 @@ import java.util.Map;
 
 public class Stats implements Serializable{
 
-
-    private Boolean isUpToDate;
-    private String startDate;
-    private String endDate;
-    private String bestDayDate;
-    private Integer bestDaySeconds;
-    private Integer dailyAverageSeconds;
-    private Integer totalSeconds;
-    private Integer todaysTotalSeconds;
-    private List<Map<String, Integer>> projectPairList;
-    private Map<String, Integer> languagesMap;
-    private Map<String, Integer> osMap;
-    private Map<String, Integer> editorsMap;
+    public Boolean isUpToDate;
+    public String startDate;
+    public String endDate;
+    public String bestDayDate;
+    public Integer bestDaySeconds;
+    public Integer dailyAverageSeconds;
+    public Integer totalSeconds;
+    public Integer todaysTotalSeconds;
+    public List<Map<String, Integer>> projectPairList;
+    public Map<String, Integer> languagesMap;
+    public Map<String, Integer> osMap;
+    public Map<String, Integer> editorsMap;
 
     public Stats() {
     }

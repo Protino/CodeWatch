@@ -1,3 +1,19 @@
+/*
+ * Copyright 2017 Gurupad Mamadapur
+ *
+ *    Licensed under the Apache License, Version 2.0 (the "License");
+ *    you may not use this file except in compliance with the License.
+ *    You may obtain a copy of the License at
+ *
+ *        http://www.apache.org/licenses/LICENSE-2.0
+ *
+ *    Unless required by applicable law or agreed to in writing, software
+ *    distributed under the License is distributed on an "AS IS" BASIS,
+ *    WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ *    See the License for the specific language governing permissions and
+ *    limitations under the License.
+ */
+
 package io.github.protino.codewatch.utils;
 
 import android.annotation.SuppressLint;
@@ -32,6 +48,8 @@ import static io.github.protino.codewatch.utils.Constants.SILVER_BADGE;
 import static io.github.protino.codewatch.utils.Constants.SILVER_BADGES;
 
 /**
+ * Helper class to work with achievements
+ *
  * @author Gurupad Mamadapur
  */
 
@@ -87,6 +105,12 @@ public class AchievementsUtils {
         return badgeItems;
     }
 
+    /**
+     *
+     * @param currentAchievements user achievements long value
+     * @param badgeType type of the badge whose count is needed
+     * @return number of badges unlocked of type {@code badgeType}
+     */
     public static int getBadgeCount(long currentAchievements, @BadgeItem.BadgeType int badgeType) {
         int count = 0;
         int[] positions;
@@ -111,6 +135,11 @@ public class AchievementsUtils {
         return count;
     }
 
+    /**
+     * @param rank current rank in the leaderboard
+     * @param dailyAverage coding average
+     * @return new achievements value
+     */
     public static long checkAchievements(int rank, int dailyAverage) {
         List<Integer> positions = new ArrayList<>();
 
@@ -148,6 +177,10 @@ public class AchievementsUtils {
         return newAchievements;
     }
 
+    /**
+     * @param consecutiveDays number of days the app was opened consecutively
+     * @return new achievements value
+     */
     public static long checkUsageAchievements(int consecutiveDays) {
         List<Integer> positions = new ArrayList<>();
         long newAchievements = 0;

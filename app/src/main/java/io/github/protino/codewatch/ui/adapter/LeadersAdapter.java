@@ -1,3 +1,19 @@
+/*
+ * Copyright 2017 Gurupad Mamadapur
+ *
+ *    Licensed under the Apache License, Version 2.0 (the "License");
+ *    you may not use this file except in compliance with the License.
+ *    You may obtain a copy of the License at
+ *
+ *        http://www.apache.org/licenses/LICENSE-2.0
+ *
+ *    Unless required by applicable law or agreed to in writing, software
+ *    distributed under the License is distributed on an "AS IS" BASIS,
+ *    WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ *    See the License for the specific language governing permissions and
+ *    limitations under the License.
+ */
+
 package io.github.protino.codewatch.ui.adapter;
 
 import android.content.Context;
@@ -35,7 +51,12 @@ public class LeadersAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder
     private static final int DEFAULT_ITEM_TYPE = 1;
     private final Context context;
     private List<Object> dataList;
+
+    /**
+     * true, if the number of items to display is greater than TOPPER_VIEW_THRESHOLD
+     */
     private boolean isTopperViewNeeded;
+
     private int rankOffset;
     private OnItemSelectedListener onItemSelectedListener;
 
@@ -43,6 +64,8 @@ public class LeadersAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder
         this.context = context;
         this.dataList = dataList;
         isTopperViewNeeded = dataList.size() >= TOPPER_VIEW_THRESHOLD;
+
+        //rankOffset decides rank value, +3 if toppers are display else +1
         rankOffset = (isTopperViewNeeded) ? 3 : 1;
     }
 
@@ -131,19 +154,23 @@ public class LeadersAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder
         notifyDataSetChanged();
     }
 
-    public int getItemPositionById(String keyId) {
+    /**
+     * @param keyUserId
+     * @return Position of the item
+     */
+    public int getItemPositionById(String keyUserId) {
         int beginIndex = 0;
         if (isTopperViewNeeded) {
             beginIndex = 1;
             TopperItem topperItem = (TopperItem) dataList.get(0);
             for (DefaultLeaderItem leaderItem : topperItem.getDefaultLeaderItems()) {
-                if (leaderItem.getUserId().equals(keyId)) {
+                if (leaderItem.getUserId().equals(keyUserId)) {
                     return 0;
                 }
             }
         }
         for (int i = beginIndex; i < dataList.size(); i++) {
-            if (((DefaultLeaderItem) dataList.get(i)).getUserId().equals(keyId)) {
+            if (((DefaultLeaderItem) dataList.get(i)).getUserId().equals(keyUserId)) {
                 return i;
             }
         }
@@ -195,7 +222,7 @@ public class LeadersAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder
                 default:
                     break;
             }
-            if(onItemSelectedListener!=null){
+            if (onItemSelectedListener != null) {
                 onItemSelectedListener.onItemSelected(leaderItem.getUserId());
             }
         }
@@ -219,7 +246,7 @@ public class LeadersAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder
         @OnClick(R.id.item_leader_root)
         public void onClick() {
             DefaultLeaderItem leaderItem = (DefaultLeaderItem) dataList.get(getAdapterPosition());
-            if(onItemSelectedListener!=null){
+            if (onItemSelectedListener != null) {
                 onItemSelectedListener.onItemSelected(leaderItem.getUserId());
             }
         }

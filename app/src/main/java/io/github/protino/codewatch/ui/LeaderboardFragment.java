@@ -1,3 +1,19 @@
+/*
+ * Copyright 2017 Gurupad Mamadapur
+ *
+ *    Licensed under the Apache License, Version 2.0 (the "License");
+ *    you may not use this file except in compliance with the License.
+ *    You may obtain a copy of the License at
+ *
+ *        http://www.apache.org/licenses/LICENSE-2.0
+ *
+ *    Unless required by applicable law or agreed to in writing, software
+ *    distributed under the License is distributed on an "AS IS" BASIS,
+ *    WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ *    See the License for the specific language governing permissions and
+ *    limitations under the License.
+ */
+
 package io.github.protino.codewatch.ui;
 
 import android.annotation.SuppressLint;
@@ -14,6 +30,7 @@ import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.design.widget.Snackbar;
+import android.support.v4.app.ActivityOptionsCompat;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AlertDialog;
@@ -68,7 +85,6 @@ import timber.log.Timber;
 public class LeaderboardFragment extends Fragment implements DialogInterface.OnShowListener,
         LoaderManager.LoaderCallbacks<Cursor>, LeadersAdapter.OnItemSelectedListener, SwipeRefreshLayout.OnRefreshListener {
 
-
     private static final int LOADER_ID = 100;
     //@formatter:off
     @BindView(R.id.leaders_list) RecyclerView recyclerView;
@@ -82,12 +98,13 @@ public class LeaderboardFragment extends Fragment implements DialogInterface.OnS
     private Unbinder unbinder;
     private LanguageValidator validator;
     private View dialogView;
-    private AutoCompleteTextView autoCompleteTextView;
-    private List<DefaultLeaderItem> defaultLeaderItems;
-    private List<DefaultLeaderItem> filteredLeaderItems;
     private CheckBox filteredCheckbox;
     private Context context;
     private LeadersAdapter leadersAdapter;
+    private AutoCompleteTextView autoCompleteTextView;
+
+    private List<DefaultLeaderItem> defaultLeaderItems;
+    private List<DefaultLeaderItem> filteredLeaderItems;
 
     private FilterState filterState;
     private String userId;
@@ -125,7 +142,9 @@ public class LeaderboardFragment extends Fragment implements DialogInterface.OnS
                 .setNegativeButton(R.string.cancel, null);
         dialog = builder.create();
         dialog.setOnShowListener(this);
-        loadResultsFromProvider();
+
+        getLoaderManager().initLoader(LOADER_ID, null, this);
+
         swipeRefreshLayout.setOnRefreshListener(this);
         return rootView;
     }
@@ -133,7 +152,18 @@ public class LeaderboardFragment extends Fragment implements DialogInterface.OnS
     @Override
     public void onActivityCreated(@Nullable Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
-        setActionBarTitle("Leaderboard");
+        setActionBarTitle(context.getString(R.string.leaderboards));
+    }
+
+    @Override
+    public void onDestroyView() {
+        unbinder.unbind();
+        super.onDestroyView();
+    }
+
+    @Override
+    public void onDestroy() {
+        super.onDestroy();
     }
 
 
@@ -167,22 +197,15 @@ public class LeaderboardFragment extends Fragment implements DialogInterface.OnS
     }
 
     @Override
-    public void onDestroyView() {
-        unbinder.unbind();
-        super.onDestroyView();
-    }
-
-    @Override
-    public void onDestroy() {
-        super.onDestroy();
-    }
-
-    @Override
     public void onShow(final DialogInterface dialog) {
         Button button = ((AlertDialog) dialog).getButton(AlertDialog.BUTTON_POSITIVE);
         button.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+
+                /* If a filter checkbox is enabled and filter parameters are changed reload
+                   to affect the changes
+                 */
 
                 if (filteredCheckbox.isChecked()) {
                     autoCompleteTextView.performValidation();
@@ -198,10 +221,6 @@ public class LeaderboardFragment extends Fragment implements DialogInterface.OnS
         });
     }
 
-    private void loadResultsFromProvider() {
-        getLoaderManager().initLoader(LOADER_ID, null, this);
-    }
-
     @Override
     public Loader<Cursor> onCreateLoader(int id, Bundle args) {
         return new CursorLoader(context,
@@ -215,6 +234,13 @@ public class LeaderboardFragment extends Fragment implements DialogInterface.OnS
     @Override
     public void onLoadFinished(Loader<Cursor> loader, Cursor data) {
         if (data != null) {
+            /*
+             Filtering the cursor is hard and inefficient in this case
+             because internally the data on which filter parameters effect are
+             serialized.
+
+             Hence deserialize the data and filter quickly
+             */
             new DeserializeCursorTask().execute(data);
         }
     }
@@ -227,25 +253,31 @@ public class LeaderboardFragment extends Fragment implements DialogInterface.OnS
         filteredLeaderItems = new ArrayList<>();
     }
 
+
+    private void initializeData() {
+        filterState = new FilterState();
+        defaultLeaderItems = new ArrayList<>();
+        filteredLeaderItems = new ArrayList<>();
+    }
+
     private void createLeaderDialog() {
         autoCompleteTextView =
                 (AutoCompleteTextView) dialogView.findViewById(R.id.language_autocomplete);
-        filteredCheckbox = (CheckBox) dialogView.findViewById(R.id.filter_rb);
-        validator = new LanguageValidator(context, autoCompleteTextView, validLanguages);
         autoCompleteTextView.setAdapter(new ArrayAdapter<>(
                 getActivity(), android.R.layout.simple_dropdown_item_1line, validLanguages));
+
         validator = new LanguageValidator(getActivity(), autoCompleteTextView, validLanguages);
         autoCompleteTextView.setValidator(validator);
         autoCompleteTextView.setOnFocusChangeListener(new FocusListener());
         autoCompleteTextView.setThreshold(1);
-
-
         autoCompleteTextView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 autoCompleteTextView.showDropDown();
             }
         });
+
+        filteredCheckbox = (CheckBox) dialogView.findViewById(R.id.filter_rb);
         filteredCheckbox.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
             @Override
             public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
@@ -283,11 +315,6 @@ public class LeaderboardFragment extends Fragment implements DialogInterface.OnS
         return resultList;
     }
 
-    private void initializeData() {
-        filterState = new FilterState();
-        defaultLeaderItems = new ArrayList<>();
-        filteredLeaderItems = new ArrayList<>();
-    }
 
     public void displayErrorText(String text) {
         swipeRefreshLayout.setVisibility(View.GONE);
@@ -304,9 +331,11 @@ public class LeaderboardFragment extends Fragment implements DialogInterface.OnS
 
     @Override
     public void onItemSelected(String userId) {
+        ActivityOptionsCompat options =
+                ActivityOptionsCompat.makeSceneTransitionAnimation(getActivity());
         Intent intent = new Intent(context, ProfileActivity.class);
         intent.putExtra(Intent.EXTRA_TEXT, userId);
-        startActivity(intent);
+        startActivity(intent, options.toBundle());
     }
 
     @Override
@@ -319,20 +348,25 @@ public class LeaderboardFragment extends Fragment implements DialogInterface.OnS
         }
     }
 
+    /**
+     * Holds data current state of the filter - empty
+     * or that there has been a change in the filterlanguage so the list
+     * is reloaded to display the changes
+     */
     private class FilterState {
 
-        public static final String EMPTY = "";
+        private static final String EMPTY = "";
         private String currentFilterLanguage;
 
         private FilterState() {
             currentFilterLanguage = EMPTY;
         }
 
-        public String getCurrentFilterLanguage() {
+        private String getCurrentFilterLanguage() {
             return currentFilterLanguage;
         }
 
-        public void setCurrentFilterLanguage(String language) {
+        private void setCurrentFilterLanguage(String language) {
             if (!currentFilterLanguage.equals(language)) {
                 currentFilterLanguage = language;
                 loadFilteredChanges();
@@ -418,6 +452,11 @@ public class LeaderboardFragment extends Fragment implements DialogInterface.OnS
         }
     }
 
+
+    /**
+     * Filter the data items based on the filter language selected and sort
+     * by total seconds spent on that language
+     */
     private class FilterLeaderBoardTask extends AsyncTask<String, Void, List<Object>> {
 
         private String filterLanguage;
@@ -465,6 +504,14 @@ public class LeaderboardFragment extends Fragment implements DialogInterface.OnS
         }
     }
 
+    /**
+     * Fetch new data from wakatime API endpoint
+     * <p>
+     * //Note : Due to recent changes in the API endpoint, this task takes lots of time
+     * todo: --
+     * Since the leaderboard is same to everyone setup a custom API endpoint on a custom
+     * server that serves filtered leaderboard and also checks for achievements periodically.
+     */
     private class StoreToDbTask extends AsyncTask<Void, Void, Boolean> {
         private Context context;
 

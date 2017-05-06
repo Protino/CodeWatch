@@ -1,3 +1,19 @@
+/*
+ * Copyright 2017 Gurupad Mamadapur
+ *
+ *    Licensed under the Apache License, Version 2.0 (the "License");
+ *    you may not use this file except in compliance with the License.
+ *    You may obtain a copy of the License at
+ *
+ *        http://www.apache.org/licenses/LICENSE-2.0
+ *
+ *    Unless required by applicable law or agreed to in writing, software
+ *    distributed under the License is distributed on an "AS IS" BASIS,
+ *    WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ *    See the License for the specific language governing permissions and
+ *    limitations under the License.
+ */
+
 package io.github.protino.codewatch.ui;
 
 import android.app.DialogFragment;
@@ -36,6 +52,7 @@ import butterknife.BindBool;
 import butterknife.BindColor;
 import butterknife.BindView;
 import butterknife.ButterKnife;
+import butterknife.Unbinder;
 import io.github.protino.codewatch.R;
 import io.github.protino.codewatch.model.GoalItem;
 import io.github.protino.codewatch.model.firebase.LanguageGoal;
@@ -52,6 +69,8 @@ import static io.github.protino.codewatch.utils.Constants.PROJECT_DAILY_GOAL;
 import static io.github.protino.codewatch.utils.Constants.PROJECT_DEADLINE_GOAL;
 
 /**
+ * Displays details of the goal depending on its type.
+ *
  * @author Gurupad Mamadapur
  */
 
@@ -63,17 +82,15 @@ public class GoalsDetailFragment extends DialogFragment {
     @BindView(R.id.remainingDays) public TextView remainingDays;
     @BindView(R.id.progressBar) public PerformanceBarView progressBarView;
     @BindView(R.id.goal_chart) public BarChart goalBarChart;
-    @BindView(R.id.toolbar) Toolbar toolbar;
-    @BindView(R.id.status_bar) View statusBar;
-
     @BindColor(R.color.blue_400) public int blue400;
     @BindColor(R.color.window_background) public int windowColor;
     @BindColor(R.color.green_400) public int green400;
     @BindColor(R.color.red_400) public int red400;
     @BindColor(R.color.colorAccent) public int accentColor;
     @BindBool(R.bool.isLargeDevice) public boolean isLargeDevice;
+    @BindView(R.id.toolbar) Toolbar toolbar;
+    @BindView(R.id.status_bar) View statusBar;
     //@formatter:on
-
     private GoalItem goalItem;
     private int goalType;
     private LanguageGoal languageGoal;
@@ -82,6 +99,7 @@ public class GoalsDetailFragment extends DialogFragment {
     private long referenceTime;
 
     private OnDeleteListener onDeleteListener;
+    private Unbinder unbinder;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -116,7 +134,7 @@ public class GoalsDetailFragment extends DialogFragment {
 
         context = getActivity();
 
-        ButterKnife.bind(this, rootView);
+        unbinder = ButterKnife.bind(this, rootView);
         switch (goalType) {
             case LANGUAGE_GOAL:
                 goalText.setText(context.getString(
@@ -137,11 +155,18 @@ public class GoalsDetailFragment extends DialogFragment {
                 throw new IllegalArgumentException("Incorrect goal type");
         }
 
+        // Display fake status bar only on smaller layout because it is open as a separate fragment.
+        if (!isLargeDevice) {
+            handleStatusBar();
+        }
+        setUpToolbar();
+
+        return rootView;
+    }
+
+    private void setUpToolbar() {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
             toolbar.setElevation(context.getResources().getDimension(R.dimen.appbar_elevation));
-        }
-        if(isLargeDevice) {
-            handleStatusBar();
         }
 
         toolbar.setNavigationOnClickListener(new View.OnClickListener() {
@@ -160,10 +185,17 @@ public class GoalsDetailFragment extends DialogFragment {
                 return false;
             }
         });
-
-        return rootView;
     }
 
+    @Override
+    public void onDestroyView() {
+        unbinder.unbind();
+        super.onDestroyView();
+    }
+
+    /**
+     * Set the height of the status bar appropriately
+     */
     private void handleStatusBar() {
         statusBar.setLayoutParams(
                 new LinearLayout.LayoutParams(
@@ -174,12 +206,14 @@ public class GoalsDetailFragment extends DialogFragment {
 
         BarData barData = generateBarData(dailyGoal, progressSoFar);
 
+        //Set up a limit line indicating the goal
         LimitLine limitLine = new LimitLine(dailyGoal * 60 * 60, context.getString(R.string.goal));
         limitLine.setLineWidth(4f);
         limitLine.setLineColor(blue400);
         limitLine.setTextSize(12f);
         limitLine.setTextColor(Color.WHITE);
 
+        //Format Xaxis
         XAxis xAxis = goalBarChart.getXAxis();
         xAxis.setPosition(XAxis.XAxisPosition.BOTTOM);
         xAxis.setDrawGridLines(false);
@@ -189,6 +223,7 @@ public class GoalsDetailFragment extends DialogFragment {
         xAxis.setValueFormatter(new FormatUtils().getBarXAxisValueFormatterInstance(referenceTime));
         xAxis.setAxisLineWidth(2f);
 
+        //Format Yaxis
         YAxis leftAxis = goalBarChart.getAxisLeft();
         leftAxis.removeAllLimitLines();
         leftAxis.addLimitLine(limitLine);
@@ -199,25 +234,27 @@ public class GoalsDetailFragment extends DialogFragment {
         leftAxis.setValueFormatter(new IAxisValueFormatter() {
             @Override
             public String getFormattedValue(float value, AxisBase axis) {
+
+                /* Do not display zero value and format the value as time*/
                 return (value == 0)
                         ? "" : FormatUtils.getFormattedTime(context, (int) value);
             }
         });
         leftAxis.setAxisLineWidth(2f);
 
+        //Set a maximum value on purpose so that marker view is visible
         int maximum;
         int maxYData = (int) TimeUnit.SECONDS.toHours((long) Math.ceil(barData.getYMax()));
-
         maximum = (maxYData > dailyGoal) ? maxYData : dailyGoal;
-
         maximum += 2;
-
         leftAxis.setAxisMaximum(maximum * 60 * 60);
         leftAxis.setAxisMinimum(0f);
 
+        // Setup a marker view to display details of the selected dataItem
         CustomMarkerView customMarkerView = new CustomMarkerView(context, R.layout.marker_view, referenceTime);
         goalBarChart.setMarker(customMarkerView);
 
+        // Disable interactions
         goalBarChart.getAxisRight().setEnabled(false);
         goalBarChart.getLegend().setEnabled(false);
         goalBarChart.getDescription().setEnabled(false);

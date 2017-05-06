@@ -1,3 +1,19 @@
+/*
+ * Copyright 2017 Gurupad Mamadapur
+ *
+ *    Licensed under the Apache License, Version 2.0 (the "License");
+ *    you may not use this file except in compliance with the License.
+ *    You may obtain a copy of the License at
+ *
+ *        http://www.apache.org/licenses/LICENSE-2.0
+ *
+ *    Unless required by applicable law or agreed to in writing, software
+ *    distributed under the License is distributed on an "AS IS" BASIS,
+ *    WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ *    See the License for the specific language governing permissions and
+ *    limitations under the License.
+ */
+
 package io.github.protino.codewatch.ui;
 
 import android.app.Fragment;
@@ -45,6 +61,8 @@ import io.github.protino.codewatch.utils.CacheUtils;
 import io.github.protino.codewatch.utils.NetworkUtils;
 
 /**
+ * Displays all the projects of the user
+ *
  * @author Gurupad Mamadapur
  */
 
@@ -81,18 +99,10 @@ public class ProjectsFragment extends Fragment implements SearchView.OnQueryText
         setRetainInstance(true);
     }
 
-    @Override
-    public void onSaveInstanceState(Bundle outState) {
-        super.onSaveInstanceState(outState);
-        Icepick.saveInstanceState(this, outState);
-    }
-
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-
         Icepick.restoreInstanceState(this, savedInstanceState);
-
         rootView = inflater.inflate(R.layout.fragment_projects, container, false);
         unbinder = ButterKnife.bind(this, rootView);
         hideProgressBar(false);
@@ -105,7 +115,7 @@ public class ProjectsFragment extends Fragment implements SearchView.OnQueryText
                 .child("users").child(firebaseUid).child("projects");
 
         projectTimeSpentRef = firebaseDatabase.getReference()
-                .child("users").child(firebaseUid).child("timeSpentOnProjects"); // case
+                .child("users").child(firebaseUid).child("timeSpentOnProjects"); // case!
 
         initializeData();
         projectsAdapter = new ProjectsAdapter(context, projectItemList);
@@ -132,6 +142,12 @@ public class ProjectsFragment extends Fragment implements SearchView.OnQueryText
     public void onDestroyView() {
         unbinder.unbind();
         super.onDestroyView();
+    }
+
+    @Override
+    public void onSaveInstanceState(Bundle outState) {
+        super.onSaveInstanceState(outState);
+        Icepick.saveInstanceState(this, outState);
     }
 
     @Override

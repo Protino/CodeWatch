@@ -1,3 +1,19 @@
+/*
+ * Copyright 2017 Gurupad Mamadapur
+ *
+ *    Licensed under the Apache License, Version 2.0 (the "License");
+ *    you may not use this file except in compliance with the License.
+ *    You may obtain a copy of the License at
+ *
+ *        http://www.apache.org/licenses/LICENSE-2.0
+ *
+ *    Unless required by applicable law or agreed to in writing, software
+ *    distributed under the License is distributed on an "AS IS" BASIS,
+ *    WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ *    See the License for the specific language governing permissions and
+ *    limitations under the License.
+ */
+
 package io.github.protino.codewatch.utils;
 
 import android.support.annotation.IntDef;
@@ -10,17 +26,19 @@ import io.github.protino.codewatch.R;
 import io.github.protino.codewatch.data.LeaderContract;
 
 /**
+ * These constant are not subject to localization. Hence it is much better
+ * to store them here instead of string.xml which requires a context to fetch
+ *
  * @author Gurupad Mamadapur
  */
 
 public final class Constants {
 
     /* Oauth related constants */
-    public static final String REDIRECT_URI = "codewatch://callback";
     public static final String PREF_ACCESS_CODE = "pref_access_code";
     public static final String PREF_CODE_STATE = "pref_state";
     public static final String PREF_ACCESS_TOKEN = "pref_access_token";
-    public static final String SCHEME = "codewatch";
+
     /* Stats range */
     public static final String _7_DAYS = "last_7_days";
     public static final String _30_DAYS = "last_30_days";
@@ -68,7 +86,6 @@ public final class Constants {
     public static final int COL_PHOTO_URL = 5;
     public static final int COL_DAILY_AVERAGE = 6;
     public static final int COL_RANK = 7;
-
 
     public static final String[] LEADER_COLUMNS = {
             LeaderContract.LeaderEntry._ID,

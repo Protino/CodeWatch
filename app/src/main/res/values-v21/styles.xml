@@ -1,4 +1,20 @@
 <?xml version="1.0" encoding="utf-8"?>
+<!--
+  ~ Copyright 2017 Gurupad Mamadapur
+  ~
+  ~    Licensed under the Apache License, Version 2.0 (the "License");
+  ~    you may not use this file except in compliance with the License.
+  ~    You may obtain a copy of the License at
+  ~
+  ~        http://www.apache.org/licenses/LICENSE-2.0
+  ~
+  ~    Unless required by applicable law or agreed to in writing, software
+  ~    distributed under the License is distributed on an "AS IS" BASIS,
+  ~    WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+  ~    See the License for the specific language governing permissions and
+  ~    limitations under the License.
+  -->
+
 <resources>
 
 	<style name="AppTheme.Drawer" parent="AppTheme">
@@ -6,4 +22,17 @@
 		<item name="android:statusBarColor">@android:color/transparent</item>
 		<item name="android:windowContentTransitions">true</item>
 	</style>
+
+	<style name="AppTheme.Profile" parent="AppTheme.Drawer">
+		<item name="android:windowContentTransitions">true</item>
+		<item name="android:windowEnterTransition">@transition/profile_window_transition</item>
+		<item name="android:windowExitTransition">@transition/profile_window_transition</item>
+	</style>
+
+	<style name="AppTheme.About" parent="AppTheme">
+		<item name="android:windowContentTransitions">true</item>
+		<item name="android:windowEnterTransition">@transition/about_window_transition</item>
+		<item name="android:windowExitTransition">@transition/about_window_transition</item>
+	</style>
+
 </resources>

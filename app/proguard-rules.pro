@@ -18,42 +18,14 @@
 
 # Uncomment this to preserve the line number information for
 # debugging stack traces.
-#-keepattributes SourceFile,LineNumberTable
+-keepattributes SourceFile,LineNumberTable
+-useuniqueclassmembernames
 
 # If you keep the line number information, uncomment this to
 # hide the original source file name.
-#-renamesourcefileattribute SourceFile
+-renamesourcefileattribute SourceFile
 
--keep class com.squareup.okhttp.** { *; }
--keep class retrofit.** { *; }
--keep interface com.squareup.okhttp.** { *; }
--keep class com.google.api.client.googleapis.extensions.gms.auth.**{ *; }
--keep class com.firebase.** { *; }
--keep class org.shaded.apache.** { *; }
--keepnames class com.shaded.fasterxml.jackson.** { *; }
--keepnames class javax.servlet.** { *; }
--keepnames class org.ietf.jgss.** { *; }
--dontwarn org.w3c.dom.**
--dontwarn org.joda.time.**
--dontwarn org.shaded.apache.**
--dontwarn org.ietf.jgss.**
-
--dontwarn com.squareup.okhttp.**
--dontwarn okio.**
--dontwarn retrofit.**
--dontwarn retrofit2.**
--dontwarn rx.**
--dontwarn com.google.**
--dontwarn org.joda.**
-
--keepclasseswithmembers class * {
-    @retrofit.http.* <methods>;
-}
-
--keepattributes Exceptions
-
--keepattributes Signature
-
+## Butterknife
 # Retain generated class which implement Unbinder.
 -keep public class * implements butterknife.Unbinder { public <init>(**, android.view.View); }
 
@@ -62,3 +34,65 @@
 -keep class butterknife.*
 -keepclasseswithmembernames class * { @butterknife.* <methods>; }
 -keepclasseswithmembernames class * { @butterknife.* <fields>; }
+
+
+## Retrofit
+# Platform calls Class.forName on types which do not exist on Android to determine platform.
+-dontnote retrofit2.Platform
+# Platform used when running on Java 8 VMs. Will not be used at runtime.
+-dontwarn retrofit2.Platform$Java8
+# Retain generic type information for use by reflection by converters and adapters.
+-keepattributes Signature
+# Retain declared checked exceptions for use by a Proxy instance.
+-keepattributes Exceptions
+-dontwarn okio.**
+
+
+
+##Icepick
+-dontwarn icepick.**
+-keep class icepick.** { *; }
+-keep class **$$Icepick { *; }
+-keepclasseswithmembernames class * {
+    @icepick.* <fields>;
+}
+-keepnames class * { @icepick.State *;}
+
+##Event bus
+-keepattributes *Annotation*
+-keepclassmembers class ** {
+    @org.greenrobot.eventbus.Subscribe <methods>;
+}
+-keep enum org.greenrobot.eventbus.ThreadMode { *; }
+
+# Only required if you use AsyncExecutor
+-keepclassmembers class * extends org.greenrobot.eventbus.util.ThrowableFailureEvent {
+    <init>(java.lang.Throwable);
+}
+
+
+##Firebase
+-keep class com.firebase.** { *; }
+-keep class org.apache.** { *; }
+-keepnames class com.fasterxml.jackson.** { *; }
+-keepnames class javax.servlet.** { *; }
+-keepnames class org.ietf.jgss.** { *; }
+-dontwarn org.w3c.dom.**
+-dontwarn org.joda.time.**
+-dontwarn org.shaded.apache.**
+-dontwarn org.ietf.jgss.**
+-keep class com.shaded.fasterxml.jackson.** { *; }
+-keepnames class io.github.protino.codewatch.model.**
+-keepnames class io.github.protino.codewatch.model.firebase.**
+-keepclassmembers class io.github.protino.codewatch.model.** { *; }
+-keepclassmembers class io.github.protino.codewatch.model.firebase.** { *; }
+
+
+# Hide warnings about references to newer platforms in the library
+-dontwarn android.support.v7.**
+# don't process support library
+-keep class android.support.v7.** { *; }
+-keep interface android.support.v7.** { *; }
+
+
+

@@ -1,3 +1,19 @@
+/*
+ * Copyright 2017 Gurupad Mamadapur
+ *
+ *    Licensed under the Apache License, Version 2.0 (the "License");
+ *    you may not use this file except in compliance with the License.
+ *    You may obtain a copy of the License at
+ *
+ *        http://www.apache.org/licenses/LICENSE-2.0
+ *
+ *    Unless required by applicable law or agreed to in writing, software
+ *    distributed under the License is distributed on an "AS IS" BASIS,
+ *    WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ *    See the License for the specific language governing permissions and
+ *    limitations under the License.
+ */
+
 package io.github.protino.codewatch.ui;
 
 import android.app.Fragment;
@@ -14,6 +30,7 @@ import android.preference.PreferenceManager;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.design.widget.NavigationView;
+import android.support.v4.app.ActivityOptionsCompat;
 import android.support.v4.graphics.drawable.RoundedBitmapDrawable;
 import android.support.v4.graphics.drawable.RoundedBitmapDrawableFactory;
 import android.support.v4.widget.DrawerLayout;
@@ -56,8 +73,7 @@ import static io.github.protino.codewatch.utils.Constants.GOLD_BADGE;
 import static io.github.protino.codewatch.utils.Constants.SILVER_BADGE;
 
 /**
- * This activity handles setting up the navigation drawer
- * fragment
+ * This activity handles setting up the navigation drawer fragment
  *
  * @author Gurupad Mamadapur
  */
@@ -81,7 +97,6 @@ public class NavigationDrawerActivity extends AppCompatActivity implements
     //@formatter:on
     private ActionBarDrawerToggle drawerToggler;
     private SharedPreferences sharedPreferences;
-
 
     private DatabaseReference achievementsDatabaseRef;
     private ValueEventListener valueEventListener;
@@ -143,9 +158,6 @@ public class NavigationDrawerActivity extends AppCompatActivity implements
         Icepick.saveInstanceState(this, outState);
         super.onSaveInstanceState(outState);
     }
-
-
-
 
     private void attachValueEventListener() {
         if (valueEventListener == null) {
@@ -222,9 +234,12 @@ public class NavigationDrawerActivity extends AppCompatActivity implements
         navigationHeader.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+
+                ActivityOptionsCompat options =
+                        ActivityOptionsCompat.makeSceneTransitionAnimation(NavigationDrawerActivity.this);
                 Intent intent = new Intent(NavigationDrawerActivity.this, ProfileActivity.class);
                 intent.putExtra(Intent.EXTRA_TEXT, getWakatimeUid());
-                startActivity(intent);
+                startActivity(intent, options.toBundle());
             }
         });
     }

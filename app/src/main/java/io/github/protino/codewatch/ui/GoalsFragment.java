@@ -1,3 +1,19 @@
+/*
+ * Copyright 2017 Gurupad Mamadapur
+ *
+ *    Licensed under the Apache License, Version 2.0 (the "License");
+ *    you may not use this file except in compliance with the License.
+ *    You may obtain a copy of the License at
+ *
+ *        http://www.apache.org/licenses/LICENSE-2.0
+ *
+ *    Unless required by applicable law or agreed to in writing, software
+ *    distributed under the License is distributed on an "AS IS" BASIS,
+ *    WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ *    See the License for the specific language governing permissions and
+ *    limitations under the License.
+ */
+
 package io.github.protino.codewatch.ui;
 
 import android.app.Fragment;
@@ -42,6 +58,7 @@ import butterknife.BindBool;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
+import butterknife.Unbinder;
 import icepick.Icepick;
 import icepick.State;
 import io.github.protino.codewatch.R;
@@ -85,6 +102,7 @@ public class GoalsFragment extends Fragment implements
     private View rootView;
     private GoalsAdapter goalsAdapter;
     private Context context;
+
     //data
     private List<GoalItem> goalItemList;
     private Set<String> deletedGoals = new HashSet<>();
@@ -97,6 +115,7 @@ public class GoalsFragment extends Fragment implements
     private Pair<GoalItem, Integer> tempGoalItem;
     private boolean isReverted = false;
     private Snackbar deleteSnackbar;
+    private Unbinder unbinder;
 
     public GoalsFragment() {
     }
@@ -108,17 +127,11 @@ public class GoalsFragment extends Fragment implements
         Icepick.restoreInstanceState(this, savedInstanceState);
     }
 
-    @Override
-    public void onSaveInstanceState(Bundle outState) {
-        super.onSaveInstanceState(outState);
-        Icepick.saveInstanceState(this, outState);
-    }
-
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         rootView = inflater.inflate(R.layout.fragment_goals, container, false);
-        ButterKnife.bind(this, rootView);
+        unbinder = ButterKnife.bind(this, rootView);
         hideProgressBar(false);
         fab.setVisibility(View.INVISIBLE);
 
@@ -143,12 +156,96 @@ public class GoalsFragment extends Fragment implements
         EventBus.getDefault().register(this);
     }
 
-
     @Override
     public void onPause() {
         EventBus.getDefault().unregister(this);
         detachListeners();
         super.onPause();
+    }
+
+    @Override
+    public void onDestroyView() {
+        unbinder.unbind();
+        super.onDestroyView();
+    }
+
+    @Override
+    public void onSaveInstanceState(Bundle outState) {
+        super.onSaveInstanceState(outState);
+        Icepick.saveInstanceState(this, outState);
+    }
+
+    @OnClick({R.id.add_goal})
+    public void addGoal() {
+        AddGoalFragment addGoalFragment = new AddGoalFragment();
+        Bundle bundle = new Bundle();
+        Type type = new TypeToken<List<String>>() {
+        }.getType();
+        bundle.putString(Intent.EXTRA_TEXT, new Gson().toJson(projectNames, type));
+        addGoalFragment.setArguments(bundle);
+        addGoalFragment.show(getActivity().getFragmentManager(), ADD_GOAL_TAG);
+    }
+
+    @Override
+    public void onGoalItemClicked(GoalItem goalItem) {
+        if (!NetworkUtils.isNetworkUp(context)) {
+            displayInternetErrorSnackBar();
+            return;
+        }
+
+        goalDetailProgressDialog = new ProgressDialog(context);
+        goalDetailProgressDialog.setMessage(context.getString(R.string.loading_goal_details));
+        goalDetailProgressDialog.setCancelable(false);
+        goalDetailProgressDialog.setCanceledOnTouchOutside(false);
+        goalDetailProgressDialog.show();
+
+        switch (goalItem.getType()) {
+            case LANGUAGE_GOAL:
+                new FetchTimeSpentOnLanguageTask(goalItem).execute();
+                break;
+            case PROJECT_DAILY_GOAL:
+                new FetchTimeSpentOnProjectTask(goalItem).execute();
+                break;
+            case PROJECT_DEADLINE_GOAL:
+                ProjectGoal projectGoal = new ProjectGoal();
+                projectGoal.setProjectName(goalItem.getName());
+                projectGoal.setDeadline(goalItem.getData());
+                projectGoal.setStartDate(goalItem.getExtraData());
+                String gsonData = new Gson().toJson(projectGoal, ProjectGoal.class);
+                onGoalDetailsDownloaded(gsonData, goalItem);
+                break;
+            default:
+                throw new IllegalArgumentException("Incorrect goal item");
+        }
+    }
+
+    @Subscribe
+    public void onGoalItemAdded(GoalItem goalItem) {
+        if (goalsAdapter.isDuplicate(goalItem)) {
+            Toast.makeText(context, R.string.duplicate_goal_message, Toast.LENGTH_SHORT).show();
+            return;
+        }
+        goalsAdapter.addItem(goalItem);
+        goalsDatabaseReference.child(goalItem.getUid()).setValue(goalItem);
+
+        //set on track achievement
+        ((NavigationDrawerActivity) getActivity()).newAchievementUnlocked(1L << Constants.FOCUSED);
+    }
+
+    @Override
+    public void onDeleteSelected(GoalItem goalItem) {
+        deleteGoalItem(goalItem.getUid());
+    }
+
+    private void initializeData() {
+        goalItemList = new ArrayList<>();
+        projectNames = new ArrayList<>();
+
+        FirebaseDatabase firebaseDatabase = FirebaseDatabase.getInstance();
+        projectsDatabaseReference = firebaseDatabase.getReference()
+                .child("users").child(firebaseUid).child("projects");
+        goalsDatabaseReference = firebaseDatabase.getReference()
+                .child("goals").child(firebaseUid);
     }
 
     private void attachListeners() {
@@ -207,17 +304,6 @@ public class GoalsFragment extends Fragment implements
         }
     }
 
-    private void initializeData() {
-        goalItemList = new ArrayList<>();
-        projectNames = new ArrayList<>();
-
-        FirebaseDatabase firebaseDatabase = FirebaseDatabase.getInstance();
-        projectsDatabaseReference = firebaseDatabase.getReference()
-                .child("users").child(firebaseUid).child("projects");
-        goalsDatabaseReference = firebaseDatabase.getReference()
-                .child("goals").child(firebaseUid);
-    }
-
     private void setUpSwipeToDelete() {
         new ItemTouchHelper(new ItemTouchHelper.SimpleCallback(0, ItemTouchHelper.END) {
 
@@ -228,7 +314,6 @@ public class GoalsFragment extends Fragment implements
 
             @Override
             public void onSwiped(RecyclerView.ViewHolder viewHolder, int direction) {
-                // TODO: 13-04-2017 remove redundant deletion
                 deleteGoalItem(goalsAdapter.getItem(viewHolder.getAdapterPosition()));
             }
         }).attachToRecyclerView(recyclerView);
@@ -246,7 +331,7 @@ public class GoalsFragment extends Fragment implements
             isReverted = false;
             deleteSnackbar.dismiss();
         }
-        deleteSnackbar = Snackbar.make(rootView, "Goal deleted", Snackbar.LENGTH_LONG)
+        deleteSnackbar = Snackbar.make(rootView, R.string.goal_deleted, Snackbar.LENGTH_LONG)
                 .setAction(R.string.undo, new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
@@ -269,53 +354,16 @@ public class GoalsFragment extends Fragment implements
         deleteSnackbar.show();
     }
 
-    @OnClick({R.id.add_goal})
-    public void addGoal() {
-        AddGoalFragment addGoalFragment = new AddGoalFragment();
-        Bundle bundle = new Bundle();
-        Type type = new TypeToken<List<String>>() {
-        }.getType();
-        bundle.putString(Intent.EXTRA_TEXT, new Gson().toJson(projectNames, type));
-        addGoalFragment.setArguments(bundle);
-        addGoalFragment.show(getActivity().getFragmentManager(), ADD_GOAL_TAG);
+    private void hideProgressBar(Boolean hide) {
+        progressBar.setVisibility(hide ? View.INVISIBLE : View.VISIBLE);
+        recyclerView.setVisibility(hide ? View.VISIBLE : View.INVISIBLE);
     }
 
-    @Override
-    public void onGoalItemClicked(GoalItem goalItem) {
-        if (!NetworkUtils.isNetworkUp(context)) {
-            displayInternetErrorSnackBar();
-            return;
-        }
-
-        goalDetailProgressDialog = new ProgressDialog(context);
-        goalDetailProgressDialog.setMessage(context.getString(R.string.loading_goal_details));
-        goalDetailProgressDialog.setCancelable(false);
-        goalDetailProgressDialog.setCanceledOnTouchOutside(false);
-        goalDetailProgressDialog.show();
-
-        switch (goalItem.getType()) {
-            case LANGUAGE_GOAL:
-                new FetchTimeSpentOnLanguageTask(goalItem).execute();
-                break;
-            case PROJECT_DAILY_GOAL:
-                new FetchTimeSpentOnProjectTask(goalItem).execute();
-                break;
-            case PROJECT_DEADLINE_GOAL:
-                ProjectGoal projectGoal = new ProjectGoal();
-                projectGoal.setProjectName(goalItem.getName());
-                projectGoal.setDeadline(goalItem.getData());
-                projectGoal.setStartDate(goalItem.getExtraData());
-                String gsonData = new Gson().toJson(projectGoal, ProjectGoal.class);
-                onGoalDetailsDownloaded(gsonData, goalItem);
-                break;
-            default:
-                throw new IllegalArgumentException("Incorrect goal item");
-        }
-
-
+    private void displayInternetErrorSnackBar() {
+        Snackbar.make(rootView, R.string.internet_error_message, Snackbar.LENGTH_LONG).show();
     }
 
-    public void onGoalDetailsDownloaded(String dataString, GoalItem goalItem) {
+    private void onGoalDetailsDownloaded(String dataString, GoalItem goalItem) {
         goalDetailProgressDialog.dismiss();
         Bundle bundle = new Bundle();
         bundle.putString(GOAL_ITEM_KEY, new Gson().toJson(goalItem, GoalItem.class));
@@ -332,33 +380,6 @@ public class GoalsFragment extends Fragment implements
             fragmentTransaction.setTransition(FragmentTransaction.TRANSIT_FRAGMENT_OPEN);
             fragmentTransaction.add(android.R.id.content, fragment).addToBackStack(null).commit();
         }
-    }
-
-    @Subscribe
-    public void onGoalItemAdded(GoalItem goalItem) {
-        if (goalsAdapter.isDuplicate(goalItem)) {
-            Toast.makeText(context, R.string.duplicate_goal_message, Toast.LENGTH_SHORT).show();
-            return;
-        }
-        goalsAdapter.addItem(goalItem);
-        goalsDatabaseReference.child(goalItem.getUid()).setValue(goalItem);
-
-        //set on track achievement
-        ((NavigationDrawerActivity) getActivity()).newAchievementUnlocked(1L << Constants.FOCUSED);
-    }
-
-    private void hideProgressBar(Boolean hide) {
-        progressBar.setVisibility(hide ? View.INVISIBLE : View.VISIBLE);
-        recyclerView.setVisibility(hide ? View.VISIBLE : View.INVISIBLE);
-    }
-
-    @Override
-    public void onDeleteSelected(GoalItem goalItem) {
-        deleteGoalItem(goalItem.getUid());
-    }
-
-    private void displayInternetErrorSnackBar() {
-        Snackbar.make(rootView, R.string.internet_error_message, Snackbar.LENGTH_LONG).show();
     }
 
     private class FetchTimeSpentOnLanguageTask extends AsyncTask<Void, Void, List<Integer>> {

@@ -1,8 +1,25 @@
+/*
+ * Copyright 2017 Gurupad Mamadapur
+ *
+ *    Licensed under the Apache License, Version 2.0 (the "License");
+ *    you may not use this file except in compliance with the License.
+ *    You may obtain a copy of the License at
+ *
+ *        http://www.apache.org/licenses/LICENSE-2.0
+ *
+ *    Unless required by applicable law or agreed to in writing, software
+ *    distributed under the License is distributed on an "AS IS" BASIS,
+ *    WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ *    See the License for the specific language governing permissions and
+ *    limitations under the License.
+ */
+
 package io.github.protino.codewatch.ui;
 
 import android.app.Fragment;
 import android.content.Context;
 import android.graphics.Color;
+import android.support.annotation.IntDef;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.View;
@@ -18,6 +35,8 @@ import com.github.mikephil.charting.formatter.PercentFormatter;
 import com.github.mikephil.charting.highlight.Highlight;
 import com.github.mikephil.charting.utils.ViewPortHandler;
 
+import java.lang.annotation.Retention;
+import java.lang.annotation.RetentionPolicy;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
@@ -29,11 +48,12 @@ import io.github.protino.codewatch.model.PieChartItem;
 import io.github.protino.codewatch.ui.adapter.StatsAdapter;
 
 /**
+ * Abstract class that handles setup of pie charts
+ *
  * @author Gurupad Mamadapur
  */
 
 public abstract class ChartFragment extends Fragment {
-
 
     public static final int LANGUAGE_CHART_ID = 1;
     public static final int OS_CHART_ID = 3;
@@ -47,7 +67,13 @@ public abstract class ChartFragment extends Fragment {
     private List<PieChartItem> editorDataItems = new ArrayList<>();
     private List<PieChartItem> osDataItems = new ArrayList<>();
 
-    public void setUpPieChart(PieChart pieChart, Map<String, Integer> chartData, int chartType) {
+
+    /**
+     * @param pieChart  that needs to be setup
+     * @param chartData data that will displayed on the chart
+     * @param chartType type of the chart
+     */
+    public void setUpPieChart(PieChart pieChart, Map<String, Integer> chartData, @PieChartType int chartType) {
         formatPieChart(pieChart);
         formatPieChartLegend(pieChart.getLegend());
         List<PieChartItem> pieChartItems = setUpData(chartData);
@@ -69,7 +95,7 @@ public abstract class ChartFragment extends Fragment {
         }
     }
 
-    public void setUpOnExpandRecyclerView(RecyclerView recyclerView, int chartType) {
+    public void setUpOnExpandRecyclerView(RecyclerView recyclerView, @PieChartType int chartType) {
         recyclerView.setLayoutManager(new LinearLayoutManager(context, LinearLayoutManager.VERTICAL, false));
 
         switch (chartType) {
@@ -164,7 +190,7 @@ public abstract class ChartFragment extends Fragment {
         legend.setDrawInside(false);
     }
 
-    protected void toggleListViewVisibility(boolean expand, RecyclerView view, int chartType) {
+    protected void toggleListViewVisibility(boolean expand, RecyclerView view, @PieChartType int chartType) {
         StatsAdapter adapter = new StatsAdapter(context, new ArrayList<PieChartItem>(), "");
 
         switch (chartType) {
@@ -212,6 +238,15 @@ public abstract class ChartFragment extends Fragment {
         this.context = context;
     }
 
+    @Retention(RetentionPolicy.SOURCE)
+    @IntDef({LANGUAGE_CHART_ID, OS_CHART_ID, EDITORS_CHART_ID})
+    @interface PieChartType {
+    }
+
+    /**
+     * Restricting data values lower than "3". So that they do not overlap
+     * or obfuscate other data values when displayed
+     */
     private class CustomPercentFormatter extends PercentFormatter {
         @Override
         public String getFormattedValue(float value, AxisBase axis) {
@@ -231,4 +266,5 @@ public abstract class ChartFragment extends Fragment {
             }
         }
     }
+
 }

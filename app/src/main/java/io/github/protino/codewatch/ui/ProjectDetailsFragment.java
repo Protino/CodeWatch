@@ -1,3 +1,19 @@
+/*
+ * Copyright 2017 Gurupad Mamadapur
+ *
+ *    Licensed under the Apache License, Version 2.0 (the "License");
+ *    you may not use this file except in compliance with the License.
+ *    You may obtain a copy of the License at
+ *
+ *        http://www.apache.org/licenses/LICENSE-2.0
+ *
+ *    Unless required by applicable law or agreed to in writing, software
+ *    distributed under the License is distributed on an "AS IS" BASIS,
+ *    WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ *    See the License for the specific language governing permissions and
+ *    limitations under the License.
+ */
+
 package io.github.protino.codewatch.ui;
 
 import android.content.Context;
@@ -68,12 +84,13 @@ import io.github.protino.codewatch.utils.UiUtils;
 import timber.log.Timber;
 
 /**
+ * Display details of the project
+ *
  * @author Gurupad Mamadapur
  */
 
 public class ProjectDetailsFragment extends ChartFragment {
 
-    private static final String SAMPLE_PROJECT_ID = "0f626e4d-8f24-4320-a355-0614d6b3aab2";
     //@formatter:off
     //languages
     @BindView(R.id.piechart_languages) public PieChart pieChartLanguages;
@@ -157,6 +174,72 @@ public class ProjectDetailsFragment extends ChartFragment {
         super.onDestroyView();
     }
 
+    @Override
+    public void onSaveInstanceState(Bundle outState) {
+        super.onSaveInstanceState(outState);
+        if (scrollView != null) {
+            scrollPosition = scrollView.getScrollY();
+        }
+        Icepick.saveInstanceState(this, outState);
+    }
+
+    @OnClick({R.id.expand_piechart_editors, R.id.expand_piechart_language, R.id.expand_piechart_os})
+    public void onExpand(View view) {
+        boolean isExpanded = isExpandedMap.get(view.getId());
+        Drawable drawable = ContextCompat.getDrawable(context,
+                isExpanded ? R.drawable.ic_expand_more_white_24dp : R.drawable.ic_expand_less_white_24dp);
+        isExpandedMap.put(view.getId(), !isExpanded);
+        switch (view.getId()) {
+            case R.id.expand_piechart_language:
+                expandLanguages.setImageDrawable(drawable);
+                handleHighlights(pieChartLanguages, isExpanded);
+                toggleListViewVisibility(!isExpanded, languagesListview, LANGUAGE_CHART_ID);
+                break;
+            case R.id.expand_piechart_editors:
+                expandEditors.setImageDrawable(drawable);
+                handleHighlights(pieChartEditors, isExpanded);
+                toggleListViewVisibility(!isExpanded, editorsListView, EDITORS_CHART_ID);
+                break;
+            case R.id.expand_piechart_os:
+                expandOs.setImageDrawable(drawable);
+                handleHighlights(pieChartEditors, isExpanded);
+                toggleListViewVisibility(!isExpanded, osListview, OS_CHART_ID);
+                break;
+            default://ignore
+                break;
+        }
+    }
+
+    @OnClick({R.id.share_activity_chart, R.id.share_editors_chart, R.id.share_language_chart, R.id.share_os_chart})
+    public void onShareClick(View view) {
+        Bitmap bitmap = null;
+        switch (view.getId()) {
+            case R.id.share_activity_chart:
+                bitmap = barChart.getChartBitmap();
+                break;
+            case R.id.share_editors_chart:
+                bitmap = pieChartEditors.getChartBitmap();
+                break;
+            case R.id.share_language_chart:
+                bitmap = pieChartLanguages.getChartBitmap();
+                break;
+            case R.id.share_os_chart:
+                bitmap = pieChartOs.getChartBitmap();
+                break;
+            default:
+                break;
+        }
+        if (bitmap != null) {
+            //add watermark
+            bitmap = UiUtils.addWaterMark(bitmap, context);
+            try {
+                FileProviderUtils.shareBitmap(context, bitmap);
+            } catch (IOException e) {
+                Timber.d(e, "IO Error while saving image");
+                Toast.makeText(context, R.string.share_error, Toast.LENGTH_SHORT).show();
+            }
+        }
+    }
 
     private void hideProgressBar(boolean hide) {
         progressBarLayout.setVisibility(hide ? View.GONE : View.VISIBLE);
@@ -251,16 +334,6 @@ public class ProjectDetailsFragment extends ChartFragment {
         barChart.animateY(1500, Easing.EasingOption.Linear);
     }
 
-    @Override
-    public void onSaveInstanceState(Bundle outState) {
-        super.onSaveInstanceState(outState);
-        if (scrollView != null) {
-            scrollPosition = scrollView.getScrollY();
-        }
-        Icepick.saveInstanceState(this, outState);
-    }
-
-
     private BarData generateBarData(List<Integer> progressSoFar) {
 
         ArrayList<BarEntry> barEntries = new ArrayList<>(progressSoFar.size());
@@ -293,64 +366,11 @@ public class ProjectDetailsFragment extends ChartFragment {
         pieChartOs.setOnChartValueSelectedListener(new CustomOnValueSelectedListener(OS_CHART_ID));
     }
 
-    @OnClick({R.id.expand_piechart_editors, R.id.expand_piechart_language, R.id.expand_piechart_os})
-    public void onExpand(View view) {
-        boolean isExpanded = isExpandedMap.get(view.getId());
-        Drawable drawable = ContextCompat.getDrawable(context,
-                isExpanded ? R.drawable.ic_expand_more_white_24dp : R.drawable.ic_expand_less_white_24dp);
-        isExpandedMap.put(view.getId(), !isExpanded);
-        switch (view.getId()) {
-            case R.id.expand_piechart_language:
-                expandLanguages.setImageDrawable(drawable);
-                handleHighlights(pieChartLanguages, isExpanded);
-                toggleListViewVisibility(!isExpanded, languagesListview, LANGUAGE_CHART_ID);
-                break;
-            case R.id.expand_piechart_editors:
-                expandEditors.setImageDrawable(drawable);
-                handleHighlights(pieChartEditors, isExpanded);
-                toggleListViewVisibility(!isExpanded, editorsListView, EDITORS_CHART_ID);
-                break;
-            case R.id.expand_piechart_os:
-                expandOs.setImageDrawable(drawable);
-                handleHighlights(pieChartEditors, isExpanded);
-                toggleListViewVisibility(!isExpanded, osListview, OS_CHART_ID);
-                break;
-            default://ignore
-                break;
-        }
-    }
-
-    @OnClick({R.id.share_activity_chart, R.id.share_editors_chart, R.id.share_language_chart, R.id.share_os_chart})
-    public void onShareClick(View view) {
-        Bitmap bitmap = null;
-        switch (view.getId()) {
-            case R.id.share_activity_chart:
-                bitmap = barChart.getChartBitmap();
-                break;
-            case R.id.share_editors_chart:
-                bitmap = pieChartEditors.getChartBitmap();
-                break;
-            case R.id.share_language_chart:
-                bitmap = pieChartLanguages.getChartBitmap();
-                break;
-            case R.id.share_os_chart:
-                bitmap = pieChartOs.getChartBitmap();
-                break;
-            default:
-                break;
-        }
-        if (bitmap != null) {
-            //add watermark
-            bitmap = UiUtils.addWaterMark(bitmap,context);
-            try {
-                FileProviderUtils.shareBitmap(context, bitmap);
-            } catch (IOException e) {
-                Timber.d(e, "IO Error while saving image");
-                Toast.makeText(context, R.string.share_error, Toast.LENGTH_SHORT).show();
-            }
-        }
-    }
-
+    /**
+     * Fetch project details dynamically from the API endpoint.
+     * Note:// Actually the API endpoint does not expose any such functionality
+     * todo:// request api developers to add such functionality
+     */
     private class FetchProjectDetails extends AsyncTask<String, Void, Project> {
 
         /* IMPORTANT! For some reason the api endpoint of wakatime requires project name
@@ -451,6 +471,9 @@ public class ProjectDetailsFragment extends ChartFragment {
         }
     }
 
+    /**
+     * Handles expanding the recylcer view when  a particular item is clicked on the chart
+     */
     private class CustomOnValueSelectedListener implements OnChartValueSelectedListener {
 
         private int CHART_ID;

@@ -1,3 +1,19 @@
+/*
+ * Copyright 2017 Gurupad Mamadapur
+ *
+ *    Licensed under the Apache License, Version 2.0 (the "License");
+ *    you may not use this file except in compliance with the License.
+ *    You may obtain a copy of the License at
+ *
+ *        http://www.apache.org/licenses/LICENSE-2.0
+ *
+ *    Unless required by applicable law or agreed to in writing, software
+ *    distributed under the License is distributed on an "AS IS" BASIS,
+ *    WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ *    See the License for the specific language governing permissions and
+ *    limitations under the License.
+ */
+
 package io.github.protino.codewatch.model.firebase;
 
 import java.io.Serializable;
@@ -10,13 +26,13 @@ import java.util.Map;
 
 public class Project implements Serializable {
 
-    private String id;
-    private String name;
-    private String publicUrl;
-    private List<Integer> timeSpent; // ending with user's current date, max is 7 days
-    private Map<String, Integer> languageList;
-    private Map<String, Integer> osPairList;
-    private Map<String, Integer> editorPaiList;
+    public String id;
+    public String name;
+    public String publicUrl;
+    public List<Integer> timeSpent; // ending with user's current date, max is 7 days
+    public Map<String, Integer> languageList;
+    public Map<String, Integer> osPairList;
+    public Map<String, Integer> editorPaiList;
 
     public Project() {
     }

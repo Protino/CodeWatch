@@ -1,3 +1,19 @@
+/*
+ * Copyright 2017 Gurupad Mamadapur
+ *
+ *    Licensed under the Apache License, Version 2.0 (the "License");
+ *    you may not use this file except in compliance with the License.
+ *    You may obtain a copy of the License at
+ *
+ *        http://www.apache.org/licenses/LICENSE-2.0
+ *
+ *    Unless required by applicable law or agreed to in writing, software
+ *    distributed under the License is distributed on an "AS IS" BASIS,
+ *    WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ *    See the License for the specific language governing permissions and
+ *    limitations under the License.
+ */
+
 package io.github.protino.codewatch.utils;
 
 import android.content.Context;
@@ -22,7 +38,9 @@ import static io.github.protino.codewatch.utils.Constants.PREF_START_OF_CONSECUT
 import static io.github.protino.codewatch.utils.Constants.PREF_WAKATIME_USER_ID;
 
 /**
- * Created by Gurupad Mamadapur on 10-03-2017.
+ * Helper class to fetch data from {@link SharedPreferences}
+ *
+ * @author Gurupad Mamadapur
  */
 
 public class CacheUtils {
@@ -57,6 +75,10 @@ public class CacheUtils {
         return currentTime < expiryTime;
     }
 
+    /**
+     * @param context needed to fetch defaultSharedPreferences
+     * @return access token
+     */
     public static AccessToken getAccessToken(Context context) {
         SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(context);
         String accessTokenJson = sharedPreferences.getString(PREF_ACCESS_TOKEN, null);
@@ -66,6 +88,10 @@ public class CacheUtils {
         return new Gson().fromJson(accessTokenJson, AccessToken.class);
     }
 
+    /**
+     * @param context needed to fetch defaultSharedPreferences
+     * @return true if firebase account is setup and data fields are initialized
+     */
     public static boolean isFireBaseSetup(Context context) {
         SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(context);
         String uid = sharedPreferences.getString(PREF_FIREBASE_USER_ID, null);
@@ -74,14 +100,27 @@ public class CacheUtils {
         return uid != null && updated;
     }
 
+    /**
+     * @param context needed to fetch defaultSharedPreferences
+     * @return firebase userId
+     */
     public static String getFirebaseUserId(Context context) {
         return PreferenceManager.getDefaultSharedPreferences(context).getString(PREF_FIREBASE_USER_ID, null);
     }
 
+    /**
+     * @param context needed to fetch defaultSharedPreferences
+     * @return wakatime userId
+     */
     public static String getWakatimeUserId(Context context) {
         return PreferenceManager.getDefaultSharedPreferences(context).getString(PREF_WAKATIME_USER_ID, null);
     }
 
+    /**
+     * Updates the number of the days the app was used
+     *
+     * @param context needed to fetch defaultSharedPreferences
+     */
     public static void updateAppUsage(Context context) {
 
         long currentTime = System.currentTimeMillis();
@@ -104,6 +143,10 @@ public class CacheUtils {
         editor.apply();
     }
 
+    /**
+     * @param context needed to fetch defaultSharedPreferences
+     * @return number of days the app was opened consecutively
+     */
     public static int getConsecutiveDays(Context context) {
         SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(context);
         long lastConsecutiveUsageTime = sharedPreferences.getLong(PREF_START_OF_CONSECUTIVE_DAYS, -1);

@@ -1,3 +1,19 @@
+/*
+ * Copyright 2017 Gurupad Mamadapur
+ *
+ *    Licensed under the Apache License, Version 2.0 (the "License");
+ *    you may not use this file except in compliance with the License.
+ *    You may obtain a copy of the License at
+ *
+ *        http://www.apache.org/licenses/LICENSE-2.0
+ *
+ *    Unless required by applicable law or agreed to in writing, software
+ *    distributed under the License is distributed on an "AS IS" BASIS,
+ *    WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ *    See the License for the specific language governing permissions and
+ *    limitations under the License.
+ */
+
 package io.github.protino.codewatch.ui;
 
 import android.content.Intent;
@@ -19,6 +35,8 @@ import io.github.protino.codewatch.R;
 import io.github.protino.codewatch.utils.Constants;
 
 /**
+ * Activity displaying details of the app
+ * todo: feedback button, rate on playstore, open source licenses and an easter egg.
  * @author Gurupad Mamadapur
  */
 
@@ -28,7 +46,6 @@ public class AboutActivity extends AppCompatActivity {
     @BindView(R.id.developed_by) TextView developedBy;
     @BindView(R.id.powered_by) TextView poweredBy;
     //@formatter:on
-
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -79,6 +96,9 @@ public class AboutActivity extends AppCompatActivity {
         }
     }
 
+    /**
+     * Opens developers profile
+     */
     private void openMyProfile() {
         Intent profileIntent = new Intent(this, ProfileActivity.class);
         profileIntent.putExtra(Intent.EXTRA_TEXT, Constants.DEVELOPER_ID);
