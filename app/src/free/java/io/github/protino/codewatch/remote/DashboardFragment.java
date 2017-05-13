@@ -17,6 +17,7 @@
 package io.github.protino.codewatch.remote;
 
 import android.content.Context;
+import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.Color;
 import android.graphics.drawable.Drawable;
@@ -101,10 +102,6 @@ import static io.github.protino.codewatch.utils.Constants.UNKNOWN_ERROR;
  */
 
 public class DashboardFragment extends ChartFragment implements SwipeRefreshLayout.OnRefreshListener {
-
-    private static final int LANGUAGE_CHART_ID = 1;
-    private static final int OS_CHART_ID = 3;
-    private static final int EDITORS_CHART_ID = 4;
 
     //@formatter:off
     //activity
@@ -260,6 +257,7 @@ public class DashboardFragment extends ChartFragment implements SwipeRefreshLayo
                 public void onDataChange(DataSnapshot dataSnapshot) {
                     stats = dataSnapshot.getValue(Stats.class);
                     bindViews();
+                    updateWidgets();
                 }
 
                 @Override
@@ -634,5 +632,11 @@ public class DashboardFragment extends ChartFragment implements SwipeRefreshLayo
                     break;
             }
         }
+    }
+
+    private void updateWidgets() {
+        Intent intent = new Intent(Constants.ACTION_DATA_UPDATED)
+                .setPackage(context.getPackageName());
+        context.sendBroadcast(intent);
     }
 }
