@@ -42,7 +42,7 @@ The Capstone project will give you the experience you need to own the full devel
 ### LICENSE
 
 ```
-Copyright 2016 Gurupad Mamadapur
+Copyright 2017 Gurupad Mamadapur
 
    Licensed under the Apache License, Version 2.0 (the "License");
    you may not use this file except in compliance with the License.
