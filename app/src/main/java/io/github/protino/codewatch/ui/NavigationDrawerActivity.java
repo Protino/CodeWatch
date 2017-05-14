@@ -18,21 +18,27 @@ package io.github.protino.codewatch.ui;
 
 import android.app.Fragment;
 import android.app.LoaderManager;
+import android.content.BroadcastReceiver;
+import android.content.Context;
 import android.content.CursorLoader;
 import android.content.Intent;
+import android.content.IntentFilter;
 import android.content.Loader;
 import android.content.SharedPreferences;
 import android.content.res.Configuration;
 import android.database.Cursor;
 import android.graphics.Bitmap;
+import android.net.ConnectivityManager;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.design.widget.NavigationView;
+import android.support.design.widget.Snackbar;
 import android.support.v4.app.ActivityOptionsCompat;
 import android.support.v4.graphics.drawable.RoundedBitmapDrawable;
 import android.support.v4.graphics.drawable.RoundedBitmapDrawableFactory;
+import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AppCompatActivity;
@@ -67,6 +73,7 @@ import io.github.protino.codewatch.remote.DashboardFragment;
 import io.github.protino.codewatch.utils.AchievementsUtils;
 import io.github.protino.codewatch.utils.CacheUtils;
 import io.github.protino.codewatch.utils.Constants;
+import io.github.protino.codewatch.utils.NetworkUtils;
 
 import static io.github.protino.codewatch.utils.Constants.BRONZE_BADGE;
 import static io.github.protino.codewatch.utils.Constants.GOLD_BADGE;
@@ -83,17 +90,27 @@ public class NavigationDrawerActivity extends AppCompatActivity implements
 
     private static final int RANK_LOADER_ID = 99;
     //@formatter:off
-    @State  public String firebaseUid;
-    @BindView(R.id.toolbar) public Toolbar toolbar;
-    @BindView(R.id.drawer_layout) public DrawerLayout drawerLayout;
-    @BindView(R.id.navigationView) public NavigationView navigationView;
+    @State
+    public String firebaseUid;
+    @BindView(R.id.toolbar)
+    public Toolbar toolbar;
+    @BindView(R.id.drawer_layout)
+    public DrawerLayout drawerLayout;
+    @BindView(R.id.navigationView)
+    public NavigationView navigationView;
 
-    @State public AtomicInteger mutex = new AtomicInteger();
-    @State public boolean hasUserLearntDrawer;
-    @State(ProfileDataBundler.class) public ProfileData basicUserData;
-    @State public long currentAchievements;
-    @State public long newAchievements = 0;
-    @State public boolean appUsageAchievementsChecked = false;
+    @State
+    public AtomicInteger mutex = new AtomicInteger();
+    @State
+    public boolean hasUserLearntDrawer;
+    @State(ProfileDataBundler.class)
+    public ProfileData basicUserData;
+    @State
+    public long currentAchievements;
+    @State
+    public long newAchievements = 0;
+    @State
+    public boolean appUsageAchievementsChecked = false;
     //@formatter:on
     private ActionBarDrawerToggle drawerToggler;
     private SharedPreferences sharedPreferences;
@@ -109,6 +126,14 @@ public class NavigationDrawerActivity extends AppCompatActivity implements
     private TextView rankText;
 
     private FirebaseAnalytics firebaseAnalytics;
+
+    private BroadcastReceiver broadcastReceiver = new BroadcastReceiver() {
+        @Override
+        public void onReceive(Context context, Intent intent) {
+            displayInternetError(NetworkUtils.isNetworkUp(context));
+        }
+    };
+    private Snackbar snackbar;
 
 
     @Override
@@ -139,17 +164,28 @@ public class NavigationDrawerActivity extends AppCompatActivity implements
 
         achievementsDatabaseRef = firebaseDatabase.getReference().child("achv").child(firebaseUid);
         getLoaderManager().initLoader(RANK_LOADER_ID, null, this);
+
+        //Internet error snackbar
+        snackbar = Snackbar.make(getWindow().getDecorView(), R.string.internet_error_message, Snackbar.LENGTH_INDEFINITE)
+                .setAction(R.string.retry, new View.OnClickListener() {
+                    @Override
+                    public void onClick(View view) {
+                        displayInternetError(NetworkUtils.isNetworkUp(NavigationDrawerActivity.this));
+                    }
+                });
     }
 
     @Override
     protected void onResume() {
         super.onResume();
         attachValueEventListener();
+        registerReceiver(broadcastReceiver, new IntentFilter(ConnectivityManager.CONNECTIVITY_ACTION));
     }
 
     @Override
     protected void onPause() {
         detachValueEventListener();
+        unregisterReceiver(broadcastReceiver);
         super.onPause();
     }
 
@@ -198,9 +234,20 @@ public class NavigationDrawerActivity extends AppCompatActivity implements
         drawerLayout.setDrawerListener(drawerToggler);
         hasUserLearntDrawer = sharedPreferences.getBoolean(Constants.PREF_USER_LEARNED_DRAWER, false);
         if (!hasUserLearntDrawer) {
-            drawerLayout.openDrawer(Gravity.START);
+            drawerLayout.openDrawer(GravityCompat.START);
         }
     }
+
+    private void displayInternetError(boolean show) {
+        if (snackbar != null) {
+            if (show) {
+                snackbar.show();
+            } else {
+                snackbar.dismiss();
+            }
+        }
+    }
+
 
     private ActionBarDrawerToggle setupDrawerToggler() {
         return new ActionBarDrawerToggle(
@@ -337,7 +384,7 @@ public class NavigationDrawerActivity extends AppCompatActivity implements
 
     @Override
     public void onBackPressed() {
-        if (drawerLayout.isDrawerOpen(Gravity.START)) {
+        if (drawerLayout.isDrawerOpen(GravityCompat.START)) {
             drawerLayout.closeDrawers();
         } else {
             super.onBackPressed();
