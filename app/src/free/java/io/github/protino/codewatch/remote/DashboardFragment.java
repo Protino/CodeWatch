@@ -105,40 +105,63 @@ public class DashboardFragment extends ChartFragment implements SwipeRefreshLayo
 
     //@formatter:off
     //activity
-    @BindView(R.id.linechart_activity) public LineChart lineChart;
-    @BindView(R.id.activity_total)public TextView todaysLogTimeText;
+    @BindView(R.id.linechart_activity)
+    public LineChart lineChart;
+    @BindView(R.id.activity_total)
+    public TextView todaysLogTimeText;
 
     //performance
-    @BindView(R.id.performance_bar)public PerformanceBarView performanceBarView;
-    @BindView(R.id.daily_average_text)public TextView dailyAverageText;
-    @BindView(R.id.today_log_percent_text) public TextView todaysLogPercentText;
+    @BindView(R.id.performance_bar)
+    public PerformanceBarView performanceBarView;
+    @BindView(R.id.daily_average_text)
+    public TextView dailyAverageText;
+    @BindView(R.id.today_log_percent_text)
+    public TextView todaysLogPercentText;
 
     //languages
-    @BindView(R.id.piechart_languages) public PieChart pieChartLanguages;
-    @BindView(R.id.expand_piechart_language)public ImageView expandLanguages;
-    @BindView(R.id.list_languages) public RecyclerView languagesListview;
-    @State public Float languageHighlightedEntryX = null;
+    @BindView(R.id.piechart_languages)
+    public PieChart pieChartLanguages;
+    @BindView(R.id.expand_piechart_language)
+    public ImageView expandLanguages;
+    @BindView(R.id.list_languages)
+    public RecyclerView languagesListview;
+    @State
+    public Float languageHighlightedEntryX = null;
 
     //editors
-    @BindView(R.id.piechart_editors)public PieChart pieChartEditors;
-    @BindView(R.id.expand_piechart_editors) public ImageView expandEditors;
-    @BindView(R.id.list_editors) public RecyclerView editorsListView;
-    @State public Float editorHighlightedEntryX = null;
+    @BindView(R.id.piechart_editors)
+    public PieChart pieChartEditors;
+    @BindView(R.id.expand_piechart_editors)
+    public ImageView expandEditors;
+    @BindView(R.id.list_editors)
+    public RecyclerView editorsListView;
+    @State
+    public Float editorHighlightedEntryX = null;
 
     //os
-    @BindView(R.id.piechart_os) public PieChart pieChartOs;
-    @BindView(R.id.expand_piechart_os) public ImageView expandOs;
-    @BindView(R.id.list_os) public RecyclerView osListview;
-    @State public Float osHighlightedEntryX = null;
+    @BindView(R.id.piechart_os)
+    public PieChart pieChartOs;
+    @BindView(R.id.expand_piechart_os)
+    public ImageView expandOs;
+    @BindView(R.id.list_os)
+    public RecyclerView osListview;
+    @State
+    public Float osHighlightedEntryX = null;
 
-    @BindView(R.id.adView) public AdView adView;
-    @BindView(R.id.scroll_view) public ScrollView scrollView;
+    @BindView(R.id.adView)
+    public AdView adView;
+    @BindView(R.id.scroll_view)
+    public ScrollView scrollView;
 
-    @BindView(R.id.swipe_refresh) public SwipeRefreshLayout swipeRefreshLayout;
-    @BindArray(R.array.chart_colors) public int[] chartColors;
+    @BindView(R.id.swipe_refresh)
+    public SwipeRefreshLayout swipeRefreshLayout;
+    @BindArray(R.array.chart_colors)
+    public int[] chartColors;
 
-    @State public String firebaseUid;
-    @State public Integer scrollPosition;
+    @State
+    public String firebaseUid;
+    @State
+    public Integer scrollPosition;
     //@formatter:on
 
     //firebase data
@@ -323,10 +346,8 @@ public class DashboardFragment extends ChartFragment implements SwipeRefreshLayo
         leftAxis.setTextColor(Color.WHITE);
         leftAxis.setAxisLineColor(Color.WHITE);
 
-        long referenceTime = new DateTime().plusDays(-7).getMillis();
         XAxis xAxis = lineChart.getXAxis();
         xAxis.setPosition(XAxis.XAxisPosition.BOTTOM);
-        xAxis.setValueFormatter(new FormatUtils().getBarXAxisValueFormatterInstance(referenceTime));
         xAxis.setDrawGridLines(false);
         xAxis.setTextColor(Color.WHITE);
         xAxis.setSpaceMin(0.5f);
@@ -335,9 +356,6 @@ public class DashboardFragment extends ChartFragment implements SwipeRefreshLayo
         xAxis.setAxisLineWidth(2f);
         xAxis.setAxisLineColor(Color.WHITE);
 
-
-        CustomMarkerView customMarkerView = new CustomMarkerView(context, R.layout.marker_view, referenceTime);
-        lineChart.setMarker(customMarkerView);
         lineChart.getDescription().setEnabled(false);
         lineChart.setDrawGridBackground(false);
         lineChart.setBackground(context.getResources().getDrawable(R.color.colorPrimaryDark));
@@ -348,8 +366,6 @@ public class DashboardFragment extends ChartFragment implements SwipeRefreshLayo
         lineChart.setDoubleTapToZoomEnabled(false);
         lineChart.setDrawBorders(false);
         lineChart.setExtraOffsets(16, 0, 16, 0);
-
-        customMarkerView.setChartView(lineChart);
     }
 
     private void bindViews() {
@@ -394,6 +410,15 @@ public class DashboardFragment extends ChartFragment implements SwipeRefreshLayo
         lineChart.setData(lineData);
         int maxYData = (int) (Math.ceil(lineData.getYMax()) + 7200);
         lineChart.getAxisLeft().setAxisMaximum(maxYData);
+        long referenceTime = new DateTime(stats.endDate).minusDays(6).getMillis();
+
+        lineChart.getXAxis()
+                .setValueFormatter(new FormatUtils().getBarXAxisValueFormatterInstance(referenceTime));
+
+        CustomMarkerView customMarkerView = new CustomMarkerView(context, R.layout.marker_view, referenceTime);
+        lineChart.setMarker(customMarkerView);
+        customMarkerView.setChartView(lineChart);
+
         lineChart.animateX(1500, Easing.EasingOption.Linear);
     }
 
