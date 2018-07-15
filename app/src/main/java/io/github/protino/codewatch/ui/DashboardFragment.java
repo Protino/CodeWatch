@@ -1,4 +1,4 @@
-package io.github.protino.codewatch.remote;
+package io.github.protino.codewatch.ui;
 
 import android.content.Context;
 import android.graphics.Bitmap;
@@ -60,7 +60,7 @@ import io.github.protino.codewatch.R;
 import io.github.protino.codewatch.model.WakatimeDataWrapper;
 import io.github.protino.codewatch.model.firebase.Stats;
 import io.github.protino.codewatch.model.firebase.User;
-import io.github.protino.codewatch.ui.ChartFragment;
+import io.github.protino.codewatch.remote.FetchWakatimeData;
 import io.github.protino.codewatch.ui.adapter.StatsAdapter;
 import io.github.protino.codewatch.ui.widget.CustomMarkerView;
 import io.github.protino.codewatch.ui.widget.PerformanceBarView;
@@ -83,10 +83,6 @@ import static io.github.protino.codewatch.utils.Constants.UNKNOWN_ERROR;
  */
 
 public class DashboardFragment extends ChartFragment implements SwipeRefreshLayout.OnRefreshListener {
-
-    private static final int LANGUAGE_CHART_ID = 1;
-    private static final int OS_CHART_ID = 3;
-    private static final int EDITORS_CHART_ID = 4;
 
     //@formatter:off
     //activity
@@ -137,20 +133,11 @@ public class DashboardFragment extends ChartFragment implements SwipeRefreshLayo
     private View rootView;
 
 
+//Lifecycle start
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setRetainInstance(true);
-    }
-
-    @Override
-    public void onSaveInstanceState(Bundle outState) {
-        super.onSaveInstanceState(outState);
-        if (scrollView != null) {
-            scrollPosition = scrollView.getScrollY();
-        }
-
-        Icepick.saveInstanceState(this, outState);
     }
 
     @Nullable
@@ -193,10 +180,21 @@ public class DashboardFragment extends ChartFragment implements SwipeRefreshLayo
     }
 
     @Override
+    public void onSaveInstanceState(Bundle outState) {
+        super.onSaveInstanceState(outState);
+        if (scrollView != null) {
+            scrollPosition = scrollView.getScrollY();
+        }
+
+        Icepick.saveInstanceState(this, outState);
+    }
+
+    @Override
     public void onPause() {
         detachValueEventListener();
         super.onPause();
     }
+//Lifecycle end
 
     @OnClick({R.id.share_activity_chart, R.id.share_editors_chart, R.id.share_language_chart, R.id.share_os_chart})
     public void onShareClick(View view) {

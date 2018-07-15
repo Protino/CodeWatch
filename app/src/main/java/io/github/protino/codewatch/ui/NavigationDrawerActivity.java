@@ -27,7 +27,6 @@ import android.content.Loader;
 import android.content.SharedPreferences;
 import android.content.res.Configuration;
 import android.database.Cursor;
-import android.graphics.Bitmap;
 import android.net.ConnectivityManager;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
@@ -36,21 +35,19 @@ import android.support.annotation.Nullable;
 import android.support.design.widget.NavigationView;
 import android.support.design.widget.Snackbar;
 import android.support.v4.app.ActivityOptionsCompat;
-import android.support.v4.graphics.drawable.RoundedBitmapDrawable;
-import android.support.v4.graphics.drawable.RoundedBitmapDrawableFactory;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
-import android.view.Gravity;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.bumptech.glide.Glide;
-import com.bumptech.glide.request.target.BitmapImageViewTarget;
+import com.bumptech.glide.load.resource.bitmap.CircleCrop;
+import com.bumptech.glide.request.RequestOptions;
 import com.google.firebase.analytics.FirebaseAnalytics;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
@@ -69,7 +66,6 @@ import io.github.protino.codewatch.R;
 import io.github.protino.codewatch.bundler.ProfileDataBundler;
 import io.github.protino.codewatch.data.LeaderContract;
 import io.github.protino.codewatch.model.user.ProfileData;
-import io.github.protino.codewatch.remote.DashboardFragment;
 import io.github.protino.codewatch.utils.AchievementsUtils;
 import io.github.protino.codewatch.utils.CacheUtils;
 import io.github.protino.codewatch.utils.Constants;
@@ -126,16 +122,15 @@ public class NavigationDrawerActivity extends AppCompatActivity implements
     private TextView rankText;
 
     private FirebaseAnalytics firebaseAnalytics;
-
+    private Snackbar snackbar;
     private BroadcastReceiver broadcastReceiver = new BroadcastReceiver() {
         @Override
         public void onReceive(Context context, Intent intent) {
             displayInternetError(NetworkUtils.isNetworkUp(context));
         }
     };
-    private Snackbar snackbar;
 
-
+//Lifecycle start
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -176,17 +171,15 @@ public class NavigationDrawerActivity extends AppCompatActivity implements
     }
 
     @Override
-    protected void onResume() {
-        super.onResume();
-        attachValueEventListener();
-        registerReceiver(broadcastReceiver, new IntentFilter(ConnectivityManager.CONNECTIVITY_ACTION));
+    protected void onPostCreate(@Nullable Bundle savedInstanceState) {
+        super.onPostCreate(savedInstanceState);
+        drawerToggler.syncState();
     }
 
     @Override
-    protected void onPause() {
-        detachValueEventListener();
-        unregisterReceiver(broadcastReceiver);
-        super.onPause();
+    public void onConfigurationChanged(Configuration newConfig) {
+        super.onConfigurationChanged(newConfig);
+        drawerToggler.onConfigurationChanged(newConfig);
     }
 
     @Override
@@ -194,6 +187,7 @@ public class NavigationDrawerActivity extends AppCompatActivity implements
         Icepick.saveInstanceState(this, outState);
         super.onSaveInstanceState(outState);
     }
+//Lifecycle end
 
     private void attachValueEventListener() {
         if (valueEventListener == null) {
@@ -296,20 +290,11 @@ public class NavigationDrawerActivity extends AppCompatActivity implements
         if (!basicUserData.getPhotoPublic()) {
             basicUserData.setPhoto(null);
         }
+
         Glide.with(this)
                 .load(basicUserData.getPhoto())
-                .asBitmap()
-                .placeholder(R.drawable.ic_account_circle_white_24dp)
-                .into(new BitmapImageViewTarget(avatar) {
-                    @Override
-                    protected void setResource(Bitmap resource) {
-
-                        RoundedBitmapDrawable drawable =
-                                RoundedBitmapDrawableFactory.create(getResources(), resource);
-                        drawable.setCircular(true);
-                        avatar.setImageDrawable(drawable);
-                    }
-                });
+                .apply(new RequestOptions().transforms(new CircleCrop()).placeholder(R.drawable.ic_account_circle_white_24dp))
+                .into(avatar);
 
         String goldCount = String.valueOf(AchievementsUtils.getBadgeCount(currentAchievements, GOLD_BADGE));
         String silverCount = String.valueOf(AchievementsUtils.getBadgeCount(currentAchievements, SILVER_BADGE));
@@ -318,18 +303,6 @@ public class NavigationDrawerActivity extends AppCompatActivity implements
         goldBadgeCounts.setText(goldCount);
         silverBadgeCounts.setText(silverCount);
         bronzeBadgeCounts.setText(bronzeCount);
-    }
-
-    @Override
-    protected void onPostCreate(@Nullable Bundle savedInstanceState) {
-        super.onPostCreate(savedInstanceState);
-        drawerToggler.syncState();
-    }
-
-    @Override
-    public void onConfigurationChanged(Configuration newConfig) {
-        super.onConfigurationChanged(newConfig);
-        drawerToggler.onConfigurationChanged(newConfig);
     }
 
     @Override
@@ -389,6 +362,20 @@ public class NavigationDrawerActivity extends AppCompatActivity implements
         } else {
             super.onBackPressed();
         }
+    }
+
+    @Override
+    protected void onPause() {
+        detachValueEventListener();
+        unregisterReceiver(broadcastReceiver);
+        super.onPause();
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        attachValueEventListener();
+        registerReceiver(broadcastReceiver, new IntentFilter(ConnectivityManager.CONNECTIVITY_ACTION));
     }
 
     public String getWakatimeUid() {

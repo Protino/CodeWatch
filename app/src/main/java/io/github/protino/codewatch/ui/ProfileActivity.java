@@ -22,13 +22,10 @@ import android.content.CursorLoader;
 import android.content.Intent;
 import android.content.Loader;
 import android.database.Cursor;
-import android.graphics.Bitmap;
 import android.graphics.Color;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.design.widget.CollapsingToolbarLayout;
-import android.support.v4.graphics.drawable.RoundedBitmapDrawable;
-import android.support.v4.graphics.drawable.RoundedBitmapDrawableFactory;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -43,7 +40,8 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.bumptech.glide.Glide;
-import com.bumptech.glide.request.target.BitmapImageViewTarget;
+import com.bumptech.glide.load.resource.bitmap.CircleCrop;
+import com.bumptech.glide.request.RequestOptions;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
@@ -114,6 +112,7 @@ public class ProfileActivity extends AppCompatActivity implements LoaderManager.
     private Map<Integer, Pair<String, String>> bronzeBadges;
     private Map<Integer, Pair<String, String>> silverBadges;
 
+//Lifecycle start
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -156,16 +155,17 @@ public class ProfileActivity extends AppCompatActivity implements LoaderManager.
     }
 
     @Override
-    protected void onResume() {
-        super.onResume();
-        attachReadListener();
-    }
-
-    @Override
     protected void onPause() {
         super.onPause();
         detachReadListener();
     }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        attachReadListener();
+    }
+//Lifecycle end
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
@@ -228,19 +228,11 @@ public class ProfileActivity extends AppCompatActivity implements LoaderManager.
     }
 
     private void bindViews() {
+
         Glide.with(this)
                 .load(profileItem.getPhotoUrl())
-                .asBitmap()
-                .placeholder(R.drawable.ic_account_circle_white_24dp)
-                .into(new BitmapImageViewTarget(avatar) {
-                    @Override
-                    protected void setResource(Bitmap resource) {
-                        RoundedBitmapDrawable drawable =
-                                RoundedBitmapDrawableFactory.create(getResources(), resource);
-                        drawable.setCircular(true);
-                        avatar.setImageDrawable(drawable);
-                    }
-                });
+                .apply(new RequestOptions().transforms(new CircleCrop()).placeholder(R.drawable.ic_account_circle_white_24dp))
+                .into(avatar);
 
         userName.setText(profileItem.getName());
         collapsingToolbarLayout.setTitle(profileItem.getName());

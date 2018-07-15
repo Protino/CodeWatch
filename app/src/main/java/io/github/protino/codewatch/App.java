@@ -1,10 +1,9 @@
 package io.github.protino.codewatch;
 
-import android.app.Application;
+import android.support.multidex.MultiDexApplication;
 
 import com.google.firebase.database.FirebaseDatabase;
 
-import io.github.protino.codewatch.BuildConfig;
 import io.github.protino.codewatch.utils.CacheUtils;
 import timber.log.Timber;
 
@@ -12,7 +11,7 @@ import timber.log.Timber;
  * @author Gurupad Mamadapur
  */
 
-public class App extends Application {
+public class App extends MultiDexApplication {
     //Lifecycle start
     @Override
     public void onCreate() {

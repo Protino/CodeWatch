@@ -17,9 +17,6 @@
 package io.github.protino.codewatch.ui.adapter;
 
 import android.content.Context;
-import android.graphics.Bitmap;
-import android.support.v4.graphics.drawable.RoundedBitmapDrawable;
-import android.support.v4.graphics.drawable.RoundedBitmapDrawableFactory;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -28,7 +25,8 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.bumptech.glide.Glide;
-import com.bumptech.glide.request.target.BitmapImageViewTarget;
+import com.bumptech.glide.load.resource.bitmap.CircleCrop;
+import com.bumptech.glide.request.RequestOptions;
 
 import java.util.List;
 
@@ -67,18 +65,6 @@ public class LeadersAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder
 
         //rankOffset decides rank value, +3 if toppers are display else +1
         rankOffset = (isTopperViewNeeded) ? 3 : 1;
-    }
-
-    @Override
-    public int getItemViewType(int position) {
-        if (!isTopperViewNeeded) {
-            return DEFAULT_ITEM_TYPE;
-        }
-        if (position == 0) {
-            return TOPPER_ITEM_TYPE;
-        } else {
-            return DEFAULT_ITEM_TYPE;
-        }
     }
 
     @Override
@@ -125,26 +111,28 @@ public class LeadersAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder
         }
     }
 
-    private void setCircularAvatar(final ImageView avatar, String photoUrl) {
-        Glide.with(context)
-                .load(photoUrl)
-                .asBitmap()
-                .placeholder(R.drawable.ic_account_circle_white_24dp)
-                .into(new BitmapImageViewTarget(avatar) {
-                    @Override
-                    protected void setResource(Bitmap resource) {
-
-                        RoundedBitmapDrawable drawable =
-                                RoundedBitmapDrawableFactory.create(context.getResources(), resource);
-                        drawable.setCircular(true);
-                        avatar.setImageDrawable(drawable);
-                    }
-                });
+    @Override
+    public int getItemViewType(int position) {
+        if (!isTopperViewNeeded) {
+            return DEFAULT_ITEM_TYPE;
+        }
+        if (position == 0) {
+            return TOPPER_ITEM_TYPE;
+        } else {
+            return DEFAULT_ITEM_TYPE;
+        }
     }
 
     @Override
     public int getItemCount() {
         return dataList.size();
+    }
+
+    private void setCircularAvatar(final ImageView avatar, String photoUrl) {
+        Glide.with(context)
+                .load(photoUrl)
+                .apply(new RequestOptions().transforms(new CircleCrop()).placeholder(R.drawable.ic_account_circle_white_24dp))
+                .into(avatar);
     }
 
     public void swapData(List<Object> dataList) {
